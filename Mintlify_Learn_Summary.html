@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Learn — Course Summaries & Discovery Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1628;--navy-mid:#111f38;--navy-light:#1a2f4e;--navy-card:#0d1825;
+  --mint:#00c47a;--mint-pale:rgba(0,196,122,.1);--mint-pale2:rgba(0,196,122,.05);
+  --gold:#f0a500;--gold-pale:rgba(240,165,0,.1);
+  --blue:#60a5fa;--blue-pale:rgba(96,165,250,.1);
+  --purple:#a78bfa;--purple-pale:rgba(167,139,250,.1);
+  --amber:#fbbf24;--amber-pale:rgba(251,191,36,.1);
+  --red:#ef4444;--red-pale:rgba(239,68,68,.1);
+  --green-pale:#e8f5e0;--green-dark:#3B6D11;
+  --text1:#f0f4ff;--text2:#8b9fc0;--text3:#4a6080;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text1);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+.hd{padding:32px 40px 0;background:linear-gradient(180deg,rgba(0,196,122,.04) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.hd-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.bdot{width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.btxt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.back-link{font-size:12px;color:var(--text3);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .15s}
+.back-link:hover{color:var(--mint)}
+h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+h1 em{color:var(--mint);font-style:normal}
+.sub{font-size:13px;color:var(--text2);max-width:580px;line-height:1.65;margin-bottom:20px}
+.context-note{display:inline-block;font-size:11px;color:var(--amber);background:var(--amber-pale);border:1px solid rgba(251,191,36,.18);border-radius:8px;padding:6px 12px;margin-bottom:20px;line-height:1.5}
+
+/* TABS */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:-1px}
+.tab{padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:var(--navy-mid);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;color:var(--text2);transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--text1);background:var(--navy-light)}
+.tab.active{background:var(--navy-card);border-color:var(--border2);color:var(--mint);border-bottom:1px solid var(--navy-card)}
+
+/* MAIN */
+.main{padding:28px 40px 60px;max-width:960px;border-top:1px solid var(--border)}
+
+/* PANELS */
+.panel{display:none}.panel.active{display:block}
+
+/* COURSE HEADER */
+.course-hdr{margin-bottom:20px}
+.course-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.course-sub{font-size:13px;color:var(--text2);line-height:1.55}
+
+/* LESSONS */
+.lesson{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border-color .15s}
+.lesson:hover{border-color:var(--border2)}
+.lesson-title{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.lesson-num{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--navy-light);color:var(--text2);flex-shrink:0}
+.lesson-body{font-size:13px;color:var(--text2);line-height:1.7}
+.kp{display:flex;gap:8px;margin-top:8px;align-items:flex-start}
+.kdot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0;margin-top:8px}
+.kt{font-size:13px;color:var(--text2);line-height:1.55}
+
+/* SALES INSIGHT */
+.sales-insight{margin-top:14px;padding:12px 16px;background:rgba(0,196,122,.07);border:1px solid rgba(0,196,122,.18);border-radius:8px;font-size:12px;color:#7ee8b8;line-height:1.65}
+.sales-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--mint);margin-bottom:5px}
+
+/* DISCOVERY QUESTIONS */
+.dq-sec{margin-bottom:24px}
+.dq-hdr{font-size:12px;font-weight:600;color:var(--text1);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.dq-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.tag-pain{background:#FAECE7;color:#993C1D}
+.tag-tech{background:#E6F1FB;color:#185FA5}
+.tag-ai{background:#EEEDFE;color:#534AB7}
+.tag-comp{background:#FBEAF0;color:#993556}
+.tag-eb{background:#FAEEDA;color:#854F0B}
+.dq-item{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;transition:border-color .15s}
+.dq-item:hover{border-color:var(--border2)}
+.dq-q{font-size:13px;font-weight:500;color:var(--text1);line-height:1.6;margin-bottom:6px}
+.dq-intent{font-size:12px;color:var(--text2);line-height:1.5}
+
+.sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px;margin-top:20px;display:flex;align-items:center;gap:8px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+@media(max-width:640px){
+  .hd,.main{padding-left:18px;padding-right:18px}
+  h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-row">
+    <div class="brand"><div class="bdot"></div><span class="btxt">Mintlify · Product Knowledge</span></div>
+    <a class="back-link" href="index.html">← Back to hub</a>
+  </div>
+  <h1>Mintlify <em>Learn</em> — Course Summaries</h1>
+  <p class="sub">Key lessons from Mintlify Learn with sales translations for each concept. Built from hands-on product experience — not just marketing copy.</p>
+  <div class="context-note">⚡ Each lesson includes a "Sales translation" — how the product concept maps to a discovery question, commercial insight, or objection response.</div>
+  <div class="tabs">
+    <div class="tab active" onclick="showPanel('course1',this)">Course 1: Structure</div>
+    <div class="tab" onclick="showPanel('course2',this)">Course 2: Agent-Friendly</div>
+    <div class="tab" onclick="showPanel('course3',this)">Course 3: Git & GitHub</div>
+    <div class="tab" onclick="showPanel('course4',this)">Course 4: Components</div>
+    <div class="tab" onclick="showPanel('discovery',this)">🎯 Discovery Questions</div>
+  </div>
+</header>
+
+<div class="main">
+
+<!-- COURSE 1 -->
+<div id="course1" class="panel active">
+  <div class="course-hdr">
+    <div class="course-title">Structure Docs That Scale</div>
+    <div class="course-sub">4 lessons · Why most documentation problems are structure problems, not writing problems — and how to fix them.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L1</span> Understand your readers first</div>
+    <div class="lesson-body">
+      Audience clarity is the foundation of every structural decision. "Developers" isn't specific enough — you need a concrete reader definition: role, goal, and prior knowledge.
+      <div class="kp"><span class="kdot"></span><span class="kt">A new integrator, a returning API user, and a tech lead evaluating your product are three different readers — serving all three equally serves none well.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Structure is downstream of audience. The same information needs different organization depending on who's reading it.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify's approach: define the primary reader in a CLAUDE.md or Cursor rules file — so AI writing tools always have context before touching your docs.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Most engineering leaders think their docs problem is a content quality problem. It's not — it's an audience clarity problem. Their docs are structured around their product, not around what their developers actually need to do. That's the reframe.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L2</span> Choose the right content type</div>
+    <div class="lesson-body">
+      Every page should be one of four types (Diátaxis framework): Tutorial (learn by doing), How-to guide (complete a task), Reference (look up info), or Explanation (understand a concept). Mixing types on one page is one of the most common reasons docs become hard to navigate.
+      <div class="kp"><span class="kdot"></span><span class="kt">Each type has a different structure, assumed knowledge level, and relationship to adjacent pages.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Mixing types breaks the contract with the reader: they came to do something and ended up reading an essay.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">AI tools default to hybrid content — explicit type instructions in CLAUDE.md prevent this drift.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>When you audit a prospect's docs and see pages doing five jobs, you can name it: "This is a content type problem — your engineers land on a page expecting steps and get a concept essay, or vice versa. That's the friction that drives support tickets."</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L3</span> Design navigation for your users (not your product)</div>
+    <div class="lesson-body">
+      Most docs navigation mirrors the product's architecture — not what users are trying to accomplish. Users navigate by goal, not by feature.
+      <div class="kp"><span class="kdot"></span><span class="kt">Feature-based nav: "Sources / Destinations / Transformations." Goal-based nav: "Get started / Connect your data / Transform and model." Same content, opposite usability.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify primitives: Groups (same purpose), Tabs (different audiences or use cases), Products (separate product lines), Anchors (globally useful resources).</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Name sections for what users accomplish, not what the section contains. "Webhooks" vs "Receive real-time events."</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Ask a prospect to show you their docs nav and ask: "If I'm a developer who just signed up and wants to make my first API call, where do I click?" Their hesitation tells you everything about what their docs are actually costing them.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L4</span> Keep docs accurate as your product grows</div>
+    <div class="lesson-body">
+      Documentation goes stale by default. The fix is process, not effort. The most effective habit: docs changes ship in the same pull request as the feature they document.
+      <div class="kp"><span class="kdot"></span><span class="kt">Docs-as-code: version-controlled, reviewed via PR, deployed through a pipeline. This is what Mintlify is built on.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify's agent watches the product repo and auto-drafts doc updates when code merges — removes the blank page problem, not the human review step.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Wrong documentation is worse than no documentation. A page describing a workflow that no longer exists costs users more than a 404.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Maintenance rhythm: update with every release, review AI assistant conversations monthly, audit high-traffic pages quarterly.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>This is where you quantify the Coinbase stat (doc updates: 20 min → 60 sec). The before state isn't laziness — it's structural. Docs and code live in different systems, so they drift apart by default. Mintlify closes that gap architecturally.</div>
+  </div>
+</div>
+
+<!-- COURSE 2 -->
+<div id="course2" class="panel">
+  <div class="course-hdr">
+    <div class="course-title">Create Agent-Friendly Docs</div>
+    <div class="course-sub">4 lessons · Your documentation now has two audiences — humans and AI agents. Here's how to serve both, and why the same fixes help both.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L1</span> How agents read your documentation</div>
+    <div class="lesson-body">
+      Agents process docs as isolated text chunks — without session memory, without navigation context, without knowing what's adjacent. They fetch a page and work with what they find there.
+      <div class="kp"><span class="kdot"></span><span class="kt">Pages must be self-contained. "As described in the previous section" is invisible to an agent — it may only have that one page.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Metadata matters: vague titles like "Advanced configuration" tell agents almost nothing. "Configure rate limits for API requests" matches real user queries.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Terminology inconsistency silently breaks agents — "workspace" and "organization" used interchangeably means agents treat them as different concepts.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Technical failures cause silent errors: pages over ~50K chars get truncated (agent doesn't know), tabbed content hides all but the first tab, JS-rendered content returns nothing.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>This is the AI readiness argument. If your docs aren't structured for agent consumption, your AI strategy built on top of them will produce wrong answers at scale — with no error message, just silent failures. That's a board-level risk.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L2</span> Write content agents can use</div>
+    <div class="lesson-body">
+      Specific writing habits that make docs reliable context for agents (and better for humans too): self-contained pages, specific titles and descriptions, standalone headings, consistent terminology, complete runnable examples.
+      <div class="kp"><span class="kdot"></span><span class="kt">Weak description: "Learn about our authentication system." Strong: "Authenticate API requests using API keys. Covers generating keys, passing them in headers, and handling 401 errors."</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Phrases like "the above," "as mentioned," and "it will return" create ambiguity humans resolve through context — agents often can't.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Code examples must be complete and runnable. Agents surface them to answer questions; a broken example means a wrong answer delivered with full confidence.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>The developer who hits a broken example in your docs doesn't file a ticket — they leave. The AI agent who hits a broken example gives them a confident wrong answer. Both outcomes destroy developer trust.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L3</span> Control what agents see — the four key files</div>
+    <div class="lesson-body">
+      Configuration files determine what agents know about your product beyond what's in individual pages.
+      <div class="kp"><span class="kdot"></span><span class="kt"><strong style="color:var(--text1)">llms.txt</strong> — Curated index of your docs for agents. Mintlify auto-generates one. Strong version has a product description, page descriptions, logical ordering. Exclude changelogs, deprecated content, blog posts.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt"><strong style="color:var(--text1)">CLAUDE.md</strong> — Read by Claude Code before editing your repo. Define audience, canonical terminology, content type rules, style conventions. Shapes every AI-assisted edit.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt"><strong style="color:var(--text1)">AGENTS.md</strong> — Same purpose as CLAUDE.md but read by OpenAI Codex and other coding agents. Maintain both if your team uses multiple AI tools.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt"><strong style="color:var(--text1)">SKILL.md</strong> — Packages step-by-step instructions for agents to discover and invoke specific capabilities in your product's API.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>llms.txt and CLAUDE.md are the infrastructure that makes your docs AI-native — not just AI-generated content, but docs that are structurally readable by the models developers are building on. Anthropic co-developed the LLMs.txt standard with Mintlify. That's the moat.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L4</span> Keep content agent-friendly over time</div>
+    <div class="lesson-body">
+      Agent-friendliness degrades the same way accuracy does — product changes without doc updates. Agents present stale information with the same confidence as current information.
+      <div class="kp"><span class="kdot"></span><span class="kt">Use your own AI assistant as a feedback loop — ask it questions about your product and see where it fails. Failures are documentation gaps.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Terminology drift is the silent killer — as teams grow, different contributors use different names for the same concept. Periodic audits with a canonical style guide prevent it.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Review llms.txt whenever major sections are added or removed — it's a snapshot, not a live feed unless auto-generated.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Most teams think they'll fix their docs "later." The maintenance model here makes "later" unnecessary — if the process is right, the docs stay current automatically. That's the pitch against the status quo.</div>
+  </div>
+</div>
+
+<!-- COURSE 3 -->
+<div id="course3" class="panel">
+  <div class="course-hdr">
+    <div class="course-title">Git & GitHub for Mintlify</div>
+    <div class="course-sub">8 lessons · Why engineering documentation teams work in Git, how the docs-as-code workflow operates, and why it matters for a $150k enterprise sale.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L1–2</span> Why docs teams use Git + core concepts</div>
+    <div class="lesson-body">
+      Git is version control: tracks every change, who made it, when. For documentation: complete history, parallel work without overwriting each other, review before publishing.
+      <div class="kp"><span class="kdot"></span><span class="kt">Key concepts: Repository (your docs project), Branch (isolated copy for changes), Commit (saved snapshot), Pull Request (proposed change pending review), Merge (change goes live).</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify's docs-as-code approach treats documentation with the same collaboration and quality standards as software — this is a quality philosophy, not just a technical choice.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>When a VP of Eng asks "how do we control what goes into our docs site?" — this is the answer. Every change is a PR. PRs have reviewers, automated checks, and preview deployments. This is the governance model engineering orgs already understand and trust.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L3–4</span> Get connected + access & permissions</div>
+    <div class="lesson-body">
+      Mintlify connects directly to your GitHub or GitLab repository. Two permission layers: GitHub controls repository access (who can push code), Mintlify controls site configuration.
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify installs as a GitHub App — no separate infrastructure to manage. The integration is the product.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Access model maps cleanly onto how engineering orgs already manage permissions — IT and security teams will recognize this pattern immediately.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>This is your answer to the InfoSec question. The permission model extends the permissions your engineering org already controls in GitHub. No new vendor access surface to audit.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L5–6</span> Workflow overview + branch best practices</div>
+    <div class="lesson-body">
+      Two ways to edit: web editor (Mintlify handles Git behind the scenes) and local CLI editing (full control). Most teams use both.
+      <div class="kp"><span class="kdot"></span><span class="kt">Web editor workflow: edit → publish → Mintlify creates branch, commits, opens PR automatically → review preview → merge → live.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">CLI workflow: pull latest → branch → <code style="background:var(--navy-light);padding:1px 5px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:11px">mint dev</code> for local preview → commit → push → PR → merge → live.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">The core habit: docs changes ship in the same PR as the feature they document. This is what prevents drift structurally, not through process discipline.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>"Your engineers already know this workflow. They do it for code every day. Mintlify makes docs part of the same motion — not a separate system that runs on someone's goodwill." This is how you counter the Confluence inertia argument.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">L7–8</span> Preview deployments + team collaboration</div>
+    <div class="lesson-body">
+      Every pull request gets an automatic live preview deployment of the entire docs site with proposed changes applied.
+      <div class="kp"><span class="kdot"></span><span class="kt">Mintlify's GitHub app runs automated checks on every PR: broken links, missing metadata, style/spelling (via Vale). Problems surface before users see them.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Writers, engineers, and product managers can all contribute via branches without stepping on each other.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Preview deployments are the quality gate — changes reviewed in context, not in a diff view that requires imagination.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>This is the DevRel champion's argument to their VP of Eng: "Every docs change goes through the same review process as code. No more rogue updates, no more broken pages discovered by external developers. The quality bar is enforced by the system."</div>
+  </div>
+</div>
+
+<!-- COURSE 4 -->
+<div id="course4" class="panel">
+  <div class="course-hdr">
+    <div class="course-title">How to Use Mintlify Components</div>
+    <div class="course-sub">16 lessons · The component library that turns good content into great developer experience — and what over-use looks like.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">Callouts</span> Note / Warning / Tip / Info — when each applies</div>
+    <div class="lesson-body">
+      Callouts interrupt reading — use them only when the interruption is worth it. Each type sends a specific signal: Note (supplementary context), Warning (consequence of getting this wrong), Tip (faster alternative), Info (background the reader may need).
+      <div class="kp"><span class="kdot"></span><span class="kt">Callout fatigue is real: when every page has 5 callouts, readers stop reading them. Warning callouts lose their meaning when they appear 3× per page.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">If the information is important enough to interrupt the reader, it's probably important enough to be in the main prose.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Callout overuse is a visible quality signal you can point to in a prospect's existing docs. "When everything is a warning, nothing is a warning — your developers learn to skip them, which means they miss the ones that matter."</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">Steps & procedures</span> Steps vs numbered lists, branching, complex flows</div>
+    <div class="lesson-body">
+      Steps component vs plain numbered lists: Steps support richer content — code blocks, images, sub-steps — within each step.
+      <div class="kp"><span class="kdot"></span><span class="kt">Use Steps when each step contains multiple elements. Use numbered lists when each step is a single sentence.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Branching procedures should fork at the decision point — not run as two separate complete guides that drift apart over time.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">When a procedure outgrows a page, split it into linked focused pages rather than scrolling further.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Complex procedures that sprawl across one page are a leading cause of "developers gave up and filed a support ticket." This is where you connect docs quality directly to support ticket deflection rates.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">Code</span> Code blocks, code groups, inline explanation</div>
+    <div class="lesson-body">
+      Code blocks should specify language (for syntax highlighting), title (for context), and line highlights (for focus). Code groups show the same example in multiple languages without repeating prose.
+      <div class="kp"><span class="kdot"></span><span class="kt">How much prose around a code block depends on content type and audience. Reference pages: minimal prose. Tutorials: step-by-step explanation.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Code groups prevent the "same example, 5 tabs of repetitive prose" pattern — the most common cause of bloated API docs.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>Your buyer's external developers will judge your customer's product by the quality of the code examples in their docs. A broken example is a lost integration. A language-toggled code group that just works is a converted developer.</div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title"><span class="lesson-num">Navigation & comparison</span> Tables, cards, tabs, conditional content, end-of-page</div>
+    <div class="lesson-body">
+      Each component signals a different thing to the reader. Tabs: same content, different contexts. Tables: structured comparison where relationships matter. Cards: navigation anchors or bounded objects.
+      <div class="kp"><span class="kdot"></span><span class="kt">Tabs hide content from agents (only the first tab is visible) — critical AI readiness consideration from Course 2.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">End-of-page navigation components determine whether a developer continues their journey or exits — arguably the highest-leverage page element for adoption.</span></div>
+      <div class="kp"><span class="kdot"></span><span class="kt">Conditional content (the View component) shows or hides sections based on user selections — keeps one page serving multiple audience segments without fragmentation.</span></div>
+    </div>
+    <div class="sales-insight"><div class="sales-label">Sales translation</div>End-of-page navigation is where developer adoption either continues or stops. Mintlify's component system makes this intentional rather than accidental — your customer's docs stop being a dead end and become a guided journey.</div>
+  </div>
+</div>
+
+<!-- DISCOVERY QUESTIONS -->
+<div id="discovery" class="panel">
+  <div class="course-hdr">
+    <div class="course-title">Discovery Questions — Product-Informed</div>
+    <div class="course-sub">Questions drawn directly from Mintlify Learn course concepts — mapped to MEDDPICC categories and Challenger intent. These are different from the standard question bank: they're sharper because they come from product fluency, not just sales frameworks. Use to diagnose, not interrogate.</div>
+  </div>
+
+  <div class="sec-lbl">Identified Pain — surface the structural problem</div>
+  <div class="dq-item"><div class="dq-q">"When one of your developers hits a documentation page looking for how to do something specific — how often do they find what they came for versus having to dig, ask a colleague, or file a ticket?"</div><div class="dq-intent">Surfaces the navigation and content type mismatch problem. Engineers answer this honestly because they live it daily.</div></div>
+  <div class="dq-item"><div class="dq-q">"Walk me through what happens between a feature shipping and the docs for that feature going live. Who owns that, and what's the typical lag?"</div><div class="dq-intent">Diagnoses docs-as-code gap. The answer almost always reveals a separate process that runs after engineering — which is where drift starts.</div></div>
+  <div class="dq-item"><div class="dq-q">"If I open your docs and search for something your product does — can I find the answer in 30 seconds, or does it require me to already know where to look?"</div><div class="dq-intent">Mintlify's navigation lesson made concrete. If they pause, you've identified the pain without them having to admit it.</div></div>
+  <div class="dq-item"><div class="dq-q">"How much engineering time per week would you estimate goes into maintaining documentation versus building product — and does that feel like the right ratio?"</div><div class="dq-intent">Connects to the HubSpot 50% headcount reduction proof point. Gets the Metrics conversation started.</div></div>
+  <div class="dq-item"><div class="dq-q">"What happens to your docs when a feature gets renamed, or a workflow changes significantly? What's the process for catching every page that needs updating?"</div><div class="dq-intent">Exposes terminology drift and the absence of automated checks. The answer is usually "someone tries to remember" — which is not a process.</div></div>
+
+  <div class="sec-lbl">AI readiness — the forward-looking reframe</div>
+  <div class="dq-item"><div class="dq-q">"Your developers are probably already using Claude Code, Cursor, or similar AI coding agents. When those agents try to use your documentation as context — how confident are you that they're getting accurate answers?"</div><div class="dq-intent">Opens the agent-friendly docs conversation. Most VPs of Eng haven't thought about this yet. That's the Challenger reframe — they have a problem they don't know they have.</div></div>
+  <div class="dq-item"><div class="dq-q">"When ChatGPT or another LLM answers a question about your API — where do you think that answer is coming from, and how confident are you it's accurate?"</div><div class="dq-intent">Surfaces the AI readiness liability. If their docs aren't structured for agent consumption, the LLM is either hallucinating or returning stale information.</div></div>
+  <div class="dq-item"><div class="dq-q">"You mentioned you're building [AI initiative]. What's the knowledge base those models will be trained on or querying — and is that content structured in a way that LLMs can actually use?"</div><div class="dq-intent">Connects Mintlify's AI-native architecture (llms.txt, MCP servers) to a live AI initiative. Makes the documentation problem a blocker for something they're already trying to do.</div></div>
+
+  <div class="sec-lbl">Technical workflow — understand their current state</div>
+  <div class="dq-item"><div class="dq-q">"Where does your documentation actually live right now — is it in the same repository as your code, or in a separate system like Confluence or Notion?"</div><div class="dq-intent">Identifies whether they have docs-as-code or a siloed system. The answer determines how you frame the migration conversation.</div></div>
+  <div class="dq-item"><div class="dq-q">"When a developer opens a PR for a new feature — does that PR include the documentation for that feature, or does docs happen separately after the fact?"</div><div class="dq-intent">The single most diagnostic question for docs drift. Almost no one ships docs in the same PR as the feature before Mintlify.</div></div>
+  <div class="dq-item"><div class="dq-q">"How does your team currently review documentation changes before they go live — is there a PR process, or does someone publish directly?"</div><div class="dq-intent">Surfaces the quality control gap. For regulated industries, connects to compliance and audit trail needs.</div></div>
+  <div class="dq-item"><div class="dq-q">"Do your technical writers and engineers work in the same toolchain for documentation, or are they in different systems that have to be synced?"</div><div class="dq-intent">Diagnoses the collaboration fragmentation that causes both drift and quality inconsistency.</div></div>
+
+  <div class="sec-lbl">Developer adoption — the external impact</div>
+  <div class="dq-item"><div class="dq-q">"When external developers integrate your API — what's the most common reason they file a support ticket in the first 30 days?"</div><div class="dq-intent">Connects docs quality to support ticket volume. If the answer involves "couldn't find" or "docs were wrong" — you have a quantifiable Metric.</div></div>
+  <div class="dq-item"><div class="dq-q">"If I'm a developer evaluating your API against a competitor's — what does your docs experience tell me about your product's quality? Is that the first impression you want to make?"</div><div class="dq-intent">Connects developer experience to competitive positioning. Developer-facing companies often underestimate how much docs quality influences API adoption decisions.</div></div>
+  <div class="dq-item"><div class="dq-q">"What percentage of developers who start integrating your API actually complete the integration — and do you have a sense of where the drop-off happens?"</div><div class="dq-intent">Surfaces the adoption funnel impact. Documentation friction is often the invisible cause of developer drop-off that nobody has quantified.</div></div>
+
+  <div class="sec-lbl">Economic Buyer + compelling event</div>
+  <div class="dq-item"><div class="dq-q">"When you think about the cost of your current docs setup — engineering time maintaining it, developer adoption that doesn't happen, support tickets from documentation gaps — has that been quantified anywhere, or is it mostly felt?"</div><div class="dq-intent">Sets up the Metrics conversation with the EB. "Mostly felt" is the gap you fill. If they have a number, that's your anchor.</div></div>
+  <div class="dq-item"><div class="dq-q">"Is there a product launch, API expansion, or engineering initiative coming up in the next quarter where the quality of your documentation will directly affect the outcome?"</div><div class="dq-intent">Surfaces the compelling event. This is the Why Now question asked in developer-org language.</div></div>
+  <div class="dq-item"><div class="dq-q">"Who in your organization would feel the most pain if your developer documentation caused a major API integration failure or a significant developer experience incident?"</div><div class="dq-intent">Maps to Economic Buyer. The answer is usually CTO, VP Eng, or VP Developer Experience — whoever is accountable for developer adoption metrics.</div></div>
+</div>
+
+</div>
+
+<script>
+function showPanel(id, tab) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+}
+</script>
+</body>
+</html>
