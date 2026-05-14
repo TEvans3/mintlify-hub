@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Business Case Framework</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a2332;line-height:1.6;min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:28px 24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:gap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:#1D9E75}
+.brand-name{font-size:14px;font-weight:700;color:#0f1f3d;letter-spacing:-0.01em}
+.brand-sep{color:#cbd5e1;margin:0 4px}
+.brand-doc{font-size:13px;color:#64748b}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{padding:8px 16px;font-size:13px;font-weight:500;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fff;color:#64748b;transition:all .15s;white-space:nowrap}
+.tab:hover{background:#f8fafc;color:#1a2332}
+.tab.active{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
+.panel{display:none}
+.panel.active{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:700;color:#0f1f3d;margin-bottom:4px}
+.card-sub{font-size:12px;color:#94a3b8;margin-bottom:18px}
+.field-label{font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.field-hint{font-weight:400;color:#94a3b8;font-size:11px}
+input[type=text],input[type=number],select,textarea{width:100%;padding:9px 12px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a2332;outline:none;transition:border .15s;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+input[type=range]{width:100%;height:4px;border-radius:2px;accent-color:#1D9E75;cursor:pointer;margin:8px 0 4px;background:transparent;border:none;padding:0}
+.range-row{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:2px}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:12px}
+.divider{height:1px;background:#f1f5f9;margin:20px 0}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.metric{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px}
+.metric.highlight{background:linear-gradient(135deg,#0f1f3d 0%,#1a3555 100%);border-color:#0f1f3d}
+.metric.green{background:#f0fdf8;border-color:#86efcd}
+.metric-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:6px}
+.metric-label.highlight{color:rgba(255,255,255,.6)}
+.metric-label.green{color:#065f46}
+.metric-value{font-size:26px;font-weight:700;color:#0f1f3d;line-height:1}
+.metric-value.highlight{color:#fff}
+.metric-value.green{color:#1D9E75}
+.metric-sub{font-size:11px;color:#94a3b8;margin-top:4px}
+.metric-sub.highlight{color:rgba(255,255,255,.5)}
+.metric-sub.green{color:#0f6e56}
+.roi-bar-wrap{background:#f1f5f9;border-radius:8px;height:12px;overflow:hidden;margin:8px 0}
+.roi-bar{height:100%;background:#1D9E75;border-radius:8px;transition:width .4s ease}
+.proof-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.proof-row:last-child{border-bottom:none}
+.proof-company{font-size:12px;font-weight:700;color:#0f1f3d;min-width:100px}
+.proof-metric{font-size:12px;color:#1D9E75;font-weight:600;flex:1}
+.proof-context{font-size:11px;color:#94a3b8;flex:2}
+.narrative-box{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:24px 26px;margin-bottom:16px;position:relative}
+.narrative-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#1D9E75;margin-bottom:10px}
+.narrative-text{font-size:13px;color:#334155;line-height:1.8}
+.narrative-text strong{color:#0f1f3d;font-weight:700}
+.copy-btn{position:absolute;top:16px;right:16px;padding:5px 12px;font-size:11px;font-weight:600;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;color:#475569;transition:all .15s}
+.copy-btn:hover{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
+.obj-card{border:1px solid #e2e8f0;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.obj-header{padding:13px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff;transition:background .1s}
+.obj-header:hover{background:#f8fafc}
+.obj-title{font-size:13px;font-weight:600;color:#0f1f3d}
+.obj-body{padding:14px 18px;border-top:1px solid #f1f5f9;background:#fff;display:none}
+.script-block{background:#f8fafc;border-left:3px solid #1D9E75;border-radius:0 8px 8px 0;padding:12px 16px;font-size:12px;color:#334155;line-height:1.8;margin:10px 0;font-style:italic}
+.alert{background:#f0fdf8;border:1px solid #86efcd;border-radius:10px;padding:12px 16px;font-size:12px;color:#065f46;margin-bottom:16px;line-height:1.65}
+.warn{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;font-size:12px;color:#78350f;margin-bottom:16px;line-height:1.65}
+.pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.pill-green{background:#dcfce7;color:#166534}
+.pill-amber{background:#fef3c7;color:#92400e}
+.pill-red{background:#fee2e2;color:#991b1b}
+.pill-navy{background:#e0e7ff;color:#3730a3}
+.step-row{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:#0f1f3d;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-title{font-size:13px;font-weight:700;color:#0f1f3d;margin-bottom:3px}
+.step-detail{font-size:12px;color:#64748b;line-height:1.65}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid #e2e8f0;color:#475569;background:#f8fafc}
+.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#1D9E75;background:#f0fdf8;padding:3px 10px;border-radius:20px;border:1px solid #86efcd}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#1D9E75;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.year-bar-wrap{margin:14px 0}
+.year-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.year-label{font-size:12px;font-weight:600;color:#475569;min-width:40px}
+.year-bar-bg{flex:1;background:#f1f5f9;border-radius:6px;height:20px;overflow:hidden;position:relative}
+.year-bar-fill{height:100%;border-radius:6px;transition:width .5s ease;display:flex;align-items:center;padding-left:8px}
+.year-bar-label{font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+.year-val{font-size:12px;font-weight:700;min-width:80px;text-align:right}
+@media(max-width:640px){.two-col,.three-col,.metric-grid{grid-template-columns:1fr}.tabs{gap:4px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Mintlify</span>
+      <span class="brand-sep">|</span>
+      <span class="brand-doc">Business Case Framework</span>
+    </div>
+    <div class="live-badge"><span class="live-dot"></span>Live calculations</div>
+  </div>
+
+  <div class="tabs" style="margin-bottom:24px">
+    <div class="tab active" onclick="show('inputs')">① Account inputs</div>
+    <div class="tab" onclick="show('roi')">② ROI model</div>
+    <div class="tab" onclick="show('narrative')">③ Business case narrative</div>
+    <div class="tab" onclick="show('ebconvo')">④ EB conversation guide</div>
+  </div>
+
+  <!-- ════════════ TAB 1: INPUTS ════════════ -->
+  <div id="inputs" class="panel active">
+    <div class="alert"><strong>Fill in what you know.</strong> Default values are conservative industry benchmarks — use them if you don't have account-specific data yet. Every number here flows into the ROI model and the narrative automatically. Update as you learn more in discovery.</div>
+
+    <div class="card">
+      <div class="card-title">Account details</div>
+      <div class="card-sub">Basic account context — used to personalize the narrative output</div>
+      <div class="two-col">
+        <div>
+          <div class="field-label">Company name</div>
+          <input type="text" id="company" value="Acme Corp" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Vertical</div>
+          <select id="vertical" onchange="calc()">
+            <option>FinTech</option>
+            <option>AI / ML</option>
+            <option>Developer Tools</option>
+            <option>SaaS / PLG</option>
+            <option>Enterprise Tech</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-label">Economic buyer name &amp; title</div>
+          <input type="text" id="eb_name" value="VP of Engineering" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Current documentation tool</div>
+          <select id="cur_tool" onchange="calc()">
+            <option>Confluence</option>
+            <option>Notion</option>
+            <option>GitBook</option>
+            <option>ReadMe</option>
+            <option>Homegrown / custom</option>
+            <option>SharePoint</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="field-label">Compelling event / Why Now <span class="field-hint">One line — the trigger that makes this a this-quarter problem</span></div>
+        <input type="text" id="why_now" value="New VP Eng hired 60 days ago; auditing all documentation infrastructure" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Engineering org</div>
+      <div class="card-sub">Used to calculate the engineering tax — the cost of the status quo</div>
+      <div class="two-col">
+        <div>
+          <div class="field-label">Total engineering headcount <span class="field-hint">All engineers, not just docs contributors</span></div>
+          <input type="number" id="eng_headcount" value="200" min="10" max="10000" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Avg fully-loaded hourly rate ($) <span class="field-hint">Default: $150/hr — standard for US senior eng</span></div>
+          <input type="number" id="hourly_rate" value="150" min="50" max="400" oninput="calc()">
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="field-label">Engineers who regularly touch documentation <span class="field-hint" id="eng_pct_lbl">~15% of team</span></div>
+        <input type="range" id="eng_pct" min="5" max="50" value="15" oninput="calc();updateLabel('eng_pct','eng_pct_lbl','%','~',' of team')">
+        <div class="range-row"><span>5% (dedicated docs team)</span><span>50% (all engineers)</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Documentation workflow</div>
+      <div class="card-sub">The core of the engineering tax calculation</div>
+      <div class="two-col">
+        <div>
+          <div class="field-label">Doc updates per week (team-wide)</div>
+          <input type="number" id="updates_week" value="20" min="1" max="500" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Avg time per doc update — current state (min) <span class="field-hint">Coinbase benchmark: ~20 min</span></div>
+          <input type="number" id="mins_per_update" value="20" min="5" max="180" oninput="calc()">
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="field-label">Estimated docs-to-code staleness lag <span class="field-hint" id="lag_lbl">~2 weeks behind release cadence</span></div>
+        <input type="range" id="staleness_lag" min="1" max="8" value="2" oninput="calc();updateLabel('staleness_lag','lag_lbl',' weeks','~',' behind release cadence')">
+        <div class="range-row"><span>1 week</span><span>8+ weeks</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">External developer impact <span style="font-size:11px;font-weight:400;color:#94a3b8">(optional — leave at 0 if internal docs only)</span></div>
+      <div class="card-sub">For accounts with public developer portals or API documentation</div>
+      <div class="two-col">
+        <div>
+          <div class="field-label">External developers using their docs (monthly)</div>
+          <input type="number" id="ext_devs" value="5000" min="0" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Est. support tickets/month from docs gaps</div>
+          <input type="number" id="tickets" value="50" min="0" oninput="calc()">
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="field-label">Est. cost per support ticket ($) <span class="field-hint">Industry avg: $40–$80 for developer support</span></div>
+        <input type="number" id="ticket_cost" value="60" min="0" max="500" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Deal parameters</div>
+      <div class="card-sub">Used for ROI and payback period calculation</div>
+      <div class="two-col">
+        <div>
+          <div class="field-label">Mintlify ACV estimate ($)</div>
+          <input type="number" id="mintlify_acv" value="150000" min="50000" max="500000" oninput="calc()">
+        </div>
+        <div>
+          <div class="field-label">Contract length (years)</div>
+          <select id="contract_years" onchange="calc()">
+            <option value="1">1 year</option>
+            <option value="2">2 years</option>
+            <option value="3" selected>3 years</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="field-label">Mintlify time-savings multiplier <span class="field-hint" id="savings_lbl">80% reduction in doc update time (conservative vs Coinbase 95%)</span></div>
+        <input type="range" id="savings_pct" min="50" max="95" value="80" oninput="calc();updateSavingsLabel()">
+        <div class="range-row"><span>50% reduction</span><span>95% (Coinbase benchmark)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ TAB 2: ROI MODEL ════════════ -->
+  <div id="roi" class="panel">
+    <div class="alert">All numbers flow from your inputs. The model uses a conservative savings multiplier by default — adjust it in the inputs tab if you have account-specific data that justifies a higher number. Always be able to defend the math.</div>
+
+    <div class="section-label">Cost of the status quo — annual</div>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="metric-label">Doc hours lost / year</div>
+        <div class="metric-value" id="m_hours_lost">—</div>
+        <div class="metric-sub">Eng hours on manual doc maintenance</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Engineering cost / year</div>
+        <div class="metric-value" id="m_eng_cost">—</div>
+        <div class="metric-sub">At avg fully-loaded hourly rate</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Support ticket cost / year</div>
+        <div class="metric-value" id="m_ticket_cost">—</div>
+        <div class="metric-sub">From documentation gaps</div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric highlight">
+        <div class="metric-label highlight">Total status quo cost / yr</div>
+        <div class="metric-value highlight" id="m_total_cost">—</div>
+        <div class="metric-sub highlight">Engineering tax + support burden</div>
+      </div>
+      <div class="metric green">
+        <div class="metric-label green">Annual savings with Mintlify</div>
+        <div class="metric-value green" id="m_savings">—</div>
+        <div class="metric-sub green">Based on <span id="savings_pct_display">80%</span> doc time reduction</div>
+      </div>
+      <div class="metric green">
+        <div class="metric-label green">Payback period</div>
+        <div class="metric-value green" id="m_payback">—</div>
+        <div class="metric-sub green">Months to break even on Mintlify ACV</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Multi-year return</div>
+    <div class="card">
+      <div class="year-bar-wrap" id="year_bars"></div>
+      <div style="display:flex;justify-content:flex-end;gap:16px;margin-top:10px;font-size:11px;color:#94a3b8">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Net cumulative savings</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#e2e8f0;display:inline-block"></span>Mintlify total investment</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">ROI vs. alternatives</div>
+    <div class="card">
+      <div id="alt_comparison"></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Proof points — matched to this account</div>
+    <div class="card" id="proof_points_card"></div>
+  </div>
+
+  <!-- ════════════ TAB 3: NARRATIVE ════════════ -->
+  <div id="narrative" class="panel">
+    <div class="alert"><strong>This narrative auto-populates from your inputs.</strong> Use it three ways: (1) as your talk track in the EB meeting, (2) as a one-pager you send to your champion to use internally, (3) as the basis for a formal proposal. Update your inputs first — then read this like a script.</div>
+
+    <div class="narrative-box">
+      <div class="narrative-label">Opening — the commercial insight (60 seconds)</div>
+      <button class="copy-btn" onclick="copySection('narr_open')">Copy</button>
+      <div class="narrative-text" id="narr_open"></div>
+    </div>
+
+    <div class="narrative-box">
+      <div class="narrative-label">Why do anything — cost of the status quo</div>
+      <button class="copy-btn" onclick="copySection('narr_why_anything')">Copy</button>
+      <div class="narrative-text" id="narr_why_anything"></div>
+    </div>
+
+    <div class="narrative-box">
+      <div class="narrative-label">Why Mintlify — what's different</div>
+      <button class="copy-btn" onclick="copySection('narr_why_mintlify')">Copy</button>
+      <div class="narrative-text" id="narr_why_mintlify"></div>
+    </div>
+
+    <div class="narrative-box">
+      <div class="narrative-label">Why now — the compelling event</div>
+      <button class="copy-btn" onclick="copySection('narr_why_now')">Copy</button>
+      <div class="narrative-text" id="narr_why_now"></div>
+    </div>
+
+    <div class="narrative-box">
+      <div class="narrative-label">The ask — closing the business case</div>
+      <button class="copy-btn" onclick="copySection('narr_ask')">Copy</button>
+      <div class="narrative-text" id="narr_ask"></div>
+    </div>
+
+    <div class="card" style="margin-top:8px">
+      <div class="section-label">Email version — champion one-pager</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">Give this to your Mobilizer champion as a ready-to-forward email to their VP Eng. Tell them: "Here's a one-pager you can forward with one sentence of context. Everything they need to say yes to a 20-minute conversation is in here."</div>
+      <button class="copy-btn" style="position:relative;top:0;right:0;margin-bottom:10px" onclick="copySection('narr_email')">Copy full email</button>
+      <div class="narrative-text" id="narr_email" style="white-space:pre-wrap;font-family:monospace;font-size:12px;background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e2e8f0"></div>
+    </div>
+  </div>
+
+  <!-- ════════════ TAB 4: EB CONVO GUIDE ════════════ -->
+  <div id="ebconvo" class="panel">
+    <div class="alert"><strong>Use this tab to prep for the Economic Buyer meeting.</strong> The structure below is a 25-minute EB conversation mapped to the business case. Anticipated objections are at the bottom — work through them before you're in the room.</div>
+
+    <div class="section-label">The 25-minute EB meeting structure</div>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Open with the reframe, not an intro (0–3 min)</div>
+        <div class="step-detail">Do not start with "let me tell you about Mintlify." Start with the commercial insight — their documentation problem is a workflow infrastructure problem, not a content problem. Let them react. Their reaction tells you whether to go deeper on the engineering tax angle or the AI readiness angle.</div>
+        <div class="tag-row"><span class="tag">Challenger open</span><span class="tag">Commercial insight first</span><span class="tag">No product pitch yet</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Present the cost of the status quo — with their numbers (3–8 min)</div>
+        <div class="step-detail">Walk them through the ROI model using the numbers you've built. Anchor on the engineering hours calculation first — it's the most visceral. Then add the support ticket cost if they have external docs. The goal is to get them to say "that sounds about right" or correct you with a bigger number. Both are wins.</div>
+        <div class="tag-row"><span class="tag">Use ROI tab numbers</span><span class="tag">Invite correction</span><span class="tag">Engineering tax first</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">The proof point — one story, matched to their world (8–13 min)</div>
+        <div class="step-detail">One proof point only. Matched to their vertical and primary pain. Deliver it as a story — the problem, what they tried, what actually worked, the result. Do not list features. The proof point's job is to make the outcome feel real and achievable, not to demonstrate product capability.</div>
+        <div class="tag-row" id="eb_proof_tags"></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">The delta — what changes with Mintlify (13–18 min)</div>
+        <div class="step-detail">Show the before/after. Use the ROI model numbers. Frame it as infrastructure, not tooling — they're not buying a documentation tool, they're fixing a workflow that has been creating a compounding tax on their engineering org. Migration objection: Laravel fully migrated in 3 days. Security objection: Fidelity, 99.99% uptime in regulated environment.</div>
+        <div class="tag-row"><span class="tag">Why Mintlify</span><span class="tag">Infrastructure framing</span><span class="tag">Neutralize migration risk</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">The ask — next step and mutual action plan (18–25 min)</div>
+        <div class="step-detail">Don't close the deal in this meeting. Close the next step. The ask is: "Based on what we've covered, does this warrant a more formal evaluation? If so, the most efficient path is a 2-week technical assessment with your team — here's what that looks like and what we'd need from your side." Then produce the MAP.</div>
+        <div class="tag-row"><span class="tag">Close the next step</span><span class="tag">Mutual action plan</span><span class="tag">Named owners and dates</span></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Anticipated objections — with responses</div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"We have bigger priorities right now"</div>
+        <span class="pill pill-red">Most common EB objection</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">This is a prioritization objection, not a "no." The EB is telling you the business case hasn't competed effectively with their existing priorities. Your job is to connect it to something they're already prioritizing — not argue that docs should be a higher priority.</div>
+        <div class="script-block">"That makes sense — I'd never argue that documentation should be your top priority. The reason I'm here is that this usually isn't a new project, it's an underlying cost that's making your current priorities harder. If your team is building [AI initiative / new API / scaling engineering], the documentation workflow tax is a drag on that work right now, not a separate problem. The question is whether it's worth $X to remove that drag while you focus on the things that matter more."</div>
+      </div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"Why not just hire a technical writer?"</div>
+        <span class="pill pill-amber">Common alternative</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">The hiring instinct is understandable — it's the obvious response to a content quality problem. The challenge is that this isn't a content quality problem. A technical writer cannot fix structural staleness.</div>
+        <div class="script-block">"A senior technical writer runs $150–180k fully loaded, and they'd solve the coverage problem — but not the workflow problem. Your docs would still go stale the moment code ships, because the documentation workflow isn't integrated with the engineering workflow. HubSpot had the same instinct — hired writers, still had staleness, still had engineering overhead. Fixing the infrastructure cut their engineering resources on docs by 50% without adding headcount. That's the difference."</div>
+      </div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"Migration is too disruptive"</div>
+        <span class="pill pill-amber">Risk objection</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">Migration risk is real and reasonable. The mistake is letting it become a veto rather than a scoped evaluation. Use the Laravel proof point and offer a phased approach.</div>
+        <div class="script-block">"That's a legitimate concern — migration risk is real. What we've consistently seen is that companies overestimate it. Laravel fully migrated in 3 days. AT&T moved a legacy enterprise documentation system in a regulated environment without disruption. What we'd propose is starting with one product line or one team — not a full migration — so you can validate the workflow fit before committing. The risk is scoped, the signal is real."</div>
+      </div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"Can you pass our security review?"</div>
+        <span class="pill pill-navy">IT / Compliance gate</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">Do not get caught off guard by this. Have the answer ready before they ask. If this comes up in the EB meeting, it means you're past the business case and into the evaluation — which is a good sign.</div>
+        <div class="script-block">"Yes — and we've been through rigorous security reviews at regulated enterprises. Fidelity is a customer — they're running at 99.99% uptime since launch in a heavily regulated environment. We're SOC 2 Type II certified, we support SSO/SAML, and we have a standard security questionnaire response your InfoSec team can work through. I'd suggest we schedule a technical call with your InfoSec lead as the next step so we don't let this become a bottleneck. I'll send you the documentation package before that call."</div>
+      </div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"Your numbers seem high — we don't spend that much on docs"</div>
+        <span class="pill pill-amber">Math challenge</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">This is actually a great objection — it means they're engaging with the model. Don't defend your numbers. Invite them to correct them.</div>
+        <div class="script-block">"That's fair — these are estimates and I'd rather get to the real number. Walk me through what you think it looks like: how many engineers are touching documentation on a weekly basis, and how long does a typical update take? I'll update the model in real time and we can work from your numbers instead of mine. The point isn't to win an argument about the estimate — it's to find out if the number is big enough to warrant a solution."</div>
+        <div style="font-size:12px;color:#64748b;margin-top:10px;line-height:1.65">Then open the ROI calculator and update it live in the meeting with their corrections. Their engagement with the numbers is the qualification signal.</div>
+      </div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-header" onclick="toggleObj(this)">
+        <div class="obj-title">"We're locked into Confluence through IT / procurement"</div>
+        <span class="pill pill-red">Inertia objection</span>
+      </div>
+      <div class="obj-body">
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.65">IT consolidation is a real constraint at enterprise accounts. The Challenger reframe: Confluence was built for internal wikis. Developer-facing documentation and AI-native knowledge infrastructure is a different category.</div>
+        <div class="script-block">"Totally understand — IT consolidation mandates are real and I'm not here to blow that up. The way most of our enterprise customers have navigated it is by positioning Mintlify as developer documentation infrastructure rather than a wiki replacement — which means it lives outside the Confluence mandate in the engineering tools budget. Confluence stays for internal wikis and project management. Mintlify handles external developer docs, API references, and the AI-readable knowledge layer. They don't compete. Does that framing change how you'd approach the procurement question?"</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function fmt$(n){if(isNaN(n)||n===null)return'—';if(n>=1000000)return'$'+(n/1000000).toFixed(1)+'M';if(n>=1000)return'$'+(n/1000).toFixed(0)+'k';return'$'+Math.round(n)}
+function fmtN(n){if(isNaN(n)||n===null)return'—';if(n>=1000)return(n/1000).toFixed(1)+'k';return Math.round(n)+''}
+function fmtMo(n){if(isNaN(n)||n<=0)return'<1 mo';return Math.round(n*10)/10+' mo'}
+
+function v(id){return parseFloat(document.getElementById(id).value)||0}
+function s(id){const el=document.getElementById(id);return el?el.value:''}
+
+function updateLabel(sliderId,labelId,unit,prefix,suffix){
+  const val=document.getElementById(sliderId).value;
+  document.getElementById(labelId).textContent=(prefix||'')+val+(unit||'')+(suffix||'');
+}
+function updateSavingsLabel(){
+  const val=document.getElementById('savings_pct').value;
+  document.getElementById('savings_lbl').textContent=val+'% reduction in doc update time'+(val>=90?' (approaching Coinbase benchmark)':val>=80?' (conservative-to-moderate)':' (conservative)');
+  document.getElementById('savings_pct_display').textContent=val+'%';
+}
+
+function calc(){
+  const company=s('company')||'this account';
+  const vertical=s('vertical');
+  const eb=s('eb_name')||'VP of Engineering';
+  const curTool=s('cur_tool');
+  const whyNow=s('why_now');
+  const engHead=v('eng_headcount');
+  const hourly=v('hourly_rate');
+  const engPct=v('eng_pct')/100;
+  const updatesWk=v('updates_week');
+  const minsPerUpdate=v('mins_per_update');
+  const lag=v('staleness_lag');
+  const extDevs=v('ext_devs');
+  const tickets=v('tickets');
+  const ticketCost=v('ticket_cost');
+  const acv=v('mintlify_acv');
+  const years=v('contract_years');
+  const savingsPct=v('savings_pct')/100;
+
+  // Engineering tax calculation
+  const hoursPerUpdateCurrent=minsPerUpdate/60;
+  const hoursPerUpdateMintlify=hoursPerUpdateCurrent*(1-savingsPct);
+  const annualUpdates=updatesWk*52;
+  const annualHoursLost=annualUpdates*hoursPerUpdateCurrent;
+  const annualHoursSaved=annualUpdates*(hoursPerUpdateCurrent-hoursPerUpdateMintlify);
+  const engCostYear=annualHoursLost*hourly;
+  const engSavingsYear=annualHoursSaved*hourly;
+
+  // Ticket cost
+  const ticketCostYear=tickets*12*ticketCost;
+  const ticketSavingsYear=ticketCostYear*0.4; // assume 40% ticket reduction from better docs
+
+  // Totals
+  const totalStatusQuoCost=engCostYear+ticketCostYear;
+  const totalSavings=engSavingsYear+ticketSavingsYear;
+  const paybackMonths=(acv/totalSavings)*12;
+  const netSavingsYear1=totalSavings-acv;
+  const totalInvestment=acv*years;
+  const totalSavingsMultiYear=totalSavings*years;
+  const netMultiYear=totalSavingsMultiYear-totalInvestment;
+  const roi3yr=totalInvestment>0?Math.round((netMultiYear/totalInvestment)*100):0;
+
+  // Update metrics
+  setText('m_hours_lost',fmtN(annualHoursLost)+' hrs');
+  setText('m_eng_cost',fmt$(engCostYear));
+  setText('m_ticket_cost',fmt$(ticketCostYear));
+  setText('m_total_cost',fmt$(totalStatusQuoCost));
+  setText('m_savings',fmt$(totalSavings)+'/yr');
+  setText('m_payback',fmtMo(paybackMonths));
+
+  // Year bars
+  const maxBar=Math.max(totalSavingsMultiYear,totalInvestment)*1.1;
+  let barsHtml='';
+  for(let y=1;y<=years;y++){
+    const cumSav=totalSavings*y;
+    const cumInv=acv*y;
+    const net=cumSav-cumInv;
+    const savPct=Math.min(100,Math.round((cumSav/maxBar)*100));
+    const invPct=Math.min(100,Math.round((cumInv/maxBar)*100));
+    const netColor=net>=0?'#1D9E75':'#ef4444';
+    barsHtml+=`
+      <div class="year-row">
+        <div class="year-label">Yr ${y}</div>
+        <div class="year-bar-bg">
+          <div class="year-bar-fill" style="width:${savPct}%;background:${netColor}">
+            <span class="year-bar-label">${fmt$(cumSav)} saved</span>
+          </div>
+        </div>
+        <div class="year-val" style="color:${netColor}">${net>=0?'+':''}${fmt$(net)} net</div>
+      </div>
+      <div class="year-row" style="margin-top:-4px;margin-bottom:12px">
+        <div class="year-label" style="color:#94a3b8;font-size:11px">inv.</div>
+        <div class="year-bar-bg" style="height:8px">
+          <div class="year-bar-fill" style="width:${invPct}%;background:#e2e8f0">
+            <span class="year-bar-label" style="color:#94a3b8;font-size:10px">${fmt$(cumInv)}</span>
+          </div>
+        </div>
+        <div class="year-val" style="color:#94a3b8;font-size:11px">${Math.round((cumSav/cumInv-1)*100)}% ROI</div>
+      </div>`;
+  }
+  setText('year_bars',barsHtml);
+
+  // Alt comparison
+  const writerCost=165000;
+  const writerSavings=engSavingsYear*0.3;
+  const doNothingCost=totalStatusQuoCost;
+  let altHtml=`<div style="font-size:12px;margin-bottom:14px;color:#64748b">How Mintlify's ROI compares against the two most common alternatives:</div>`;
+  const alts=[
+    {name:'Mintlify',cost:acv,savings:totalSavings,net:totalSavings-acv,color:'#1D9E75'},
+    {name:'Hire a tech writer',cost:writerCost,savings:writerSavings,net:writerSavings-writerCost,color:'#f59e0b'},
+    {name:'Do nothing',cost:0,savings:0,net:-doNothingCost,color:'#ef4444'},
+  ];
+  alts.forEach(a=>{
+    const isPos=a.net>=0;
+    altHtml+=`<div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #f1f5f9">
+      <div style="min-width:130px;font-size:13px;font-weight:700;color:#0f1f3d">${a.name}</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:4px"><span>Annual investment: ${fmt$(a.cost)}</span><span>Annual savings: ${fmt$(a.savings)}</span></div>
+        <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
+          <div style="height:100%;background:${a.color};width:${Math.min(100,Math.max(5,(a.savings/(totalSavings||1))*100))}%;border-radius:6px"></div>
+        </div>
+      </div>
+      <div style="min-width:90px;text-align:right;font-size:13px;font-weight:700;color:${isPos?'#1D9E75':'#ef4444'}">${isPos?'+':''}${fmt$(a.net)}/yr</div>
+    </div>`;
+  });
+  setText('alt_comparison',altHtml);
+
+  // Proof points
+  let proofHtml='';
+  const proofs=getProofPoints(vertical,extDevs>0,curTool);
+  proofs.forEach(p=>{
+    proofHtml+=`<div class="proof-row"><div class="proof-company">${p.company}</div><div class="proof-metric">${p.metric}</div><div class="proof-context">${p.context}</div></div>`;
+  });
+  setText('proof_points_card',proofHtml);
+
+  // EB proof tags
+  let ebTagHtml='';
+  proofs.slice(0,2).forEach(p=>{ ebTagHtml+=`<span class="tag">${p.company}: ${p.metric}</span>`; });
+  setText('eb_proof_tags',ebTagHtml);
+
+  // Narrative
+  buildNarrative(company,vertical,eb,curTool,whyNow,totalStatusQuoCost,engCostYear,
+    annualHoursLost,totalSavings,paybackMonths,acv,years,roi3yr,extDevs,ticketCostYear,
+    savingsPct,engHead,updatesWk,minsPerUpdate,proofs);
+}
+
+function getProofPoints(vertical,hasExternal,curTool){
+  const all={
+    coinbase:{company:'Coinbase',metric:'20 min → 60 sec',context:'Doc update time across high-velocity API engineering team — not headcount, infrastructure fix'},
+    hubspot:{company:'HubSpot',metric:'50% reduction in eng resources',context:'Engineering headcount dedicated to documentation maintenance — recaptured for product work'},
+    layers:{company:'Layers',metric:'40–60 hrs saved/month',context:'Engineering time recovered across releases — directly measurable productivity gain'},
+    anthropic:{company:'Anthropic',metric:'1.5M+ devs/month, zero eng lift',context:'AI-native docs infrastructure; co-developed LLMs.txt standard — developer scale without maintenance overhead'},
+    fidelity:{company:'Fidelity',metric:'99.99% uptime since launch',context:'Regulated enterprise environment — zero engineering maintenance overhead'},
+    att:{company:'AT&T / LevelBlue',metric:'Legacy system replaced at enterprise scale',context:'Regulated enterprise, security review passed, full migration without disruption'},
+    zapier:{company:'Zapier',metric:'3x faster documentation updates',context:'Docs-as-code workflow integration — velocity matches engineering release cadence'},
+    laravel:{company:'Laravel',metric:'Full migration in 3 days',context:'Largest PHP community docs — complete infrastructure migration without disruption'},
+  };
+  const map={
+    'FinTech':[all.coinbase,all.fidelity,all.att],
+    'AI / ML':[all.anthropic,all.coinbase,all.layers],
+    'Developer Tools':[all.coinbase,all.layers,all.zapier],
+    'SaaS / PLG':[all.hubspot,all.layers,all.zapier],
+    'Enterprise Tech':[all.att,all.fidelity,all.hubspot],
+  };
+  let pts=map[vertical]||[all.coinbase,all.hubspot,all.layers];
+  if(curTool==='Confluence'||curTool==='SharePoint')pts=[all.att,all.fidelity,...pts];
+  if(hasExternal)pts=[all.coinbase,...pts.filter(p=>p!==all.coinbase)];
+  return pts.slice(0,3);
+}
+
+function buildNarrative(co,vert,eb,curTool,whyNow,totalCost,engCost,hoursLost,savings,payback,acv,years,roi,extDevs,ticketCost,savePct,engHead,updatesWk,minsPer,proofs){
+  const pbo=getPBO(vert);
+  const proof1=proofs[0];
+
+  setText('narr_open',`Most engineering leaders describe their documentation problem as a content problem — coverage gaps, stale pages after releases, writing quality. What we consistently find at companies like <strong>${co}</strong> is that content is the symptom. The actual problem is structural: documentation workflow isn't integrated with engineering workflow, which means every release creates a delta between what shipped and what's documented. Your engineers either close that gap manually — which is an engineering tax — or your ${extDevs>0?'external developers':'team'} hit it and the cost shows up elsewhere. That's what we're here to examine today.`);
+
+  setText('narr_why_anything',`Based on what we know about <strong>${co}'s</strong> engineering org, here's what the status quo is currently costing:<br><br>
+  At your scale, your team is running roughly <strong>${fmtN(updatesWk*52)} documentation updates per year</strong>. At approximately <strong>${minsPer} minutes per update</strong> — which is consistent with engineering teams on ${curTool} — that's <strong>${fmtN(hoursLost)} engineering hours per year</strong> spent on documentation maintenance. At your fully-loaded engineering rate, that's approximately <strong>${fmt$(engCost)} per year</strong> in engineering time alone.${ticketCost>0?` Add the support ticket burden from documentation gaps — approximately <strong>${fmt$(ticketCost)} per year</strong> — and the total annual cost of the status quo is in the range of <strong>${fmt$(totalCost)}</strong>.`:''}<br><br>
+  That's not a documentation budget line. That's an engineering throughput problem. And it compounds — because every quarter you don't fix the workflow, the gap between your engineering velocity and your documentation velocity widens.`);
+
+  const savePctDisplay=Math.round(savePct*100);
+  setText('narr_why_mintlify',`${proof1.company} had the same structural problem — ${proof1.metric}. The solution wasn't headcount. It was fixing the infrastructure so documentation updates happen automatically as part of the engineering workflow, not as a manual catch-up process after the fact.<br><br>
+  Mintlify's approach is docs-as-code: documentation is version-controlled, integrated with your GitHub or GitLab workflow, and updates automatically when code ships. The result is a <strong>${savePctDisplay}% reduction in documentation update time</strong> — which translates to approximately <strong>${fmt$(savings)} in annual savings</strong> at <strong>${co}'s</strong> scale.<br><br>
+  ${vert==='AI / ML'||vert==='Enterprise Tech'?'Additionally, Mintlify is AI-native by architecture — LLMs.txt compliant, MCP-accessible, and structured for machine readability. If '+co+' is building AI agents, internal copilots, or LLM-powered products that need to query your documentation, your current infrastructure on '+curTool+' is not built for that. Mintlify is.':'The migration path is faster than you expect. Laravel — one of the largest developer documentation sites in the world — fully migrated in 3 days. We scope every enterprise migration before you commit.'}`);
+
+  setText('narr_why_now',`${whyNow?`The specific reason this is a this-quarter decision rather than a next-year conversation: <strong>${whyNow}.</strong><br><br>`:''}Every quarter the documentation workflow stays broken, the engineering tax accumulates. At <strong>${fmt$(savings)}</strong> in annual savings and a payback period of <strong>${fmtMo(payback)}</strong>, the cost of waiting is approximately <strong>${fmt$(savings/12)}/month</strong> in recoverable engineering value that stays locked in the status quo.<br><br>The other factor is the ${pbo} — which doesn't wait for the right quarter to become a priority. If <strong>${co}</strong> has an AI initiative, a developer adoption target, or a headcount efficiency mandate, the documentation infrastructure dependency is already creating drag on those goals.`);
+
+  setText('narr_ask',`Here's what we're proposing as the next step — not a commitment, an evaluation:<br><br>
+  A <strong>2-week technical assessment</strong> with your engineering team. We scope the current documentation footprint, run a parallel workflow test with one team or product line, and produce a migration plan with a firm timeline and cost. You have real data before you commit to anything.<br><br>
+  From a business case standpoint: <strong>${fmt$(acv)}/year</strong> against <strong>${fmt$(savings)}</strong> in annual savings is a <strong>${fmtMo(payback)} payback period</strong> and a <strong>${roi}% ROI over ${years} years</strong>. That's a decision the engineering budget justifies — but I want to make sure your team is confident in the numbers before we get there.<br><br>
+  What would it take to get the technical assessment scheduled this month?`);
+
+  // Email version
+  const emailText=`Subject: How ${co} could recover ${fmt$(savings)}/year in engineering capacity
+
+${eb.split('/')[0].trim()},
+
+Quick context on why I'm reaching out: I work with engineering organizations at companies like ${proof1.company} on a problem that usually gets filed under "documentation" but is actually an engineering throughput issue.
+
+The pattern at ${co} looks familiar: your team on ${curTool} is running roughly ${fmtN(updatesWk*52)} documentation updates per year. At ~${minsPer} minutes per update, that's approximately ${fmtN(hoursLost)} engineering hours per year spent on manual documentation maintenance — not because your team isn't disciplined, but because the documentation workflow isn't integrated with the engineering workflow. Staleness is structural.
+
+${proof1.company} had the same problem. They cut documentation update time from 20 minutes to 60 seconds — not by hiring, by fixing the infrastructure.
+
+For ${co}, the same fix translates to approximately ${fmt$(savings)}/year in recovered engineering capacity. Payback period: ${fmtMo(payback)}.
+
+Worth 20 minutes to see if the same problem is showing up in your org? I can share the full model before the call so you can pressure-test the numbers.
+
+[Your name]
+Mintlify`;
+
+  setText('narr_email',emailText);
+}
+
+function getPBO(vert){
+  const map={'FinTech':'developer adoption efficiency','AI / ML':'AI readiness dependency','Developer Tools':'documentation velocity vs engineering velocity','SaaS / PLG':'self-serve conversion and support ticket deflection','Enterprise Tech':'AI transformation infrastructure readiness'};
+  return map[vert]||'engineering throughput efficiency';
+}
+
+function setText(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html}
+
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleObj(hdr){
+  const body=hdr.nextElementSibling;
+  body.style.display=body.style.display==='none'||body.style.display===''?'block':'none';
+}
+
+function copySection(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const text=el.innerText||el.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=el.previousElementSibling;
+    if(btn&&btn.classList.contains('copy-btn')){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);}
+  });
+}
+
+// Init
+document.querySelectorAll('.obj-body').forEach(b=>b.style.display='none');
+updateSavingsLabel();
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Discovery Question Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1628; --navy-mid:#111f38; --navy-light:#1a2f4e;
+  --mint:#00c47a; --mint-dim:#00a865; --mint-pale:rgba(0,196,122,0.1); --mint-pale2:rgba(0,196,122,0.05);
+  --gold:#f0a500; --gold-pale:rgba(240,165,0,0.12);
+  --red-pale:rgba(239,68,68,0.1); --red:#ef4444;
+  --blue-pale:rgba(96,165,250,0.1); --blue:#60a5fa;
+  --purple-pale:rgba(167,139,250,0.1); --purple:#a78bfa;
+  --amber-pale:rgba(251,191,36,0.1); --amber:#fbbf24;
+  --text1:#f0f4ff; --text2:#8b9fc0; --text3:#4a6080;
+  --border:rgba(255,255,255,0.07); --border-mint:rgba(0,196,122,0.25);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text1);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+.hd{padding:32px 40px 0;background:linear-gradient(180deg,rgba(0,196,122,0.04) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.hd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.brand-txt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.ae-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+.hd-title{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px}
+.hd-title em{color:var(--mint);font-style:normal}
+.hd-sub{font-size:13px;color:var(--text2);max-width:560px;line-height:1.65;margin-bottom:24px}
+.stats{display:flex;gap:4px;margin-bottom:-1px;flex-wrap:wrap}
+.stat{padding:10px 22px;background:var(--navy-mid);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.stat strong{color:var(--mint);font-size:15px}
+
+/* CONTROLS */
+.ctrl{padding:18px 40px;background:var(--navy-mid);border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.srch{position:relative;flex:1;min-width:180px;max-width:300px}
+.srch-ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none}
+.srch input{width:100%;padding:8px 12px 8px 34px;background:var(--navy-light);border:1px solid var(--border);border-radius:8px;color:var(--text1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border .15s}
+.srch input::placeholder{color:var(--text3)}
+.srch input:focus{border-color:var(--mint)}
+.dv{width:1px;height:26px;background:var(--border);flex-shrink:0}
+.fg{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.fl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-right:2px}
+.fb{padding:5px 11px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--mint);color:var(--mint)}
+.fb.on{background:var(--mint);color:var(--navy);border-color:var(--mint);font-weight:700}
+.rc{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+.rc em{color:var(--mint);font-style:normal}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 200px)}
+
+/* SIDEBAR */
+.sb{border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:calc(100vh - 160px);overflow-y:auto}
+.sb::-webkit-scrollbar{width:3px}
+.sb::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sb-lbl{padding:0 18px 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3)}
+.sb-sec{margin-bottom:24px}
+.sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 18px;cursor:pointer;font-size:12px;color:var(--text2);border-left:2px solid transparent;transition:all .12s;gap:8px}
+.sb-item:hover{color:var(--text1);background:rgba(255,255,255,0.02)}
+.sb-item.on{color:var(--mint);border-left-color:var(--mint);background:var(--mint-pale2)}
+.sb-ct{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);background:var(--navy-light);padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sb-item.on .sb-ct{background:var(--mint-pale);color:var(--mint)}
+.cdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sb-note{padding:0 18px;font-size:11px;color:var(--text3);line-height:1.6}
+
+/* FEED */
+.feed{padding:24px 32px;overflow-y:auto}
+
+/* CATEGORY */
+.cat-sec{margin-bottom:36px}
+.cat-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.cat-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.cat-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.cat-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.cat-n{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+
+/* Q CARD */
+.qc{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;overflow:hidden;transition:border-color .15s;cursor:pointer}
+.qc:hover{border-color:rgba(0,196,122,0.18)}
+.qc.open{border-color:var(--mint)}
+.qc.hide{display:none}
+.qh{padding:13px 16px;display:flex;align-items:flex-start;gap:11px}
+.qn{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px;flex-shrink:0;width:22px}
+.qm{flex:1;min-width:0}
+.qt{font-size:13px;font-weight:500;color:var(--text1);line-height:1.55;margin-bottom:7px}
+.qtags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;border:1px solid}
+.tp{background:var(--blue-pale);color:var(--blue);border-color:rgba(96,165,250,0.2)}
+.ts{background:var(--purple-pale);color:var(--purple);border-color:rgba(167,139,250,0.2)}
+.tc{background:var(--mint-pale);color:var(--mint);border-color:rgba(0,196,122,0.2)}
+.tt{background:var(--amber-pale);color:var(--amber);border-color:rgba(251,191,36,0.2)}
+.tr{background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,0.2)}
+.tai{background:var(--purple-pale);color:#c4b5fd;border-color:rgba(196,181,253,0.2)}
+.chv{color:var(--text3);font-size:10px;margin-top:4px;flex-shrink:0;transition:transform .2s}
+.qc.open .chv{transform:rotate(180deg);color:var(--mint)}
+.qb{display:none;padding:0 16px 14px 49px;border-top:1px solid var(--border)}
+.qc.open .qb{display:block}
+.qsl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin:12px 0 5px}
+.ql{font-size:12px;color:var(--mint);line-height:1.6;font-style:italic}
+.qfup{font-size:12px;color:var(--text2);line-height:1.7;background:var(--navy-light);border-left:2px solid var(--mint-dim);padding:8px 12px;border-radius:0 6px 6px 0;font-style:italic}
+.qnt{font-size:12px;color:var(--gold);line-height:1.6;background:var(--gold-pale);padding:8px 12px;border-radius:6px;border:1px solid rgba(240,165,0,0.14)}
+.qwrn{font-size:12px;color:var(--red);line-height:1.6;background:var(--red-pale);padding:8px 12px;border-radius:6px;border:1px solid rgba(239,68,68,0.14)}
+
+/* EMPTY */
+.empty{text-align:center;padding:80px 40px;display:none}
+.empty.show{display:block}
+.empty h3{font-family:'Syne',sans-serif;font-size:18px;color:var(--text2);margin-bottom:6px}
+.empty p{font-size:13px;color:var(--text3)}
+
+@media(max-width:760px){
+  .layout{grid-template-columns:1fr}
+  .sb{display:none}
+  .hd,.ctrl,.feed{padding-left:20px;padding-right:20px}
+  .hd-title{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-top">
+    <div class="brand"><div class="brand-dot"></div><span class="brand-txt">Mintlify · AE Discovery Reference</span></div>
+    <span class="ae-tag">Tony Evans · Enterprise AE</span>
+  </div>
+  <h1 class="hd-title">Discovery Question <em>Bank</em></h1>
+  <p class="hd-sub">Challenger-framed questions organized by category, persona, and stage. Filter before every call — not a script, a reference. Lead with insight, then ask.</p>
+  <div class="stats">
+    <div class="stat"><strong id="tc">52</strong> questions</div>
+    <div class="stat"><strong>8</strong> categories</div>
+    <div class="stat"><strong>4</strong> personas</div>
+    <div class="stat"><strong>3</strong> stages</div>
+  </div>
+</header>
+
+<div class="ctrl">
+  <div class="srch"><span class="srch-ic">🔍</span><input type="text" id="srch" placeholder="Search questions…" oninput="go()"></div>
+  <div class="dv"></div>
+  <div class="fg">
+    <span class="fl">Persona</span>
+    <button class="fb on" data-f="p" data-v="all" onclick="sf('p','all',this)">All</button>
+    <button class="fb" data-f="p" data-v="vp" onclick="sf('p','vp',this)">VP Eng / CTO</button>
+    <button class="fb" data-f="p" data-v="dr" onclick="sf('p','dr',this)">Head of DevRel</button>
+    <button class="fb" data-f="p" data-v="se" onclick="sf('p','se',this)">Staff Eng</button>
+    <button class="fb" data-f="p" data-v="tw" onclick="sf('p','tw',this)">Tech Writer</button>
+  </div>
+  <div class="dv"></div>
+  <div class="fg">
+    <span class="fl">Stage</span>
+    <button class="fb on" data-f="s" data-v="all" onclick="sf('s','all',this)">All</button>
+    <button class="fb" data-f="s" data-v="fm" onclick="sf('s','fm',this)">First Meeting</button>
+    <button class="fb" data-f="s" data-v="disc" onclick="sf('s','disc',this)">Discovery</button>
+    <button class="fb" data-f="s" data-v="champ" onclick="sf('s','champ',this)">Champion Building</button>
+  </div>
+  <span class="rc"><em id="vc">52</em> shown</span>
+</div>
+
+<div class="layout">
+<nav class="sb">
+  <div class="sb-sec">
+    <div class="sb-lbl">Categories</div>
+    <div class="sb-item on" onclick="jmp('pain')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#00c47a"></span>Pain & Eng Tax</span><span class="sb-ct">9</span></div>
+    <div class="sb-item" onclick="jmp('wf')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#60a5fa"></span>Doc Workflow</span><span class="sb-ct">7</span></div>
+    <div class="sb-item" onclick="jmp('sh')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#a78bfa"></span>Stakeholder & EB</span><span class="sb-ct">7</span></div>
+    <div class="sb-item" onclick="jmp('comp')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#ef4444"></span>Competitive</span><span class="sb-ct">7</span></div>
+    <div class="sb-item" onclick="jmp('ai')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#c4b5fd"></span>AI Readiness</span><span class="sb-ct">6</span></div>
+    <div class="sb-item" onclick="jmp('urg')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#fbbf24"></span>Urgency & Why Now</span><span class="sb-ct">6</span></div>
+    <div class="sb-item" onclick="jmp('trap')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#f0a500"></span>Trap-Setting</span><span class="sb-ct">5</span></div>
+    <div class="sb-item" onclick="jmp('ct')"><span style="display:flex;align-items:center;gap:8px"><span class="cdot" style="background:#34d399"></span>Champion Testing</span><span class="sb-ct">5</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">The Rule</div>
+    <div class="sb-note">Lead with the commercial insight. Let them react. <em style="color:var(--text2)">Then</em> ask. Never open with a question before you've taught something.</div>
+  </div>
+</nav>
+
+<div class="feed" id="feed">
+  <div class="empty" id="emp"><h3>No questions match</h3><p>Adjust your filters or search term.</p></div>
+</div>
+</div>
+
+<script>
+const QS=[
+// ── PAIN ───────────────────────────────────────────────────────
+{id:1,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"When a new feature ships, what does the documentation update process look like — who does it, how long does it take, and how close to release day does it land?",
+ p:["vp","dr","se"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"},{l:"VP Eng / DevRel",k:"tp"}],
+ learn:"Quantify the engineering tax. Get a time number. 'About a day' = 8 hrs × $X/hr × every release. That's your business case anchor.",
+ fup:"And on a typical week, how many of those updates are happening across the team?",
+ note:"If they say less than 5 minutes — probe. That usually means it's not being done at all, not that it's fast."},
+{id:2,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"If you had to put a rough number on it — how many engineering hours per week go toward documentation maintenance?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Get a number the EB would recognize. Even a rough estimate anchors the ROI model and gives the business case a defensible floor.",
+ fup:"And is that something that's been measured, or more of a gut feel?",
+ note:"'We don't track that' is your answer: 'You're paying a tax you haven't measured yet.' That's the reframe."},
+{id:3,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"When I look at your public developer docs today — how well do they reflect what's actually shipped in the last 30 days?",
+ p:["vp","dr","tw"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Surface visible staleness. Get them to name the gap in their own words — which becomes the 'before state' in the business case.",
+ fup:"And when developers hit that gap — what do they do? Support ticket, Slack, or just give up?",
+ note:"Do your research first. If you've checked their GitHub cadence vs. doc timestamps, open with the specific delta you found. That's the Challenger move."},
+{id:4,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"Who owns documentation at your company — is it an engineering responsibility, a dedicated team, or somewhere in between?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Understand where the tax lands. Each ownership model has a different ROI framing — engineering time vs. dedicated headcount vs. split.",
+ fup:"And how much of engineering time is it actually consuming on a weekly basis?",
+ warn:"If they say 'we have a dedicated team' — don't stop. Ask: 'And does that team fully keep up with your release cadence, or is there still a staleness gap?'"},
+{id:5,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"When your support team gets a ticket that turns out to be a documentation gap — how does that get escalated, and how often does it happen?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Quantify the support ticket cost. Even 20 tickets/month at $60 = $1,440/month = $17k/year. Adds materially to the business case.",
+ fup:"Do you have a sense of what percentage of your support tickets have a documentation-gap fingerprint?",
+ note:"HubSpot: documentation gaps drove significant support ticket volume before Mintlify. Use when targeting PLG or developer-facing SaaS."},
+{id:6,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"Has there ever been a moment where a documentation gap created a real business problem — a developer churned, a deal stalled, an escalation?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Surface a concrete war story. War stories are worth more than abstract metrics — they become the emotional anchor for the business case.",
+ fup:"What happened, and what did you end up doing to fix it?",
+ note:"If they have a story — write it down verbatim. That story, in their words, is the most powerful thing in your business case."},
+{id:7,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"If you had to describe your documentation problem to your CTO in one sentence — what would it be?",
+ p:["dr","tw"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Gets them to articulate the pain in EB language — the exact framing they need to use when they present the business case internally.",
+ fup:"And do you think your CTO would frame it the same way, or differently?",
+ note:"The gap between how the champion describes it and how they think the EB would describe it is your coaching opportunity."},
+{id:8,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"If you could fix one thing about your current documentation workflow in the next 90 days, what would it be?",
+ p:["vp","dr","se","tw"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Hear their framing of the problem — not yours. Their answer tells you what language to use and what outcome to anchor to.",
+ fup:"And what's stopped that from being prioritized before now?",
+ note:"'What's stopped it' is the real question. The answer is usually budget cycles, competing priorities, or no compelling event — your Why Now target."},
+{id:9,sec:"pain",n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars",
+ q:"What does success look like for developer documentation at your company in 12 months — and how far are you from that today?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Establish the gap between current and desired state. The delta is the opportunity. Their vision becomes the 'after state' in the business case.",
+ fup:"Is that a 'nice to have' or is it tied to something specific on the roadmap?",
+ note:"If it's tied to the roadmap — you have a compelling event. If 'nice to have' — find or manufacture urgency."},
+
+// ── WORKFLOW ───────────────────────────────────────────────────
+{id:10,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"Walk me through exactly what happens from the moment a PR merges to the moment the documentation reflects that change.",
+ p:["vp","se","tw"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Map the manual steps — each one is a failure point and a time cost. The more steps, the stronger the infrastructure argument.",
+ fup:"And who's responsible for each step in that chain?",
+ note:"The answer almost always reveals documentation isn't integrated with the engineering workflow. That confirms the commercial insight."},
+{id:11,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"Do your engineers write documentation in the same environment they write code — or do they have to switch to a separate tool?",
+ p:["vp","se"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"},{l:"Challenger",k:"tc"}],
+ learn:"Context switching = documentation deferred. That's structural staleness — not a behavior problem.",
+ fup:"Do you find that the context switch creates a delay, or do engineers go back and do it anyway?",
+ note:"If 'separate tool' — docs-as-code is your entire value prop. If 'same environment' — probe whether it's actually being used consistently."},
+{id:12,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"Is your documentation version-controlled alongside your code, or does it live in a separate system?",
+ p:["vp","se"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"}],
+ learn:"No version control = no auditability, no rollback, no PR review for docs changes. Mintlify's GitHub integration solves this directly.",
+ fup:"And if a documentation change introduces an error — what does the rollback process look like?",
+ note:"Most teams on Confluence or Notion have no answer to the rollback question. That's your moment."},
+{id:13,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"How many people are currently responsible for keeping your documentation current — and is that the right number?",
+ p:["vp","dr","tw"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"'Too few' opens the headcount conversation. 'Right number but still stale' = it's a workflow problem, not a headcount problem. That's your reframe.",
+ fup:"If you could fix this without adding headcount — what would that be worth?",
+ note:"HubSpot cut resources by 50% by fixing the infrastructure. The follow-up pivots from 'we need people' to 'we need better infrastructure.'"},
+{id:14,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"When you think about your release cadence — does your documentation velocity actually match it, or is there a structural lag?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"The commercial insight reframed as a question. Their answer confirms whether the core problem exists and how they've framed it previously.",
+ fup:"How long has that gap existed, and what have you tried to close it?",
+ note:"'What have you tried' reveals past failures — hiring, process changes, tool switches. Each failed attempt makes your structural fix more valuable."},
+{id:15,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"If a support ticket turns out to be a documentation gap — who finds out, and does that feedback loop actually close?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Surface whether there's a feedback loop between docs gaps and docs updates. Usually there isn't — meaning the gap compounds over time.",
+ fup:"And how quickly does that loop close — are docs typically updated within the same sprint?",
+ note:null},
+{id:16,sec:"wf",n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness",
+ q:"How do your technical writers get notified when something ships that needs documentation — formal process or informal?",
+ p:["tw","dr"],s:["disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Informal notification = missed updates and lag. Formal = still manual. Either way, the workflow isn't infrastructure — it's heroics.",
+ fup:"And what percentage of changes do you think get caught by that notification process?",
+ note:null},
+
+// ── STAKEHOLDER ─────────────────────────────────────────────────
+{id:17,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"Who else on your team — or above you — would have a perspective on the documentation infrastructure question?",
+ p:["dr","se","tw"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"},{l:"Champion Building",k:"tc"}],
+ learn:"Surface the Economic Buyer and multi-thread path — without asking 'who controls the budget.'",
+ fup:"Is that something you'd be comfortable looping in, or is this early enough that it lives with you for now?",
+ note:"Their answer to the follow-up is your Mobilizer vs. Talker signal. Mobilizer names the EB and offers to connect you. Talker says 'it's really just me right now.'"},
+{id:18,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"If this ended up being the right solution — what would it take for it to actually get done? Who else would need to be involved?",
+ p:["dr","se","tw"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"THE diagnostic question. A Mobilizer describes the internal process and takes ownership. A Talker makes the process sound opaque.",
+ fup:"And is that a conversation you'd be comfortable driving internally?",
+ note:"This is Ask 1 from the Champion Test Script. Run it in your second conversation — after rapport, before deep investment."},
+{id:19,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"When your VP Eng or CTO thinks about documentation infrastructure — is it on their radar, or does it live entirely with your team?",
+ p:["dr","tw"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Gauge EB awareness and whether the champion has a path to internal budget justification.",
+ fup:"What do you think it would take to make it visible to them?",
+ note:"If the EB doesn't know this is a problem — the champion needs to create that awareness. This opens the coaching conversation about how."},
+{id:20,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"Who would be the final decision-maker on something like this — is that you, your VP Eng, or does it need executive sign-off?",
+ p:["dr","se","tw"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Name the Economic Buyer directly. A Mobilizer names them and describes the process. A Talker hedges.",
+ fup:"Would it help if I prepared something specific for that conversation — a one-pager or ROI summary they could review?",
+ note:"The offer to prepare EB content is both helpful and a champion test. Their response reveals whether they intend to have that conversation."},
+{id:21,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"Beyond yourself, who on your engineering team is most affected by the documentation workflow problem day-to-day?",
+ p:["vp","dr"],s:["disc","champ"],tags:[{l:"Challenger",k:"tc"},{l:"Champion Building",k:"tc"}],
+ learn:"Identify internal mobilizers — staff engineers, tech leads, docs team members living with the pain who can amplify it internally.",
+ fup:"Would it make sense to loop them in at some point — or would that create noise at this stage?",
+ note:"These are your multi-thread targets. If yes — get the names. If 'keep it contained' — probe why."},
+{id:22,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"When budget decisions like this get made at your company — who initiates them, and what does the approval chain look like?",
+ p:["dr","vp"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Map the paper process before it becomes a surprise. Understanding procurement flow before proposal stage prevents legal & paper delays.",
+ fup:"And has anything like this — a documentation or developer tooling investment — gone through that process before?",
+ note:"If they've never done it — they may underestimate the complexity. Arm them with your paper process experience upfront."},
+{id:23,sec:"sh",n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious",
+ q:"If your VP Eng asked you tomorrow why the documentation infrastructure needs to change — what would you say?",
+ p:["dr","tw","se"],s:["champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Champion coaching disguised as a question. Their answer tells you whether they can make the internal case — and where they need your help.",
+ fup:"Does that framing feel right, or would you say it differently?",
+ note:"If their answer is weak — coach them. 'Here's how I'd frame it at the VP level…' That's when you give them the ammunition."},
+
+// ── COMPETITIVE ─────────────────────────────────────────────────
+{id:24,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"When your developers need an answer — do they go to your documentation first, or do they go to Slack, a teammate, or a ticket?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"Competitive",k:"tr"},{l:"Challenger",k:"tc"}],
+ learn:"If they go to Slack or teammates first — the docs aren't doing the job. That's an infrastructure failure, not a content failure. Regardless of what tool they're on.",
+ fup:"What does that tell you about whether the documentation is actually where developers go for answers?",
+ note:"Works on any incumbent. The goal: get them to say 'you're right, they don't use the docs' — which makes the status quo untenable."},
+{id:25,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"How long has the team been on [current tool]? And if you started fresh today — would you make the same choice?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Competitive",k:"tr"},{l:"Challenger",k:"tc"}],
+ learn:"Surface incumbent inertia vs. genuine satisfaction. 'We'd make the same choice' differs from 'we're on it because it's what we have.'",
+ fup:"What would need to be true for you to consider switching?",
+ note:"'What would need to be true' is your criteria-setting question. Their answer tells you exactly what trap-setting questions to plant."},
+{id:26,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"Has anyone pushed back on the current documentation setup — engineers who find it frustrating to maintain, or developers who find it frustrating to use?",
+ p:["vp","dr","tw"],s:["disc"],tags:[{l:"Competitive",k:"tr"},{l:"Challenger",k:"tc"}],
+ learn:"Surface internal dissatisfaction that hasn't reached the EB. These dissatisfied engineers are your multi-thread targets.",
+ fup:"Has that feedback made it to your VP Eng, or is it more of a team-level frustration?",
+ note:null},
+{id:27,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"If you're evaluating options — what else are you looking at? Or is Mintlify the first thing you've explored?",
+ p:["vp","dr"],s:["disc","champ"],tags:[{l:"Competitive",k:"tr"}],
+ learn:"Know the competitive field before you're in a bake-off. If they're looking at GitBook or ReadMe — you need to be shaping criteria now, not after they've built a scorecard.",
+ fup:"And are those comparisons being driven by the same people, or different stakeholders?",
+ warn:"Don't ask this too early. Build credibility and surface pain first. If you ask 'what else are you looking at' before establishing value, you position yourself as a commodity."},
+{id:28,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"Is there anyone internally who built or maintains a homegrown documentation system — and how does that person feel about changing it?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Competitive",k:"tr"},{l:"Challenger",k:"tc"}],
+ learn:"Homegrown = most emotionally charged competitive situation. The builder's identity is tied to it. Identify them before they appear as an unexpected blocker.",
+ fup:"What would need to be true for that person to feel good about moving to something new?",
+ note:"Never attack the homegrown system directly. Quantify the maintenance cost: 'What does maintaining this cost in engineering time per month?' That's usually the moment the builder goes quiet."},
+{id:29,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"Does documentation infrastructure fall under your IT / vendor consolidation mandate — or does it live in the engineering tools budget?",
+ p:["vp","dr"],s:["champ","disc"],tags:[{l:"Competitive",k:"tr"},{l:"Trap-Setting",k:"tt"}],
+ learn:"Front-run the IT consolidation objection. If docs lives in the engineering tools budget, it's outside the Confluence mandate — and you win the category argument.",
+ fup:"Has IT weighed in on documentation tooling decisions before, or has engineering always owned that?",
+ note:"Mintlify is documentation infrastructure — a different category from internal wikis and project management. Plant this distinction early."},
+{id:30,sec:"comp",n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison",
+ q:"Have you thought about the migration path from your current tool — does it feel like a 3-day project or a 3-month project?",
+ p:["vp","se"],s:["disc","champ"],tags:[{l:"Competitive",k:"tr"},{l:"Trap-Setting",k:"tt"}],
+ learn:"Surface migration risk early so you can neutralize it with the Laravel proof point before it becomes a veto.",
+ fup:"What would you need to see to feel confident the migration risk was manageable?",
+ note:"Laravel: 3 days. AT&T: full enterprise migration. Have these ready to deploy the moment migration comes up — before it's a hard objection."},
+
+// ── AI READINESS ──────────────────────────────────────────────
+{id:31,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"When your developers use an AI assistant to find answers — does it actually surface your documentation, or does it miss it?",
+ p:["vp","dr","se"],s:["fm","disc"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Surface the AI readiness gap without them connecting the dots. If docs aren't LLMs.txt compliant and machine-readable, they're invisible to the AI channel.",
+ fup:"Is that something your team has actually tested — or more of an assumption?",
+ note:"Most teams haven't tested this. 'I don't know' = there's an audit to do, and Mintlify's architecture guarantees the outcome."},
+{id:32,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"If you're building AI agents or internal copilots — what knowledge base are they pulling from, and how confident are you in the quality and freshness of that source?",
+ p:["vp"],s:["disc"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Connect documentation quality directly to AI strategy execution. Stale, unstructured docs = a broken knowledge layer for their AI initiatives.",
+ fup:"Has anyone audited whether your documentation is structured enough to be reliably queried by an LLM?",
+ note:"For companies with a stated AI initiative, this is your highest-leverage question. Their AI strategy is only as good as the knowledge base underneath it."},
+{id:33,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"As AI agents become more common in developer workflows — do you have a view on whether your documentation is structured to support them?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Plant the AI readiness requirement as a question — not a pitch. Their answer reveals whether they've thought about this.",
+ fup:"Is that something on your roadmap to address, or more of an emerging concern?",
+ note:"'Emerging concern' = no budget allocated yet, but there will be. This is your Why Now in the making."},
+{id:34,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"Have you looked at the LLMs.txt standard — the spec that defines how documentation should be structured to be readable by AI systems?",
+ p:["vp","dr","se"],s:["disc"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Introduce LLMs.txt as a standard they should care about. Anthropic co-developed it with Mintlify — not marketing language, an emerging infrastructure spec.",
+ fup:"Has your team had any conversation about whether your current platform supports it?",
+ note:"Deploy in AI/ML vertical and with any company building AI products. Mintlify is the LLMs.txt reference implementation — hard competitive advantage."},
+{id:35,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"Which of your AI transformation initiatives depend on having a reliable, structured knowledge base to pull from?",
+ p:["vp"],s:["disc","champ"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Connect multiple AI initiatives to the documentation dependency. The more initiatives depend on it, the stronger the business case.",
+ fup:"Is the documentation infrastructure question being addressed as part of those initiatives, or treated as separate?",
+ note:"'Treated as separate' = your opening. The documentation layer is a prerequisite for all of them — and they may not have connected those dots."},
+{id:36,sec:"ai",n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy",
+ q:"Your developers are going to start asking AI assistants the questions they used to file support tickets for. Is your documentation ready to answer them?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"AI Readiness",k:"tai"},{l:"Challenger",k:"tc"}],
+ learn:"Frame AI readiness as both a commercial insight opener and a discovery question simultaneously. Dual purpose.",
+ fup:"What percentage of your support tickets are questions your documentation could theoretically answer — if it were surfaceable by AI?",
+ note:null},
+
+// ── URGENCY ───────────────────────────────────────────────────
+{id:37,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"You mentioned [trigger]. How does the documentation infrastructure question connect to that — in your mind?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Connect a trigger you've identified in research to the documentation pain. If they make the connection — compelling event confirmed. If not — help them.",
+ fup:"Is that connection something you've already raised internally, or an angle that hasn't come up yet?",
+ note:"Always name the specific trigger you found in research — a new VP hire, job posting, product announcement. Vague urgency doesn't land. Specific does."},
+{id:38,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"If you don't fix the documentation workflow in the next 6 months — what happens? What's the cost of doing nothing?",
+ p:["vp","dr"],s:["disc","champ"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Surface the cost of inaction — always the biggest competitor. If they can't articulate a consequence, you don't have urgency. Help them build it.",
+ fup:"And is that consequence visible to your VP Eng right now, or still below the radar?",
+ note:"'Below the radar' = help make it visible — which is the champion's internal job. This question opens that coaching conversation."},
+{id:39,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"You're hiring for [Technical Writer / Head of Documentation / DevRel] — is that hire meant to solve the quality problem, the volume problem, or the workflow problem?",
+ p:["vp","dr"],s:["fm","disc"],tags:[{l:"Challenger",k:"tc"},{l:"Competitive",k:"tr"}],
+ learn:"Surface the hiring signal as a trigger AND plant the reframe: a hire solves content problems, not workflow problems. Mintlify solves the workflow problem for less.",
+ fup:"And will that hire actually fix the staleness issue, or will they be fighting the same structural problem the current team is?",
+ note:"Most powerful when you've spotted a documentation/DevRel job posting in research. Deploy in the first call."},
+{id:40,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"Is there a milestone on your roadmap — a product launch, API release, AI initiative — where having documentation that keeps pace would materially change the outcome?",
+ p:["vp","dr"],s:["disc","champ"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"Attach the documentation problem to a specific, named milestone. Milestones have dates. Dates create urgency.",
+ fup:"What's the timeline, and how far out would you need the documentation infrastructure in place to support it?",
+ note:"Work backwards from the milestone date to create a natural close date: 'If your AI launch is Q3 and migration takes a week, we need to be signed by end of [month].'"},
+{id:41,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"If there's a headcount freeze — or engineering is being asked to do more with less — how does the documentation maintenance overhead factor in?",
+ p:["vp"],s:["disc","champ"],tags:[{l:"Challenger",k:"tc"}],
+ learn:"A headcount freeze makes automation more valuable. Recapturing 10+ hours/week of documentation maintenance is a direct response to 'do more with less.'",
+ fup:"Would that framing resonate with your VP Eng — 'fix the infrastructure so we don't have to hire to solve this'?",
+ note:"Your strongest Why Now for companies in cost-cutting mode. Connect to HubSpot: 50% reduction in engineering resources on docs."},
+{id:42,sec:"urg",n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event",
+ q:"When does your contract with [current tool] come up for renewal — and is that a natural moment to re-evaluate, or have you already committed?",
+ p:["vp","dr"],s:["disc","champ"],tags:[{l:"Competitive",k:"tr"},{l:"Challenger",k:"tc"}],
+ learn:"Incumbent renewal dates are urgency events. Renewal in 3 months = Why Now. Renewal in 14 months = deprioritization signal.",
+ fup:"If the contract is coming up — is this something you'd want evaluated and decided before that date?",
+ note:"Put the renewal date in your Notion account record immediately. If within 6 months — that's your natural close date anchor."},
+
+// ── TRAP-SETTING ──────────────────────────────────────────────
+{id:43,sec:"trap",n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard",
+ q:"How important is it that documentation updates automatically when code merges — rather than requiring a manual step after deployment?",
+ p:["vp","se"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"},{l:"Competitive",k:"tr"}],
+ learn:"If they say 'very important' — Confluence and Notion can't do this. Mintlify's docs-as-code wins this criterion automatically.",
+ fup:"Is that something your current setup can do — or is it always a manual step?",
+ note:"Your most powerful trap. Docs-as-code with automatic code sync is Mintlify's core differentiator. Plant it early."},
+{id:44,sec:"trap",n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard",
+ q:"For your developer-facing documentation — how important is it that the platform is built for the era of AI agents, not just human readers?",
+ p:["vp","dr"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"},{l:"AI Readiness",k:"tai"}],
+ learn:"Sets AI-native architecture as a decision criterion. Almost no legacy system meets this — Mintlify does by design.",
+ fup:"Has anyone looked at whether your current platform is structured for machine readability, or is that an open question?",
+ note:null},
+{id:45,sec:"trap",n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard",
+ q:"How important is enterprise-grade uptime backed by a published SLA and a real track record — not just a contractual promise?",
+ p:["vp"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"},{l:"Competitive",k:"tr"}],
+ learn:"Sets uptime SLA as a criterion. Fidelity at 99.99% is the proof. GitBook and homegrown systems rarely have a comparable track record.",
+ fup:"Has uptime or reliability been an issue with your current setup — any outages that impacted developers?",
+ note:null},
+{id:46,sec:"trap",n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard",
+ q:"If you switched documentation platforms — how important would it be to migrate your existing content in days, not months, without losing structure or breaking links?",
+ p:["vp","se"],s:["disc","champ"],tags:[{l:"Trap-Setting",k:"tt"},{l:"Competitive",k:"tr"}],
+ learn:"Sets fast migration as a criterion. Laravel: 3 days. Eliminates migration risk as a veto and sets a bar most competitors can't clear.",
+ fup:"What's your gut feel on what migration would look like from your current setup — days, weeks, or months?",
+ note:null},
+{id:47,sec:"trap",n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard",
+ q:"How critical is it that your documentation platform integrates natively with GitHub or GitLab — so engineers don't have to leave their existing workflow to update docs?",
+ p:["vp","se"],s:["disc"],tags:[{l:"Trap-Setting",k:"tt"},{l:"Competitive",k:"tr"}],
+ learn:"Sets native GitHub/GitLab integration as a criterion. Context switching is the structural cause of staleness.",
+ fup:"Right now — do engineers have to switch tools to update documentation, or is it part of the same PR workflow?",
+ note:null},
+
+// ── CHAMPION TESTING ──────────────────────────────────────────
+{id:48,sec:"ct",n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly",
+ q:"Before our next call — would it help if I put together a one-pager on how Coinbase or HubSpot solved this problem, something you could share internally if the conversation came up?",
+ p:["dr","se","tw"],s:["champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Ask 1 from the Champion Test Script. Low stakes. A Mobilizer takes the one-pager and reports back. A Talker accepts it and never uses it.",
+ fup:"And who else at your company would have a perspective on this? I want to make sure I'm not missing someone obvious.",
+ note:"The follow-up is the real test. A Mobilizer names stakeholders. A Talker keeps the relationship bilateral — just you and them."},
+{id:49,sec:"ct",n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly",
+ q:"Would you be comfortable sharing that one-pager with your VP Eng this week — not as a formal proposal, just a 'hey I've been looking at this, thought you'd find it interesting'?",
+ p:["dr","se","tw"],s:["champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Ask 2 from the Champion Test Script. Medium stakes — costs internal capital. A Mobilizer does it and reports back. A Talker finds a reason it's not the right time.",
+ fup:"I can give you a one-sentence context to put on it — whatever makes it easiest for you to forward.",
+ note:"The ease offer is intentional. You're removing every obstacle. If they still won't do it, the obstacle isn't logistics — it's investment."},
+{id:50,sec:"ct",n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly",
+ q:"Would you be comfortable making an introduction to your VP Eng? Even a quick Slack saying 'I've been exploring this, I think it's worth 20 minutes' is all it takes.",
+ p:["dr","se","tw"],s:["champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Ask 3 from the Champion Test Script. High stakes — real internal capital. Only a true Mobilizer makes this happen.",
+ fup:"Is there anything I can do to make that introduction easier?",
+ note:"Definitive champion test. A Mobilizer makes the intro. A Talker finds a new obstacle. Two deferrals = Talker confirmed."},
+{id:51,sec:"ct",n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly",
+ q:"When you think about making the case for this internally — what's the argument that would actually move your VP Eng? And do you feel confident making it?",
+ p:["dr","tw"],s:["champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"Reveal whether the champion understands how to translate the problem into EB language — and whether they're willing to try.",
+ fup:"Would it help if I walked you through how I'd frame it at the VP Eng level?",
+ note:"Opens the internal selling coaching conversation. A Mobilizer wants the coaching. Give them the ammunition from the Champion Test Script coaching guide."},
+{id:52,sec:"ct",n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly",
+ q:"I want to make sure I'm being useful to you — not just taking your time. If this ended up being the right solution, what would it realistically take to get it done?",
+ p:["dr","se","tw","vp"],s:["disc","champ"],tags:[{l:"Champion Building",k:"tc"}],
+ learn:"THE diagnostic question. A Mobilizer names a path and takes ownership. A Talker makes the process sound complicated without offering to navigate it.",
+ fup:"And is that a process you'd be comfortable driving — or would it need someone more senior to initiate?",
+ note:"Most important non-pushy qualification question in the bank. Feels like a service question. Functions as a Mobilizer test. Use it every time you have a new champion contact."},
+];
+
+// ── STATE ──────────────────────────────────────────────────────
+let activeP="all", activeS="all";
+
+function sf(dim,val,btn){
+  if(dim==="p"){activeP=val; document.querySelectorAll('[data-f="p"]').forEach(b=>b.classList.remove("on")); btn.classList.add("on");}
+  else{activeS=val; document.querySelectorAll('[data-f="s"]').forEach(b=>b.classList.remove("on")); btn.classList.add("on");}
+  go();
+}
+
+function jmp(id){
+  const el=document.getElementById("sec-"+id);
+  if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+  document.querySelectorAll(".sb-item").forEach(i=>i.classList.remove("on"));
+  event.currentTarget.classList.add("on");
+}
+
+function go(){
+  const srch=document.getElementById("srch").value.toLowerCase().trim();
+  let vis=0;
+
+  // Group questions by section
+  const secs={};
+  QS.forEach(q=>{
+    const pm=activeP==="all"||q.p.includes(activeP);
+    const sm=activeS==="all"||q.s.includes(activeS);
+    const tm=!srch||q.q.toLowerCase().includes(srch)||(q.learn&&q.learn.toLowerCase().includes(srch))||(q.fup&&q.fup.toLowerCase().includes(srch));
+    const show=pm&&sm&&tm;
+    const card=document.getElementById("q"+q.id);
+    if(card){card.classList.toggle("hide",!show);}
+    if(show) vis++;
+    if(!secs[q.sec]) secs[q.sec]={show:0,total:0};
+    secs[q.sec].total++;
+    if(show) secs[q.sec].show++;
+  });
+
+  // Show/hide category sections
+  Object.keys(secs).forEach(sec=>{
+    const el=document.getElementById("sec-"+sec);
+    if(el) el.style.display=secs[sec].show===0?"none":"";
+    const cn=document.getElementById("cn-"+sec);
+    if(cn) cn.textContent=secs[sec].show+" shown";
+  });
+
+  document.getElementById("vc").textContent=vis;
+  document.getElementById("emp").classList.toggle("show",vis===0);
+}
+
+function tog(id){
+  const c=document.getElementById("q"+id);
+  c.classList.toggle("open");
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function render(){
+  const feed=document.getElementById("feed");
+  const emp=document.getElementById("emp");
+  feed.innerHTML="";
+  feed.appendChild(emp);
+
+  // Group by section
+  const secMeta={
+    pain:{n:"Pain & Engineering Tax",c:"#00c47a",ic:"⚡",sub:"Quantify the cost of the status quo in hours and dollars"},
+    wf:{n:"Documentation Workflow",c:"#60a5fa",ic:"⚙️",sub:"Understand the structural causes of staleness"},
+    sh:{n:"Stakeholder & Economic Buyer",c:"#a78bfa",ic:"👥",sub:"Surface the EB and multi-thread path without making it obvious"},
+    comp:{n:"Competitive Displacement",c:"#ef4444",ic:"🥊",sub:"Neutralize the incumbent before they frame the comparison"},
+    ai:{n:"AI Readiness",c:"#c4b5fd",ic:"🤖",sub:"Connect documentation infrastructure to their AI strategy"},
+    urg:{n:"Urgency & Why Now",c:"#fbbf24",ic:"⏱",sub:"Find or manufacture the compelling event"},
+    trap:{n:"Trap-Setting Questions",c:"#f0a500",ic:"🎯",sub:"Shape decision criteria to favor Mintlify before they build their own scorecard"},
+    ct:{n:"Champion Testing",c:"#34d399",ic:"🔬",sub:"Distinguish Mobilizers from Talkers without asking directly"},
+  };
+
+  const order=["pain","wf","sh","comp","ai","urg","trap","ct"];
+  const byS={};
+  QS.forEach(q=>{ if(!byS[q.sec]) byS[q.sec]=[]; byS[q.sec].push(q); });
+
+  order.forEach(secKey=>{
+    const qs=byS[secKey]||[];
+    const m=secMeta[secKey];
+    const sec=document.createElement("div");
+    sec.className="cat-sec"; sec.id="sec-"+secKey;
+
+    const hdr=document.createElement("div"); hdr.className="cat-hdr";
+    hdr.innerHTML=`<div class="cat-icon" style="background:${m.c}22">${m.ic}</div><div><div class="cat-name" style="color:${m.c}">${m.n}</div><div class="cat-sub">${m.sub}</div></div><span class="cat-n" id="cn-${secKey}">${qs.length} questions</span>`;
+    sec.appendChild(hdr);
+
+    qs.forEach((q,i)=>{
+      const tags=q.tags.map(t=>`<span class="tag ${t.k}">${t.l}</span>`).join(" ");
+      const card=document.createElement("div");
+      card.className="qc"; card.id="q"+q.id; card.onclick=()=>tog(q.id);
+
+      let body=`<div class="qsl">What you're trying to learn</div><div class="ql">${q.learn}</div>`;
+      if(q.fup) body+=`<div class="qsl">Follow-up if they engage</div><div class="qfup">"${q.fup}"</div>`;
+      if(q.note) body+=`<div class="qsl">Coaching note</div><div class="qnt">${q.note}</div>`;
+      if(q.warn) body+=`<div class="qsl">Watch out</div><div class="qwrn">${q.warn}</div>`;
+
+      card.innerHTML=`
+        <div class="qh">
+          <span class="qn">${String(i+1).padStart(2,"0")}</span>
+          <div class="qm">
+            <div class="qt">"${q.q}"</div>
+            <div class="qtags">${tags}</div>
+          </div>
+          <span class="chv">▼</span>
+        </div>
+        <div class="qb">${body}</div>`;
+      sec.appendChild(card);
+    });
+
+    feed.appendChild(sec);
+  });
+
+  document.getElementById("tc").textContent=QS.length;
+  document.getElementById("vc").textContent=QS.length;
+}
+
+render();
+</script>
+</body>
+</html>

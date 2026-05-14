@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Messaging Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1628;--navy-mid:#111f38;--navy-light:#1a2f4e;--navy-card:#0d1825;
+  --mint:#00c47a;--mint-pale:rgba(0,196,122,.1);--mint-pale2:rgba(0,196,122,.05);
+  --gold:#f0a500;--gold-pale:rgba(240,165,0,.1);
+  --red:#ef4444;--red-pale:rgba(239,68,68,.1);
+  --blue:#60a5fa;--blue-pale:rgba(96,165,250,.1);
+  --amber:#fbbf24;--amber-pale:rgba(251,191,36,.1);
+  --purple:#a78bfa;--purple-pale:rgba(167,139,250,.1);
+  --text1:#f0f4ff;--text2:#8b9fc0;--text3:#4a6080;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --pad:40px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text1);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+.hd{padding:28px var(--pad) 0;background:linear-gradient(180deg,rgba(0,196,122,.04) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.hd-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.bdot{width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.btxt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.hd-title{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:6px}
+.hd-title em{color:var(--mint);font-style:normal}
+.hd-sub{font-size:13px;color:var(--text2);max-width:580px;line-height:1.65;margin-bottom:20px}
+.stats{display:flex;gap:4px;margin-bottom:-1px;flex-wrap:wrap}
+.stat{padding:9px 18px;background:var(--navy-mid);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:7px}
+.stat strong{color:var(--mint);font-size:13px}
+.ntab{padding:14px 24px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:8px}
+.ntab:hover{color:var(--text1)}
+.ntab.on{color:var(--mint);border-bottom-color:var(--mint)}
+.panel{padding:24px var(--pad)}
+
+/* CADENCE OVERVIEW */
+.overview{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:22px}
+.ov-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.ov-stat{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.ov-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--mint);margin-bottom:3px}
+.ov-lbl{font-size:11px;color:var(--text3);line-height:1.4}
+.ov-timeline{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.ov-day{flex-shrink:0;text-align:center;min-width:62px}
+.ov-day-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mint);font-weight:600;margin-bottom:5px}
+.ov-dots{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ov-dot{width:28px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.d-email{background:var(--blue-pale);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.d-call{background:var(--mint-pale);color:var(--mint);border:1px solid rgba(0,196,122,.2)}
+.d-li{background:var(--purple-pale);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.ov-sep{width:1px;background:var(--border);margin:0 4px;align-self:stretch;margin-top:18px}
+
+/* OUTBOUND CONTROLS */
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.vert-btns{display:flex;gap:6px;flex-wrap:wrap}
+.vb{padding:8px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:var(--navy-mid);color:var(--text2);transition:all .15s;white-space:nowrap}
+.vb:hover{border-color:var(--border2);color:var(--text1)}
+.vb.on{background:var(--mint);color:var(--navy);border-color:var(--mint)}
+.timeline{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:22px}
+.touch-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;background:var(--navy-mid);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;min-width:54px}
+.touch-btn:hover{border-color:var(--border2)}
+.touch-btn.on{border-color:var(--mint);background:var(--mint-pale2)}
+.tb-day{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mint);font-weight:600}
+.tb-icon{font-size:14px}
+.tb-label{font-size:9px;color:var(--text3);text-align:center;line-height:1.3;max-width:48px}
+.touch-btn.on .tb-label{color:var(--text2)}
+.touch-hdr{background:var(--navy-mid);border:1px solid var(--border2);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.th-left{flex:1}
+.th-step{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:4px}
+.th-day{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--mint);margin-bottom:2px}
+.th-purpose{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:4px}
+.th-note{font-size:12px;color:var(--text2);line-height:1.6}
+.ch-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid;flex-shrink:0;margin-top:4px}
+.ch-email{background:var(--blue-pale);color:var(--blue);border-color:rgba(96,165,250,.25)}
+.ch-call{background:var(--mint-pale);color:var(--mint);border-color:rgba(0,196,122,.25)}
+.ch-li{background:var(--purple-pale);color:var(--purple);border-color:rgba(167,139,250,.25)}
+.msg-card{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.msg-top{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;background:var(--navy-mid);border-bottom:1px solid var(--border)}
+.msg-channel{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text1)}
+.copy-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;background:var(--navy-light);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text2);transition:all .15s}
+.copy-btn:hover{background:var(--mint);color:var(--navy);border-color:var(--mint)}
+.msg-meta{padding:9px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text3);display:flex;gap:16px;flex-wrap:wrap}
+.meta-val{color:var(--text2);font-weight:500}
+.msg-body{padding:16px;font-size:13px;color:var(--text2);line-height:1.85;white-space:pre-wrap;font-family:'DM Sans',sans-serif}
+.msg-body strong{color:var(--text1)}
+.hook-box{margin:0 16px 14px;padding:10px 14px;background:var(--amber-pale);border:1px solid rgba(251,191,36,.18);border-radius:8px;font-size:12px;color:var(--amber);line-height:1.65}
+.note-box{margin:0 16px 14px;padding:10px 14px;background:var(--navy-light);border-left:2px solid var(--mint);border-radius:0 8px 8px 0;font-size:12px;color:var(--text2);line-height:1.65;font-style:italic}
+.warn-box{margin:0 16px 14px;padding:10px 14px;background:var(--red-pale);border:1px solid rgba(239,68,68,.16);border-radius:8px;font-size:12px;color:var(--red);line-height:1.65}
+.nav-row{display:flex;justify-content:space-between;margin-top:20px}
+.nav-btn{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;font-weight:500}
+.nb-prev{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.nb-prev:hover{border-color:var(--border2);color:var(--text1)}
+.nb-next{background:var(--mint);color:var(--navy);border:none;font-weight:700}
+.nb-next:hover{background:#00a865}
+.nb-done{background:var(--mint-pale);color:var(--mint);border:1px solid rgba(0,196,122,.25);cursor:default}
+
+/* INBOUND SPECIFIC */
+.sig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px;margin-bottom:22px}
+.sig-btn{padding:12px 16px;background:var(--navy-mid);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;text-align:left}
+.sig-btn:hover{border-color:var(--border2)}
+.sig-btn.on{border-color:var(--mint);background:var(--mint-pale2)}
+.sig-icon{font-size:18px;margin-bottom:6px}
+.sig-name{font-size:12px;font-weight:600;color:var(--text1);margin-bottom:2px}
+.sig-sub{font-size:10px;color:var(--text3);line-height:1.4}
+.sig-btn.on .sig-name{color:var(--mint)}
+.in-content{display:none}.in-content.on{display:block}
+.in-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.in-obj{font-size:12px;color:var(--mint);font-style:italic;margin-bottom:12px}
+.in-rule{font-size:12px;color:var(--gold);background:var(--gold-pale);border:1px solid rgba(240,165,0,.15);border-radius:8px;padding:8px 14px;line-height:1.6;margin-bottom:16px}
+.sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-bottom:8px;margin-top:12px}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.msg-block{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.msg-hdr{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);background:var(--navy-mid)}
+.msg-channel-in{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text1)}
+.chan-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em}
+.ch-email-p{background:var(--blue-pale);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.ch-li-p{background:var(--purple-pale);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.ch-call-p{background:var(--mint-pale);color:var(--mint);border:1px solid rgba(0,196,122,.2)}
+.msg-meta-in{padding:9px 16px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--text3)}
+.msg-body-in{padding:16px;font-size:13px;color:var(--text2);line-height:1.85;white-space:pre-wrap;font-family:'DM Sans',sans-serif}
+.msg-body-in strong{color:var(--text1);font-weight:600}
+.hook-box-in{margin:14px 16px;padding:10px 14px;background:var(--amber-pale);border:1px solid rgba(251,191,36,.18);border-radius:8px;font-size:12px;color:var(--amber);line-height:1.65}
+.note-box-in{margin:14px 16px 16px;padding:10px 14px;background:var(--navy-light);border-left:2px solid var(--mint);border-radius:0 8px 8px 0;font-size:12px;color:var(--text2);line-height:1.65;font-style:italic}
+.warn-box-in{margin:14px 16px 16px;padding:10px 14px;background:var(--red-pale);border:1px solid rgba(239,68,68,.18);border-radius:8px;font-size:12px;color:var(--red);line-height:1.65}
+
+@media(max-width:700px){
+  :root{--pad:18px}
+  .ov-grid{grid-template-columns:1fr 1fr}
+  .hd-title{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-row">
+    <div class="brand"><div class="bdot"></div><span class="btxt">Mintlify · AE Messaging Playbook</span></div>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">Tony Evans · Enterprise AE</span>
+  </div>
+  <h1 class="hd-title">Messaging <em>Playbook</em></h1>
+  <p class="hd-sub">Inbound response templates and full AE outbound sequences — every touch written out, every channel covered. Not frameworks. Actual messages.</p>
+  <div class="stats">
+    <div class="stat"><strong>5</strong> inbound signals</div>
+    <div class="stat"><strong>5</strong> outbound verticals</div>
+    <div class="stat"><strong>14</strong> touches per sequence</div>
+    <div class="stat"><strong>11</strong> days</div>
+    <div class="stat"><strong>3</strong> channels</div>
+  </div>
+</header>
+
+<nav style="display:flex;gap:0;background:var(--navy-mid);border-bottom:1px solid var(--border);padding:0 var(--pad)">
+  <div class="ntab on" id="tab-inbound" onclick="switchTab('inbound',this)">
+    📥 Inbound Responses <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--mint-pale);padding:1px 7px;border-radius:10px;color:var(--mint);margin-left:4px">5 signals</span>
+  </div>
+  <div class="ntab" id="tab-outbound" onclick="switchTab('outbound',this)">
+    📤 Outbound Sequences <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--navy-light);padding:1px 7px;border-radius:10px;color:var(--text3);margin-left:4px">5 verticals · 14 steps</span>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ INBOUND ═══════════════════════════════ -->
+<div class="panel on" id="panel-inbound" style="display:none">
+
+<div class="sig-grid">
+  <div class="sig-btn on" onclick="showSig('trial',this)"><div class="sig-icon">🧪</div><div class="sig-name">Trial Sign-Up</div><div class="sig-sub">Someone just started a free trial</div></div>
+  <div class="sig-btn" onclick="showSig('demo',this)"><div class="sig-icon">📅</div><div class="sig-name">Demo Request</div><div class="sig-sub">Filled out the demo request form</div></div>
+  <div class="sig-btn" onclick="showSig('pricing',this)"><div class="sig-icon">💰</div><div class="sig-name">Pricing Page Visit</div><div class="sig-sub">Visited pricing — in evaluation mode</div></div>
+  <div class="sig-btn" onclick="showSig('referral',this)"><div class="sig-icon">🤝</div><div class="sig-name">Referral Intro</div><div class="sig-sub">Warm intro from customer or connection</div></div>
+  <div class="sig-btn" onclick="showSig('reengage',this)"><div class="sig-icon">🔄</div><div class="sig-name">Re-Engage</div><div class="sig-sub">Warm lead gone cold 30+ days</div></div>
+</div>
+
+<!-- TRIAL -->
+<div class="in-content on" id="sig-trial">
+  <div class="in-hdr">
+    <div><div class="in-title">Trial Sign-Up Response</div><div class="in-obj">Objective: redirect from product exploration to discovery conversation. They found you — they have a problem. Don't waste it on a feature tour.</div></div>
+  </div>
+  <div class="in-rule">⚡ The trap to avoid: treating a trial sign-up as a product demo request. Most reps send onboarding tips. You're going to send a commercial insight and propose a discovery call first.</div>
+
+  <div class="sec-lbl">Primary response — email (send within 2 hours of sign-up)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Primary response · Send within 2 hrs</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta">
+      <div class="meta-item">Subject: <span class="meta-val">Your Mintlify trial — a different starting point</span></div>
+      <div class="meta-item">Tone: <span class="meta-val">Confident, curious, non-generic</span></div>
+    </div>
+    <div class="msg-body" id="m-trial-1">[Name],
+
+Most people who sign up for a documentation platform trial want to check feature coverage. Before we go down that road — I'd rather spend 10 minutes understanding what you're actually trying to solve.
+
+The teams who get the most out of Mintlify usually aren't solving a documentation quality problem. They're solving a documentation workflow problem — the gap between what ships and what's documented is structural, and a better UI alone doesn't close it. What does is changing how documentation integrates with the engineering workflow.
+
+[PERSONALIZATION — pick one based on your research:]
+→ I looked at [Company]'s developer docs — the update timestamps suggest a gap between your shipping pace and what's documented.
+→ [Company] is hiring for [Technical Writer / DevRel] — which usually signals the current approach isn't scaling with the product.
+→ [Company] has a developer-facing API product. That's exactly where documentation workflow failures show up as developer adoption problems.
+
+If you're open to it: rather than starting with a standard product walkthrough, could we do a 20-minute conversation first about what's driving the trial? I'll make sure whatever we show you is mapped to your actual situation — not a general feature tour.
+
+What does your calendar look like this week?
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="hook-box">🎯 PERSONALIZATION REQUIRED: The bracket above is mandatory, not optional. Send this without a specific observation about their company and it reads like a mass email. Check their public docs, GitHub activity, and job postings before sending — takes 10 minutes, makes the difference between a reply and an archive.</div>
+  <div class="note-box">If they reply saying they just want to explore the product themselves: respect it. Say "Completely understood — here's the best way to get value from the trial: [specific recommendation]. If questions come up, I'm here." Then set a 5-day re-engage if no further activity.</div>
+
+  <div class="sec-lbl">Follow-up if no reply in 3 days</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Day 3 follow-up</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">Re: Your Mintlify trial — a different starting point</span></div></div>
+    <div class="msg-body">[Name],
+
+Quick follow-up — not trying to rush you, just want to make sure you have what you need.
+
+One specific thing worth knowing as you explore: most teams get more out of the trial when they start with a real documentation workflow problem rather than a generic evaluation checklist. If you're dealing with [specific pain signal you identified], that's a good test case.
+
+Happy to jump on a quick call this week to make sure you're testing against the right use case. Or if async works better — what's the main thing you're trying to figure out?
+
+Tony</div>
+  </div>
+
+  <div class="sec-lbl">LinkedIn touch — same day as email (if connected)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-li">LinkedIn</span>Day 1 · Same day as email</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-body">Hey [Name] — saw you just signed up for a Mintlify trial. Rather than flood your inbox with onboarding tips, I wanted to reach out directly. I have a hunch about what might be driving this — happy to share if useful. What's the problem you're hoping it solves?</div>
+  </div>
+</div>
+
+<!-- DEMO REQUEST -->
+<div class="in-content" id="sig-demo">
+  <div class="in-hdr">
+    <div><div class="in-title">Demo Request Response</div><div class="in-obj">Objective: reframe from "show me the product" to "let's understand your problem first." The demo is more valuable after discovery. Propose a discovery-first structure.</div></div>
+  </div>
+  <div class="in-rule">⚡ The trap: booking a 45-minute demo and spending 40 minutes clicking through the product. You end up with someone who says "looks good, I'll share with my team" and you never hear from them again. The discovery call first gives you the pain, the persona, and the internal path before you ever open the product.</div>
+
+  <div class="sec-lbl">Primary response — email (send within 1 hour)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Primary · Send within 1 hr</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">Re: Mintlify demo — one ask before we book</span></div></div>
+    <div class="msg-body">[Name],
+
+Got your demo request — excited to connect.
+
+One ask before we book: the demos that actually land are the ones where I understand what you're trying to solve first. A 45-minute generic product tour usually doesn't tell you whether Mintlify fixes your specific problem — a 20-minute conversation about your documentation workflow usually does.
+
+What I know about [Company] so far: [PERSONALIZATION — current doc tool, visible staleness, hiring signal, product launch, or team size observation]. That tells me [specific implication for their situation].
+
+Proposal: let's do a 30-minute call — first 15 minutes I ask you a few questions about your documentation workflow, last 15 minutes I show you exactly what's relevant to your situation. No generic tour.
+
+[Calendar link — book directly]
+
+If you'd rather just see the product first, I can do that too — but I'd be doing you a disservice if I didn't ask.
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="hook-box">🎯 The "I'd be doing you a disservice" line matters — it positions the discovery-first ask as being in their interest, not yours. Use it exactly. Don't soften it.</div>
+
+  <div class="sec-lbl">If they book the demo without a discovery call first — how to open it</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-call">Call Opener</span>When they book a demo without discovery first</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-body">"Thanks for making time — before I share my screen, I want to spend a few minutes making sure what I show you is actually relevant to what you're trying to solve. Otherwise I'll just be clicking through features that may not matter to you.
+
+Can I ask — what's driving the evaluation? What's the documentation problem you're trying to fix?"
+
+[Then listen. Don't show the product until you've confirmed pain. The discovery questions bank has the questions to run from here.]</div>
+  </div>
+  <div class="note-box">If they push back and say "I really just want to see the product" — give them the 15-minute overview, then ask your top 3 discovery questions at the end. Never let a demo end without confirming the pain and proposing a next step.</div>
+</div>
+
+<!-- PRICING PAGE -->
+<div class="in-content" id="sig-pricing">
+  <div class="in-hdr">
+    <div><div class="in-title">Pricing Page Visit</div><div class="in-obj">Objective: reach out before they've built a comparison framework. They're in evaluation mode — get in front of them as an advisor before they turn you into a line item on a spreadsheet.</div></div>
+  </div>
+  <div class="in-rule">⚡ Context: You'll surface pricing page visits through Common Room or Salesforce intent data. This signal means they're past awareness — they're actively evaluating. You have a narrow window before they've already built a scorecard that you weren't involved in shaping.</div>
+
+  <div class="sec-lbl">Primary outreach — email (send within 24 hrs of signal)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Primary · Send within 24 hrs</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">The Mintlify evaluation — before you build a scorecard</span></div></div>
+    <div class="msg-body">[Name],
+
+Noticed [Company] has been looking at Mintlify — happy to help make that evaluation faster and more useful.
+
+One thing I've found: the teams who evaluate documentation platforms based on a generic feature checklist usually end up picking the wrong tool. The ones who evaluate based on their specific documentation workflow problem — how much engineering time is going into maintenance, how big the gap is between what ships and what's documented, whether their docs are AI-readable — tend to make much better decisions.
+
+Before you build a comparison framework, I'd find it useful to understand what's actually driving this. [PERSONALIZATION: specific signal — Are you on Confluence right now? Did you recently expand your API product? Is there a new engineering leader who's auditing infrastructure?]
+
+Two things I can offer that help the evaluation go faster:
+1. A 20-minute conversation to understand your specific problem — I can tell you whether Mintlify is actually the right fit or not
+2. Our security and compliance package + customer references for your vertical upfront, so you're not waiting for those at the end
+
+Would either of those be useful this week?
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="note-box">The "I can tell you whether Mintlify is actually the right fit or not" line is important. It positions you as an advisor, not a salesperson. It also differentiates you from every other vendor who just wants to close.</div>
+
+  <div class="sec-lbl">LinkedIn follow-up if email goes unanswered (Day 3)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-li">LinkedIn</span>Day 3 if no email reply</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-body">[Name] — sent you a note about the Mintlify evaluation. Quick version: most documentation platform evaluations go faster when they start with a clear problem statement rather than a feature checklist. Happy to help shape the evaluation criteria if that's useful — or just answer specific questions. What's the main thing you're trying to figure out?</div>
+  </div>
+</div>
+
+<!-- REFERRAL -->
+<div class="in-content" id="sig-referral">
+  <div class="in-hdr">
+    <div><div class="in-title">Referral / Warm Intro</div><div class="in-obj">Objective: leverage the warm signal without wasting it on pleasantries. A referral is credibility borrowed — use it in the first sentence, then immediately go to commercial insight. Don't spend three paragraphs thanking people.</div></div>
+  </div>
+  <div class="in-rule">⚡ The trap: "I was referred by [Name] who thought you might be interested in Mintlify..." and then a product pitch. You've just converted a warm intro into a cold email. Lead with why the referral is relevant — the specific problem you think they have.</div>
+
+  <div class="sec-lbl">Email intro (when you're making the first contact)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>First outreach on a referral</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">[Referrer name] suggested we talk — here's why I think they're right</span></div></div>
+    <div class="msg-body">[Name],
+
+[Referrer name] connected us — and when they told me about [Company], I understood immediately why.
+
+[PERSONALIZATION — the specific reason the referral makes sense. One of:]
+→ You're building a developer-facing API product on top of [current doc tool] — which means you're almost certainly dealing with a documentation velocity problem that costs your engineers more time than they realize.
+→ [Company] is in the middle of [AI initiative / product expansion / new API launch] — and the documentation infrastructure question almost always surfaces as a dependency at that stage.
+→ [Referrer] mentioned your team has been dealing with the [staleness / eng overhead / support ticket] problem — which is exactly the pattern we keep seeing at [similar company].
+
+The short version of what I'd want to share: most engineering orgs think their documentation problem is a content problem. The data from our customers — Coinbase, HubSpot, Fidelity, Anthropic — consistently shows it's a workflow infrastructure problem. That distinction matters because one requires headcount and the other requires architecture.
+
+Would a 20-minute conversation be worth it? I'll keep it focused.
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="hook-box">🎯 "Here's why I think they're right" in the subject line is intentional. It's specific enough to suggest you did homework. Referral emails with generic subjects ("Introduction via [Name]") convert at the same rate as cold emails. A subject that implies a point of view converts better.</div>
+
+  <div class="sec-lbl">Reply to a warm intro thread (when the referrer cc'd you)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Replying into a warm intro thread</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-body">[Name],
+
+[Referrer name] — thanks for the intro, taking it from here.
+
+[Name], I did a quick look at [Company] before jumping in — [PERSONALIZATION: specific observation]. That's the pattern I was hoping [referrer] was flagging.
+
+I won't pitch you — but I will ask: is the documentation workflow overhead something your team has been measuring, or is it more of a known cost that keeps getting absorbed? That one question usually tells me pretty quickly whether a conversation is worth your time.
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="note-box">Moving the referrer off the thread ("taking it from here") is important. It lets you have a direct conversation without performing for the referrer. Do it in the first reply.</div>
+</div>
+
+<!-- RE-ENGAGE -->
+<div class="in-content" id="sig-reengage">
+  <div class="in-hdr">
+    <div><div class="in-title">Re-Engage — Warm Lead Gone Cold (30+ Days)</div><div class="in-obj">Objective: reopen the conversation with new value — not a status check. The cardinal rule: never "just checking in." Bring a trigger, a proof point, or a new angle that's relevant to something you've learned since the last conversation.</div></div>
+  </div>
+  <div class="in-rule">⚡ The three legitimate reasons to re-engage: (1) something changed at their company — new hire, job posting, product launch, funding; (2) you have something genuinely new to share — a relevant proof point, a piece of research, a competitive development; (3) enough time has passed that the previous conversation is stale and it's worth restarting fresh. "Checking in" is not one of them.</div>
+
+  <div class="sec-lbl">Re-engage — new trigger found (best scenario)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Re-engage with a new trigger</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">[Company] + something I noticed</span></div></div>
+    <div class="msg-body">[Name],
+
+We talked [X weeks] ago — I've been keeping an eye on [Company] since, and something caught my attention: [SPECIFIC TRIGGER — new VP Eng hire, job posting, product launch, funding announcement, public docs staleness widening].
+
+That changes the conversation we had. [Last time, [brief recap of where things stood]. Now, [specific implication of the new trigger].]
+
+I'm not reaching out to check in — I'm reaching out because [trigger] is exactly the moment where the documentation infrastructure question tends to come back to the surface. [Specific connection: e.g., "A new VP Eng usually audits everything in the first 90 days — documentation workflow almost always makes the list."]
+
+Worth a quick conversation this week?
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="hook-box">🎯 REQUIRED: fill in the trigger before sending. "Something caught my attention" without a specific thing is worse than not reaching out — it reads as a lie. Check their LinkedIn, job postings, GitHub, and press before hitting send.</div>
+
+  <div class="sec-lbl">Re-engage — new proof point (when no obvious external trigger)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Re-engage with a new proof point</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">Thought of [Company] when I saw this</span></div></div>
+    <div class="msg-body">[Name],
+
+Something came across my desk that made me think of our conversation — [specific proof point or development relevant to their vertical and pain].
+
+[e.g., "We just wrapped up a case study with [relevant company in their space] — they were dealing with [specific pain that matches this account] and cut their documentation update time from [X to Y]. The thing that stood out was [specific detail relevant to this account's situation]."]
+
+I'm not going to pretend that's not a reason to re-open the conversation. When we talked [timeframe], [brief honest recap — "you were in the middle of evaluating / timing wasn't right / you were focused on other priorities"]. Has anything changed?
+
+Tony</div>
+  </div>
+
+  <div class="sec-lbl">Re-engage — honest close (if 2+ previous re-engages have gone unanswered)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-email">Email</span>Honest close — final re-engage attempt</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-meta"><div class="meta-item">Subject: <span class="meta-val">Closing the loop on [Company] + Mintlify</span></div></div>
+    <div class="msg-body">[Name],
+
+I'll keep this short. I've reached out a few times since our initial conversation and haven't heard back — which usually means one of three things: timing is genuinely off, the problem isn't a priority right now, or I've been reaching out at the wrong moment.
+
+All three are completely fine. I'd rather know.
+
+If the documentation workflow problem is still on your radar — even as a 'someday' priority — I'm happy to pick it back up when the timing makes sense. If it's genuinely not a priority and I should stop reaching out, just say the word and I'll leave you alone.
+
+Either way: what would actually be helpful right now?
+
+Tony Evans | Mintlify</div>
+  </div>
+  <div class="note-box">This email has a 40–50% response rate even after long silences. It works because it's honest, gives them three face-saving exits, and asks one genuine question. The responses are almost always useful — either they re-engage or they tell you exactly why not, which saves you time.</div>
+
+  <div class="sec-lbl">LinkedIn re-engage (if email channel is cold)</div>
+  <div class="msg-block">
+    <div class="msg-hdr"><div class="msg-channel"><span class="chan-pill ch-li">LinkedIn</span>LinkedIn re-engage</div><button class="copy-btn" onclick="copyMsg(this)">Copy</button></div>
+    <div class="msg-body">[Name] — we connected a while back about [Company]'s documentation infrastructure. Saw [specific trigger — new role, announcement, post they made] and thought it was worth checking whether the timing has changed. Still relevant, or is it not the right moment?</div>
+  </div>
+</div>
+</div>
+
+<div class="panel" id="panel-outbound" style="display:none">
+
+<div class="overview">
+  <div class="ov-title">Cadence structure — 14 steps, 11 days</div>
+  <div class="ov-grid">
+    <div class="ov-stat"><div class="ov-num" style="color:var(--blue)">4</div><div class="ov-lbl">Emails<br>2 threads × 2 each</div></div>
+    <div class="ov-stat"><div class="ov-num" style="color:var(--mint)">6</div><div class="ov-lbl">Cold calls<br>Highest converting</div></div>
+    <div class="ov-stat"><div class="ov-num" style="color:var(--purple)">4</div><div class="ov-lbl">LinkedIn touches<br>incl. voice note</div></div>
+    <div class="ov-stat"><div class="ov-num">11</div><div class="ov-lbl">Days total<br>Tight, no drag</div></div>
+  </div>
+  <div class="ov-timeline" id="timeline-dots"></div>
+</div>
+
+<div class="ctrl">
+  <div class="vert-btns">
+    <button class="vb on" onclick="setVert('fintech',this)">🏦 FinTech</button>
+    <button class="vb" onclick="setVert('aiml',this)">🤖 AI / ML</button>
+    <button class="vb" onclick="setVert('devtools',this)">⚙️ Dev Tools</button>
+    <button class="vb" onclick="setVert('saas',this)">📈 SaaS / PLG</button>
+    <button class="vb" onclick="setVert('enterprise',this)">🏢 Enterprise</button>
+  </div>
+</div>
+
+<div class="timeline" id="touch-nav"></div>
+<div id="touch-output"></div>
+
+</div>
+
+<script>
+// ── TAB SWITCHING ────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.ntab').forEach(b=>{b.classList.remove('on');b.style.color='var(--text2)';b.style.borderBottomColor='transparent';});
+  document.getElementById('panel-'+tab).style.display='block';
+  btn.classList.add('on');
+  btn.style.color='var(--mint)';
+  btn.style.borderBottomColor='var(--mint)';
+  if(tab==='outbound' && !window._outboundInit) { window._outboundInit=true; initOutbound(); }
+}
+
+// ── INBOUND ─────────────────────────────────────────────────────────────
+function showSig(id, btn) {
+  document.querySelectorAll('.sig-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.in-content').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('sig-'+id).classList.add('on');
+}
+
+function copyMsg(btn) {
+  const block = btn.closest('.msg-block');
+  const body = block.querySelector('.msg-body-in');
+  const subEl = block.querySelector('.meta-val');
+  let text = '';
+  if (subEl) text = 'Subject: ' + subEl.textContent + '\n\n';
+  text += body ? body.innerText : '';
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+// ── OUTBOUND ─────────────────────────────────────────────────────────────
+// ── TOUCH DEFINITIONS ────────────────────────────────────────────────────
+const STRUCTURE = [
+  {n:1,  day:1,  ch:'email', label:'Email',      icon:'📧', thread:'Thread 1 — new',    step:'Step 1 of 14', purpose:'Commercial insight — new thread',         subpurpose:'The reframe. Lead with insight, not a pitch. Personalization hook is mandatory.'},
+  {n:2,  day:1,  ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 2 of 14', purpose:'Cold call #1 — CI opener',                subpurpose:'Reference the email. Deliver the insight. Ask one question. Stop talking.'},
+  {n:3,  day:1,  ch:'li',    label:'LinkedIn',    icon:'💼', thread:'Blank connection',  step:'Step 3 of 14', purpose:'LinkedIn connection — no message',         subpurpose:'Blank request only. No message. Higher acceptance rate. Let them find you.'},
+  {n:4,  day:3,  ch:'li',    label:'LinkedIn',    icon:'💼', thread:'Message — resource', step:'Step 4 of 14', purpose:'LinkedIn DM — helpful resource',           subpurpose:'Once connected, send value. A relevant proof point, not a pitch. One sentence of insight, one ask.'},
+  {n:5,  day:3,  ch:'email', label:'Email',       icon:'📧', thread:'Thread 1 — reply',  step:'Step 5 of 14', purpose:'Email reply — Thread 1',                  subpurpose:'Reply into thread 1. New angle. Reference something specific about their company.'},
+  {n:6,  day:3,  ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 6 of 14', purpose:'Cold call #2 — follow the email',          subpurpose:'Reference the thread. Ask the one question you didn\'t get answered.'},
+  {n:7,  day:4,  ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 7 of 14', purpose:'Cold call #3 — voicemail play',            subpurpose:'They haven\'t replied. Leave a voicemail. 20 seconds. Create a callback hook.'},
+  {n:8,  day:5,  ch:'li',    label:'LinkedIn',    icon:'🎤', thread:'Voice note',        step:'Step 8 of 14', purpose:'LinkedIn voice note',                      subpurpose:'30 seconds max. Conversational. Reference something specific. Differentiated — almost nobody does this.'},
+  {n:9,  day:8,  ch:'email', label:'Email',       icon:'📧', thread:'Thread 2 — new',    step:'Step 9 of 14', purpose:'Email — new thread, new angle',            subpurpose:'Fresh thread. Different angle from Thread 1. Specific company observation. Short.'},
+  {n:10, day:8,  ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 10 of 14', purpose:'Cold call #4 — reference Thread 2',       subpurpose:'Reference the new email. Direct question. One ask.'},
+  {n:11, day:8,  ch:'li',    label:'LinkedIn',    icon:'💼', thread:'Message',           step:'Step 11 of 14', purpose:'LinkedIn DM — second message',            subpurpose:'Brief. Different observation. No repetition of previous message.'},
+  {n:12, day:9,  ch:'email', label:'Email',       icon:'📧', thread:'Thread 2 — reply',  step:'Step 12 of 14', purpose:'Email reply — Thread 2',                 subpurpose:'Reply into thread 2. Short. One question. Easy yes or no.'},
+  {n:13, day:9,  ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 13 of 14', purpose:'Cold call #5 — reference Thread 2 reply', subpurpose:'Short. Acknowledge the sequence. Direct question.'},
+  {n:14, day:11, ch:'call',  label:'Call',        icon:'📞', thread:null,               step:'Step 14 of 14', purpose:'Cold call #6 — honest close',             subpurpose:'Final touch. "I\'ll leave you alone after this." One question. If no reply — move to Nurture.'},
+];
+
+// ── VERTICAL CONTENT ─────────────────────────────────────────────────────
+const VERTS = {
+
+fintech: {
+  name:'FinTech', eb:'VP Engineering / CTO',
+  proof:'Coinbase (20 min → 60 sec)', secondary:'Fidelity (99.99% uptime)',
+  incumbent:'Confluence / ReadMe',
+  ci:'Most FinTech engineering leaders frame their documentation problem as a content issue. What we consistently find is that content is the symptom — the real problem is that documentation workflow isn\'t integrated with engineering workflow, so staleness is structural. Every release creates a gap that either costs engineering time to close or costs developer adoption when they hit it.',
+  touches: {
+    1: {
+      subj:'The engineering tax hiding in [Company]\'s API docs',
+      body:`[Name],
+
+Most FinTech engineering leaders frame their documentation problem as a content issue — coverage gaps, stale pages after releases, writing quality that isn't where it should be.
+
+What we consistently find is that content is the symptom. The actual problem is structural: documentation workflow isn't integrated with engineering workflow, which means every release creates a delta between what shipped and what's documented. Your engineers either close that gap manually — which is an engineering tax — or your developers hit it mid-integration.
+
+[PERSONALIZATION — pick one and delete the rest:]
+→ I noticed [Company] recently launched [API product / developer portal] — that's exactly when the gap between engineering velocity and documentation velocity becomes expensive.
+→ [Company]'s developer docs show a meaningful gap between your release cadence and what's documented — that's the pattern we keep seeing.
+→ You're hiring for [Technical Writer / DevRel] — which usually signals the current approach isn't scaling with the product.
+
+At Coinbase, that structural gap was costing 20 minutes per documentation update across a high-velocity API team. After fixing the infrastructure — not adding headcount — it's 60 seconds.
+
+Worth 20 minutes to see if the same problem is showing up in your org?
+
+Tony Evans | Mintlify`,
+      hook:'PERSONALIZATION REQUIRED. Check their GitHub release history vs. doc timestamps before sending. One specific observation makes this impossible to ignore. Generic version gets archived.',
+      note:'Send first, then call, then send LinkedIn connection. This order lets you reference the email on the call.'
+    },
+    2: {
+      script:`"Hey [Name] — Tony Evans calling from Mintlify. Cold call — I'll keep it tight, you can tell me in 30 seconds if I'm off base.
+
+I sent you a note this morning about the documentation workflow problem at [Company]. The short version: most FinTech engineering leaders we talk to describe their docs problem as a content issue. What we keep finding is it's structural — documentation workflow isn't wired into engineering workflow, so staleness is baked in regardless of headcount.
+
+Coinbase had that exact problem. 20 minutes per update across a high-velocity API team. It's now 60 seconds. Not headcount — infrastructure.
+
+Is the gap between what ships and what's documented something your team is actively managing, or more of a known cost that keeps getting absorbed?"
+
+[PAUSE — let them answer. That answer is your qualification signal.]`,
+      branches:`IF "we're managing it fine":
+"That's actually the more interesting answer — what does managing it look like? Most teams I talk to are doing it through headcount or heroics, and that's exactly what we're trying to help them stop doing."
+
+IF "yeah it's a known issue":
+"Good — can I ask, is it known at the team level, or has it gotten to someone's roadmap to actually fix?"
+
+IF "not interested":
+"Totally fair. One question before I let you go — when this does become a priority, is it going to land on your plate or someone else's?"`,
+      note:'Reference the email in the first 10 seconds. If they haven\'t read it — that\'s fine, still deliver the insight.'
+    },
+    3: {
+      body:`Send a blank connection request — no message.
+
+Why: A blank request has a 30-40% higher acceptance rate than one with a message. They check your profile, see Mintlify, and decide. Once they accept (typically 24-48 hrs), your Day 3 LinkedIn message lands in their inbox as a connection message — higher visibility than a cold DM.`,
+      note:'Do not write a message with the connection request. Blank only.'
+    },
+    4: {
+      body:`[Name] — connected. Wanted to share something relevant since we're now connected.
+
+Coinbase was dealing with exactly the documentation velocity problem I'd guess is showing up at [Company] — 20 minutes per doc update across a high-velocity FinTech engineering team. The fix wasn't headcount. It was fixing the infrastructure so docs update automatically when code merges.
+
+Thought it might be worth a look: [link to Coinbase case study or Mintlify website]
+
+Worth a conversation?`,
+      note:'This is the "helpful resource" touch. Send the proof point, not the pitch. One specific piece of value, one ask. No paragraph about Mintlify features.'
+    },
+    5: {
+      subj:'Re: The engineering tax hiding in [Company]\'s API docs',
+      body:`[Name],
+
+Following up on my earlier note — wanted to share a specific angle that might be more relevant.
+
+[SPECIFIC OBSERVATION — one of:]
+→ Looked at [Company]'s public developer docs — [specific feature from their GitHub] shipped [X days ago] but the documentation doesn't reflect it yet. That's the structural gap I was describing.
+→ Saw [Company] is actively hiring for [role] — which usually means the team has already diagnosed the documentation workflow problem and is trying to hire their way out of it. The challenge: a new hire still can't update docs automatically when code changes.
+→ Given [Company]'s API product and developer community, a documentation staleness gap shows up directly in your developer adoption numbers — not just your support ticket queue.
+
+Fidelity — a regulated financial enterprise — runs on Mintlify at 99.99% uptime since launch. Zero engineering maintenance overhead.
+
+Still think 20 minutes is worth it to see if the numbers make sense for [Company].
+
+Tony`,
+      note:'Reply into Thread 1 — do not start a new subject. Different angle from email 1. Shorter. More specific.'
+    },
+    6: {
+      script:`"Hey [Name] — Tony Evans from Mintlify again.
+
+I sent a couple of notes about the documentation workflow problem — I know the inbox is noisy.
+
+One specific question: when a new feature ships at [Company], how long does it typically take for the documentation to reflect it? I'm asking because that number, when people actually calculate it, usually changes the priority conversation.
+
+[PAUSE — let them answer.]"
+
+IF THEY ENGAGE: Go to discovery questions — Pain & Engineering Tax Q1 and Q2.
+IF "send me something": "Of course — what's the best way to send it? I'll include the Coinbase case study — 20 minutes per update down to 60 seconds at a high-velocity FinTech team."
+IF "not interested": "Appreciated — one last question: is documentation infrastructure something that's on anyone's radar at [Company] right now, or is it genuinely not a priority?"`,
+    },
+    7: {
+      script:`[VOICEMAIL — 20 seconds max]
+
+"Hey [Name] — Tony Evans from Mintlify. I've left a couple of notes about the documentation workflow problem — the short version is Coinbase cut their update time from 20 minutes to 60 seconds without adding headcount. I think there's a version of that story at [Company]. My number is [phone]. Happy to take 20 minutes whenever it makes sense — or just reply to my email."
+
+[HANG UP — do not ramble past 20 seconds]`,
+      note:'Voicemail only. Do not leave a message longer than 20 seconds. Name, company, one-sentence proof point, your number, easy out. The goal is a callback or an email reply — not to pitch on voicemail.'
+    },
+    8: {
+      script:`Record a 30-second voice note in LinkedIn. Script:
+
+"Hey [Name] — Tony Evans from Mintlify. [Their name], I've been following [Company] for a few weeks now and I keep coming back to the documentation velocity question. I looked at your API docs — [one specific observation, e.g., there's a meaningful gap between your latest releases and what's documented]. At Coinbase that gap was costing 20 minutes per update. They fixed the infrastructure and it's 60 seconds now. I think there's a similar story at [Company]. Happy to take 20 minutes — just reply here or shoot me an email. Appreciate it."
+
+[30 seconds. Conversational. Don't read it — talk it.]`,
+      note:'Voice notes in LinkedIn get 3-5x higher open rates than text DMs. They feel personal. Do not script it word-for-word — internalize the key points and record naturally. If you stumble, re-record. Conversational > polished.'
+    },
+    9: {
+      subj:'[Company] + Mintlify — different angle',
+      body:`[Name],
+
+Taking a different approach since I haven't heard back.
+
+The documentation infrastructure question aside — here's the business case in one line: if your engineering team is spending [X] hours per week maintaining documentation that's still stale by release day, that's [Y engineers × Z weeks × $W/hr] in annual engineering cost. At Coinbase it was costing roughly $400k/year before they fixed it.
+
+[SPECIFIC OBSERVATION about their situation:]
+→ Based on [Company]'s engineering headcount and release cadence, the number is likely in a similar range.
+→ You're running at a scale where even 5% of engineering time on documentation maintenance is a meaningful number.
+
+Not asking for a big commitment. Just 20 minutes to see if the math actually makes sense for [Company].
+
+[Calendar link]
+
+Tony Evans | Mintlify`,
+      hook:'NEW THREAD — do not reply to thread 1. Different subject line. Different angle: this one leads with the ROI math, not the workflow insight.',
+      note:'If you have the Business Case Calculator output for this company, reference the actual number. Nothing converts faster than a specific dollar figure.'
+    },
+    10: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Sent you a note this morning about the ROI math on documentation maintenance — the short version is the number is usually bigger than people expect when they actually calculate it.
+
+One question: has anyone at [Company] actually done that calculation — what documentation maintenance costs in engineering time per week?
+
+[PAUSE.]"
+
+IF NO: "That's the more common answer. The teams that do it usually find the number changes the priority conversation. Can I take 10 minutes to walk you through how we'd calculate it for [Company]?"
+IF YES: "Good — what did you find? I'm curious whether it matched our benchmark."`,
+    },
+    11: {
+      body:`[Name] — one more thing before I leave you alone.
+
+Looked at [Company]'s developer docs again — [one new specific observation you haven't mentioned yet, e.g., a specific section that's notably outdated, or a recent product announcement that isn't reflected].
+
+For an API-first product like [Company]'s, that gap is a developer adoption problem, not just an ops issue. Fidelity solved the same thing — 99.99% uptime, zero engineering maintenance overhead, regulated enterprise.
+
+Worth a conversation?`,
+      note:'NEW observation — don\'t repeat what you\'ve already said. Find something specific from their GitHub, blog, or docs that you haven\'t referenced yet.'
+    },
+    12: {
+      subj:'Re: [Company] + Mintlify — different angle',
+      body:`[Name],
+
+Last note from me on this thread — keeping it short.
+
+Is the documentation workflow overhead something [Company] is actively looking to fix in the next quarter? Yes or no is genuinely useful.
+
+If yes: 20 minutes on [specific day] works on my end.
+If no: I'll leave you alone and revisit when the timing changes.
+
+Tony`,
+      note:'Reply into Thread 2. Extremely short. Binary question. Easy to reply to. This is a qualification question disguised as a close.'
+    },
+    13: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. I've reached out several times — I know.
+
+One direct question: is the documentation infrastructure question genuinely not a priority right now, or is it more of a timing issue?
+
+[PAUSE — let them answer. This is the most important call in the sequence.]"
+
+IF TIMING: "What would be the right moment to revisit — is there a natural trigger like a new product cycle or a Q-boundary?"
+IF NOT A PRIORITY: "Completely fair. What would need to change for it to become one?"
+IF ENGAGE: Book the meeting. Done.`,
+      note:'Short. Reference the sequence honestly. One question. Stop talking after you ask it. The silence is intentional — fill it with a real answer, not more of your pitch.'
+    },
+    14: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Final call — I'll leave you alone after this one.
+
+I've reached out [X] times over the past two weeks about the documentation workflow problem at [Company]. Haven't heard back — which is completely fine, but I'd rather know if I'm barking up the wrong tree.
+
+One question: is there genuinely no interest, or is it just not the right timing? Either answer is useful.
+
+My number is [phone] if anything changes. Good luck with [something specific — their product launch / AI initiative / whatever you've researched]."
+
+[HANG UP. Do not leave a message longer than 25 seconds. Do not call back after this.]`,
+      note:'After this call, if no reply within 48 hours: update Notion to Nurture, set a 60-day revisit trigger, move your time to the next account. This is not a failure — it\'s a qualified non-response. The honest close email from the inbound playbook can be sent as a final email touch if you want one more channel.'
+    }
+  }
+},
+
+aiml: {
+  name:'AI / ML', eb:'VP Engineering / CTO / Head of DevRel',
+  proof:'Anthropic (1.5M+ devs/month, LLMs.txt)',secondary:'Coinbase (velocity)',
+  incumbent:'GitBook / Homegrown',
+  ci:'For AI companies, documentation infrastructure isn\'t just an operational question — it\'s a product strategy question. If your docs aren\'t LLMs.txt compliant, machine-readable, and surfaceable by AI systems, they\'re invisible to the channel developers increasingly use to find answers. Your docs infrastructure either supports your AI strategy or undermines it.',
+  touches: {
+    1: {
+      subj:'The AI readiness gap in [Company]\'s developer docs',
+      body:`[Name],
+
+There's an assumption baked into most AI companies' developer strategies that I keep seeing go unexamined: that documentation quality is sufficient for the era of AI agents.
+
+It usually isn't — not because the content is bad, but because the infrastructure isn't AI-native. Developers are increasingly finding answers via LLMs, not search. If your documentation isn't structured, surfaceable, and queryable by AI systems — LLMs.txt compliant, MCP-accessible — it's invisible to the channel your developers actually use.
+
+[PERSONALIZATION — pick one:]
+→ [Company] is building [AI product / API] — the developers integrating it are going to ask their AI assistant before they open your docs. What does your AI assistant return when it queries your documentation?
+→ I noticed [Company]'s docs don't appear to be LLMs.txt compliant yet — which means they're invisible to AI-native search, Cursor, and similar tools your developers are using.
+→ [Company] is competing for developer mindshare — documentation experience is where those adoption races are increasingly won or lost.
+
+Anthropic — who co-developed the LLMs.txt standard with Mintlify — serves 1.5M+ developers per month through documentation infrastructure that requires zero ongoing engineering lift. That's not a content story. That's an architecture story.
+
+Worth a conversation about where [Company]'s docs infrastructure stands?
+
+Tony Evans | Mintlify`,
+      hook:'The AI-native angle is your strongest differentiator with this vertical. Do the research first — check if their docs site has an LLMs.txt file, check if their docs surface in AI search results. Specific evidence beats general claims.',
+      note:'Send email first, then call, then blank LinkedIn connection. Do not lead with features.'
+    },
+    2: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Quick cold call.
+
+Most AI companies we talk to have put enormous thought into their developer experience — the API design, the SDKs, the onboarding flow. The thing that keeps coming up as a blind spot is documentation infrastructure.
+
+Specifically: as developers increasingly use LLMs and AI assistants to find answers, documentation that isn't AI-native — not structured for machine readability, not LLMs.txt compliant — is functionally invisible to the channel developers actually use.
+
+Anthropic is a customer of ours — we co-developed the LLMs.txt standard with them. They're serving 1.5 million developers a month through documentation that runs without ongoing engineering overhead.
+
+At [Company] — how are you thinking about the AI-readiness of your developer documentation? Is that something on your radar?"
+
+IF ON RADAR: "Good — what does that look like in practice? Is it an active workstream or still on the backlog?"
+IF NOT ON RADAR: "That's the more common answer. The companies that get ahead of it are the ones building developer-facing AI products — where the quality of your docs affects whether developers can actually use what you've built."`,
+    },
+    3: {
+      body:`Blank connection request — no message. Wait for acceptance before Day 3 message.`
+    },
+    4: {
+      body:`[Name] — glad we're connected.
+
+Thought this might be relevant: Anthropic co-developed the LLMs.txt standard with us — the spec that defines how documentation should be structured to be readable by AI systems. They're serving 1.5M+ developers a month through documentation that requires zero engineering maintenance.
+
+For a company building at [Company]'s scale, the question worth asking is: when developers use AI tools to find answers about your product, does your documentation actually surface?
+
+[Link to LLMs.txt overview or Mintlify]`,
+      note:'Lead with Anthropic and LLMs.txt — the most credible proof point for this vertical. Not a pitch. A relevant insight with a resource.'
+    },
+    5: {
+      subj:'Re: The AI readiness gap in [Company]\'s developer docs',
+      body:`[Name],
+
+One more angle on this — worth considering.
+
+Developer adoption races in AI are increasingly won at the documentation layer. Which developer gets a clean answer to their integration question first, from their AI assistant, without filing a ticket.
+
+[SPECIFIC OBSERVATION:]
+→ I tested [Company]'s docs against a few AI search tools — [specific result, e.g., they don't surface well, or the information returned is outdated].
+→ [Company] is building [specific AI product] — the developers integrating it are going to use Cursor or a similar tool to find answers. How well does your documentation surface in those contexts?
+
+If [Company]'s docs aren't built for that interaction, that's a structural disadvantage that compounds as more developers use AI-first search.
+
+20 minutes to look at whether the gap exists?
+
+Tony`,
+    },
+    6: {
+      script:`"Hey [Name] — Tony Evans from Mintlify again.
+
+Direct question: when your developers use an AI assistant to find information about [Company]'s API — does your documentation actually come up, or do they hit dead ends?
+
+Most teams haven't tested this. If the answer is 'I don't know' — that's actually the useful answer. It means there's an audit worth doing.
+
+[PAUSE.]"`,
+    },
+    7: {
+      script:`[VOICEMAIL — 20 seconds]
+
+"Hey [Name] — Tony Evans from Mintlify. Quick message about [Company]'s documentation infrastructure — the AI readiness piece specifically. Anthropic co-developed the LLMs.txt standard with us. I think there's a relevant conversation here. My number is [phone]. Or reply to my email — happy to keep it async."`,
+    },
+    8: {
+      script:`Record a 30-second LinkedIn voice note:
+
+"Hey [Name] — Tony Evans from Mintlify. [Their name], I've been thinking about [Company]'s documentation situation — specifically the AI readiness angle. As developers increasingly use tools like Cursor and Claude to find answers, documentation that isn't machine-readable is invisible to that channel. Anthropic solved this — 1.5 million developers a month, zero engineering lift. I think there's a version of that story at [Company]. 20 minutes? Happy to show you what it looks like. Just reply here."`,
+      note:'Keep it conversational. The goal is to sound like a person, not a sales rep reading a script. Reference their specific company name — it signals you did homework.'
+    },
+    9: {
+      subj:'[Company]\'s docs + the AI agent question',
+      body:`[Name],
+
+Different angle — one question worth asking before you build AI agents or internal copilots:
+
+What knowledge base are they going to pull from?
+
+If it's your current documentation — and that documentation is unstructured, stale, and not machine-readable — your AI initiative is being built on a weak foundation. The output quality of any AI agent is constrained by the quality of the knowledge it queries.
+
+[SPECIFIC OBSERVATION about their AI strategy:]
+→ [Company] is building [specific AI product/initiative] — the documentation layer is a direct dependency of that initiative, whether or not it's been treated that way.
+→ At [Company]'s stage, getting the documentation infrastructure right before the AI product ships is significantly cheaper than fixing it after.
+
+Anthropic figured this out early — that's why they co-developed the LLMs.txt standard with us.
+
+20 minutes to see if [Company]'s docs are actually ready to support what you're building?
+
+Tony Evans | Mintlify`,
+      hook:'NEW THREAD. Different angle: connect to their specific AI initiative. If they\'ve announced an AI product or agent — name it.',
+    },
+    10: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Sent you a note this morning about the documentation layer as a dependency for AI initiatives.
+
+One question: when [Company]'s AI agents or copilots need to surface institutional knowledge — where are they actually pulling from right now?
+
+[PAUSE.]"
+
+IF THEY ANSWER: That answer tells you the gap. Use it.
+IF THEY HAVEN'T THOUGHT ABOUT IT: "That's actually the most useful answer. Most teams don't examine the knowledge layer until an AI product is already in production — and by then it's expensive to fix."`,
+    },
+    11: {
+      body:`[Name] — saw [Company]'s [recent announcement / blog post / product update].
+
+One thing worth knowing: the documentation infrastructure question tends to become urgent at exactly that stage — when AI initiatives are shipping and the knowledge layer they depend on hasn't been examined.
+
+Anthropic got ahead of it. 1.5M developers a month, zero engineering maintenance overhead. The architecture was right from the start.
+
+Worth a conversation about what [Company]'s docs infrastructure actually supports right now?`,
+      note:'Reference a specific recent development if you can find one. LinkedIn posts, blog announcements, GitHub releases. Something that shows you\'ve been paying attention.'
+    },
+    12: {
+      subj:`Re: [Company]'s docs + the AI agent question`,
+      body:`[Name],
+
+Last note on this thread.
+
+Simple question: is the AI readiness of [Company]'s documentation infrastructure something anyone is actively examining — or is it being treated as a separate problem from the AI roadmap?
+
+Yes or no helps me understand whether this is a timing question or a priority question.
+
+Tony`,
+    },
+    13: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Been in your inbox a few times.
+
+Straight question: is the documentation infrastructure question genuinely not connected to [Company]'s AI initiatives in anyone's mind — or is it just not the right moment?
+
+[PAUSE.]"`,
+    },
+    14: {
+      script:`[FINAL VOICEMAIL/CALL — 25 seconds]
+
+"Hey [Name] — Tony Evans, last call from me. I've reached out several times about [Company]'s documentation infrastructure and the AI readiness piece. Haven't heard back — completely fine.
+
+If the LLMs.txt compliance question ever becomes relevant — and for a company building at [Company]'s scale, it usually does — my number is [phone]. Alternatively, check out what Anthropic did — they're a Mintlify customer for a reason.
+
+Good luck with [specific initiative]."`,
+      note:'After this: update Notion to Nurture. Set a 45-day revisit — AI companies move fast, and what\'s not a priority in May can be a fire drill in July.'
+    }
+  }
+},
+
+devtools: {
+  name:'Dev Tools', eb:'VP Engineering / CTO',
+  proof:'Coinbase (20 min → 60 sec) + Layers (40-60 hrs/month)',secondary:'Zapier (3x faster)',
+  incumbent:'Notion / Custom',
+  ci:'For developer tools companies, documentation isn\'t a support function — it\'s part of the product. A developer hitting a dead end in your docs doesn\'t just file a ticket, they evaluate whether your tool is worth the integration effort. Documentation velocity either matches your engineering velocity or it costs you adoption.',
+  touches: {
+    1: {
+      subj:`When [Company]'s docs are the product`,
+      body:`[Name],
+
+For most companies, documentation is a support function. For [Company], it's part of the product. A developer hitting a dead end in your docs doesn't just file a ticket — they evaluate whether your tool is worth the integration effort.
+
+The companies winning developer adoption aren't the ones with the most content. They're the ones where documentation velocity matches engineering velocity — where a new feature ships and the docs are updated in the same cycle, not in a catch-up sprint two weeks later.
+
+[PERSONALIZATION — pick one:]
+→ I looked at [Company]'s public docs — the update timestamps suggest there's a meaningful gap between your shipping cadence and what's documented.
+→ [Company] is shipping [new feature / SDK / integration] — that's exactly when the gap between engineering velocity and documentation velocity becomes expensive.
+→ You're hiring for [Technical Writer / DevRel] — which usually means the team knows the current approach isn't scaling with the product.
+
+Layers was spending 40–60 engineering hours per month closing the gap between what shipped and what was documented. Not anymore. Coinbase cut documentation update time from 20 minutes to 60 seconds — not by hiring, by fixing the infrastructure.
+
+If [Company]'s docs are part of the product, the infrastructure behind them should be too. Worth 20 minutes?
+
+Tony Evans | Mintlify`,
+      hook:'The "docs are the product" reframe is your commercial insight for this vertical. Back it up with a specific observation about their docs — staleness evidence, a feature that shipped but isn\'t documented, or a job posting signal.',
+    },
+    2: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Quick cold call.
+
+For developer tools companies, documentation isn't a support function — it's actually part of the product. A developer who hits a dead end in your docs decides whether your tool is worth integrating. That decision happens at the documentation layer, not the feature layer.
+
+The pattern we keep seeing: the companies winning developer adoption are the ones where documentation velocity matches engineering velocity. Coinbase cut update time from 20 minutes to 60 seconds. Layers recovered 40–60 engineering hours a month.
+
+At [Company] — is the gap between what ships and what's documented something your team is actively managing, or a known cost that keeps getting absorbed?"`,
+    },
+    3: {
+      body:`Blank LinkedIn connection — no message.`
+    },
+    4: {
+      body:`[Name] — glad we're connected.
+
+Thought this was worth sharing: Layers was spending 40–60 engineering hours a month closing the gap between what shipped and what was documented. After fixing the infrastructure — not adding headcount — they're not anymore.
+
+For a developer tools company, that gap isn't just an ops cost. It's an adoption cost.
+
+[Link to case study or Mintlify]
+
+Worth a look?`,
+      note:'Lead with Layers — it\'s the most relatable proof point for a mid-size dev tools company. Coinbase is good for high-velocity API teams specifically.'
+    },
+    5: {
+      subj:`Re: When [Company]'s docs are the product`,
+      body:`[Name],
+
+Quick follow-up with something specific.
+
+[SPECIFIC OBSERVATION — one of:]
+→ Spent a few minutes with [Company]'s developer docs — [specific feature] shipped [X days ago] based on your changelog, but the documentation doesn't reflect it yet. For a dev tools company, that gap is a developer experience problem, not just an ops issue.
+→ I searched for [Company]'s [specific feature] in your docs — [specific thing that's missing or outdated]. That's the gap I was describing.
+→ Your docs have strong structure — the issue is velocity. The update cadence doesn't match your shipping cadence, which creates friction at the moment developers are most engaged.
+
+Zapier runs 3x faster documentation updates since switching to docs-as-code. The infrastructure change, not the headcount change.
+
+Still think 20 minutes makes sense. What does [specific day] look like?
+
+Tony`,
+    },
+    6: {
+      script:`"Hey [Name] — Tony Evans from Mintlify again. Sent you a couple of notes about the documentation velocity gap at [Company].
+
+One specific question: when [Company] ships a new feature, how long before the documentation reflects it? Not asking for an exact number — rough order of magnitude.
+
+[PAUSE.]"
+
+IF "a few days": "That's actually better than most. Does that hold consistently, or is it more like a few days for some and weeks for others?"
+IF "weeks": "That's the gap. And for a developer tools company, weeks of staleness is weeks of friction at the adoption layer."`,
+    },
+    7: {
+      script:`[VOICEMAIL — 20 seconds]
+
+"Hey [Name] — Tony Evans from Mintlify. Following up on the documentation velocity question — the short version is Layers recovered 40–60 engineering hours a month by fixing the infrastructure, not adding headcount. I think there's a version of that at [Company]. My number is [phone]. Happy to take 20 minutes whenever it makes sense."`,
+    },
+    8: {
+      script:`30-second LinkedIn voice note:
+
+"Hey [Name] — Tony Evans from Mintlify. [Their name], looked at [Company]'s developer docs again this morning — [specific observation, e.g., there's a gap between your latest release notes and what's in the docs]. For a dev tools company, that gap is adoption friction. Layers solved it — 40 to 60 engineering hours a month recovered. I think there's a similar story at [Company]. 20 minutes? Just reply here."`,
+    },
+    9: {
+      subj:`[Company]'s docs — what developers actually see`,
+      body:`[Name],
+
+Different angle this time.
+
+I went through [Company]'s developer docs from a developer's perspective — trying to integrate [specific feature] from scratch. Here's what I found: [SPECIFIC OBSERVATION — something specific about the gap, the friction, or what's missing].
+
+For a company where documentation is part of the product, that's the experience you're delivering to every developer who evaluates your tool. Not the experience you want them to have.
+
+The companies that fix this don't do it by adding writers. They fix the workflow infrastructure — so documentation updates happen as part of the engineering cycle, not as a separate manual step. Coinbase, Layers, Zapier all took this path.
+
+20 minutes to see what that looks like for [Company]?
+
+Tony Evans | Mintlify`,
+      hook:'NEW THREAD. Lead with something you actually observed in their docs. This is the most specific, credible message in the sequence — spend 10 minutes in their docs before writing this one.',
+    },
+    10: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Sent you a note this morning about what a developer experiences in [Company]'s docs.
+
+One question: have you ever done a developer journey audit on your own documentation — going through it fresh, the way a new developer would?
+
+[PAUSE.]"
+
+IF YES: "What did you find? And did it change anything?"
+IF NO: "It's usually eye-opening. The gap between what engineers know about the product and what developers can discover from the docs is almost always bigger than people expect."`,
+    },
+    11: {
+      body:`[Name] — one observation I haven't shared yet.
+
+Your docs have [specific strength — good structure, clear API reference, solid getting started guide]. The issue isn't quality — it's currency. The documentation that exists is solid. The documentation that should exist for [recent feature / recent release] doesn't yet.
+
+That gap is exactly what Zapier and Coinbase solved with infrastructure, not headcount.
+
+Worth a quick conversation?`,
+    },
+    12: {
+      subj:`Re: [Company]'s docs — what developers actually see`,
+      body:`[Name],
+
+Last note from me this week.
+
+Binary question: is the documentation velocity problem at [Company] something that's on anyone's radar to fix in the next quarter?
+
+If yes — happy to show you what fixing it looks like. 20 minutes.
+If no — I'll leave you alone and check back when the timing changes.
+
+Tony`,
+    },
+    13: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Been in your inbox a few times over the past couple weeks.
+
+Straight question: is this genuinely not a priority, or is it more of a timing thing?
+
+[PAUSE — let them answer. Do not fill the silence.]"`,
+    },
+    14: {
+      script:`[FINAL CALL — 20 seconds, leave voicemail if no answer]
+
+"Hey [Name] — Tony Evans from Mintlify. Last call from me on this one. Reached out several times about the documentation velocity gap at [Company] — no reply, completely understood.
+
+If it ever becomes relevant — Layers, Coinbase, Zapier are all doing this at scale. Happy to connect when the timing is right.
+
+My number is [phone]. Good luck with [specific thing]."`,
+    }
+  }
+},
+
+saas: {
+  name:'SaaS / PLG', eb:'VP Engineering / CTO',
+  proof:'HubSpot (50% reduction in eng resources on docs)', secondary:'Layers (40-60 hrs/month)',
+  incumbent:'Confluence / Notion',
+  ci:'For PLG companies, documentation gaps don\'t just cost engineering time — they cost activation. Every dead end in your self-serve flow is a support ticket or a churned trial. The structural cause isn\'t content quality — it\'s that documentation workflow isn\'t integrated with engineering workflow, so every release creates staleness that shows up in your activation funnel.',
+  touches: {
+    1: {
+      subj:`The self-serve leak hiding in [Company]'s docs`,
+      body:`[Name],
+
+Most PLG engineering leaders describe their documentation problem as a coverage issue — not enough content, not updated fast enough after releases.
+
+What we consistently find is the coverage is a symptom. The actual problem is structural: documentation workflow isn't wired into engineering workflow, so every release creates a staleness delta. Your developers close it manually — engineering tax — or your users hit it mid-onboarding and file a support ticket instead of converting.
+
+[PERSONALIZATION — pick one:]
+→ [Company] is scaling a PLG motion — which means every documentation dead-end is a self-serve failure your team is paying for in support tickets and activation drop-off.
+→ [Company]'s developer portal update cadence suggests there's a meaningful gap between what ships and what's documented — that gap shows up in activation data.
+→ You're hiring for [Technical Writer / DevRel] — which usually means the team already knows the content approach isn't scaling with the product.
+
+HubSpot had the same structural problem. Significant engineering headcount on documentation maintenance, still stale by release day. Fixed the infrastructure — cut engineering resources on docs by 50%. Without sacrificing coverage.
+
+Worth 20 minutes to see if the same pattern is showing up at [Company]?
+
+Tony Evans | Mintlify`,
+      hook:'Connect documentation quality to PLG metrics — activation, support ticket volume, trial conversion. These are numbers the VP Eng cares about.',
+    },
+    2: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Cold call — I'll be quick.
+
+Most PLG engineering orgs we talk to describe the same documentation problem — docs don't keep up with releases, which creates dead ends in the self-serve flow, which shows up as support tickets or churned trials instead of activated users.
+
+The underlying cause isn't content quality — it's that documentation workflow isn't integrated with engineering workflow, so staleness is structural.
+
+HubSpot was in that exact position. Significant engineering headcount on documentation maintenance, still stale by release day. Fixed the infrastructure — cut those resources by 50%.
+
+At [Company] — does the documentation gap show up in your activation or support ticket data, or is it more of a team-level operational concern?"`,
+    },
+    3: { body:`Blank LinkedIn connection — no message.` },
+    4: {
+      body:`[Name] — glad we're connected.
+
+Thought this was worth sharing given [Company]'s PLG motion: HubSpot cut engineering resources dedicated to documentation by 50% by fixing the infrastructure — not adding headcount. The underlying problem was that documentation workflow wasn't integrated with engineering workflow, so staleness was structural regardless of how many people they threw at it.
+
+For a PLG company, that staleness shows up in self-serve activation — not just the engineering team's workload.
+
+[Link to HubSpot case study or Mintlify]`,
+    },
+    5: {
+      subj:`Re: The self-serve leak hiding in [Company]'s docs`,
+      body:`[Name],
+
+One specific angle worth considering.
+
+[SPECIFIC OBSERVATION:]
+→ [Company] has [X] in their public developer portal. The update timestamps suggest docs are running [time] behind your release cadence. For a PLG product, that lag translates to self-serve friction at the most critical moment — onboarding.
+→ Looked at [Company]'s support community / docs — there are several questions being asked that your documentation should be answering but isn't yet. That's a docs-gap fingerprint in your support queue.
+
+The diagnostic question: what percentage of [Company]'s support tickets have a documentation-gap fingerprint? Most PLG companies find it's 25–40%.
+
+HubSpot answered that question and found the number was material enough to fix the infrastructure rather than hire more writers.
+
+Worth a conversation about what that number might look like at [Company]?
+
+Tony`,
+    },
+    6: {
+      script:`"Hey [Name] — Tony Evans from Mintlify again.
+
+One question: what percentage of [Company]'s support tickets do you think have a documentation-gap fingerprint — questions that your docs should be answering but aren't, because the docs haven't caught up with the product?
+
+Most PLG teams find it's 25–40%. That number usually changes the conversation about whether this is a content problem or an infrastructure problem.
+
+[PAUSE.]"`,
+    },
+    7: {
+      script:`[VOICEMAIL — 20 seconds]
+
+"Hey [Name] — Tony Evans from Mintlify. Following up on the documentation gap question — for a PLG company, the number usually shows up in support ticket volume. HubSpot cut engineering resources on docs by 50% by fixing the infrastructure. I think there's a version of that at [Company]. My number is [phone]."`,
+    },
+    8: {
+      script:`30-second LinkedIn voice note:
+
+"Hey [Name] — Tony Evans from Mintlify. [Their name], I've been looking at [Company]'s documentation situation — specifically how it connects to your PLG motion. Every documentation dead-end in your self-serve flow is a support ticket or a churned trial. HubSpot fixed this structurally — cut engineering resources on docs by 50%. I think there's a similar story at [Company]. Can we take 20 minutes? Just reply here and I'll send you a calendar link."`,
+    },
+    9: {
+      subj:`[Company] + docs — the activation angle`,
+      body:`[Name],
+
+Different approach this time.
+
+Here's the business case in one line: if [Company]'s documentation staleness is causing even 5% of trials to churn before activation — because they hit a dead end and couldn't find the answer — what does that cost in revenue?
+
+For a PLG company with [Company]'s trial volume, the number is usually material. And it's invisible in the standard metrics because it shows up as "churned trial" rather than "documentation gap."
+
+[SPECIFIC OBSERVATION:]
+→ [Company] has [recent product update] that isn't reflected in the current docs yet. That's the moment developers are most likely to try the new feature and fail because the documentation hasn't caught up.
+
+Layers was dealing with the same structural problem — 40–60 engineering hours per month on documentation catch-up. Fixed the infrastructure. Not the headcount.
+
+20 minutes to see if the activation math makes sense for [Company]?
+
+Tony Evans | Mintlify`,
+      hook:'NEW THREAD. Lead with the activation / revenue angle — the business case that hits closest to home for a PLG EB.',
+    },
+    10: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Sent you a note this morning about the activation angle on documentation gaps.
+
+Quick question: has anyone at [Company] looked at what percentage of trial churn is attributable to docs dead ends — people who couldn't find what they needed and stopped engaging?
+
+[PAUSE.]"
+
+IF NO: "That's the most common answer. The teams that look usually find it's meaningful enough to change the priority. Can I take 15 minutes to show you how we'd calculate it for [Company]?"`,
+    },
+    11: {
+      body:`[Name] — one more thing I noticed.
+
+[Company]'s onboarding flow is solid. The drop-off I'd expect is at the moment developers hit their first integration question that isn't answered in the getting started guide — and then the next step is either a support ticket or abandonment.
+
+That gap is fixable without adding writers. HubSpot, Layers — both did it by fixing the infrastructure.
+
+Worth a quick conversation?`,
+    },
+    12: {
+      subj:`Re: [Company] + docs — the activation angle`,
+      body:`[Name],
+
+Last note this week.
+
+Straight question: is the documentation infrastructure question — and its connection to self-serve activation — something [Company] is planning to address in the next 90 days?
+
+Yes: 20 minutes on [day] works for me.
+No: I'll leave you alone and revisit later.
+
+Tony`,
+    },
+    13: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Been in your inbox a few times over the past couple of weeks.
+
+Direct question: is this genuinely not a priority right now, or is it more of a timing issue?
+
+[PAUSE — and wait.]"`,
+    },
+    14: {
+      script:`[FINAL CALL — voicemail if no answer]
+
+"Hey [Name] — Tony Evans from Mintlify. Last call from me. Reached out several times about the documentation-to-activation gap at [Company] — no reply, no problem.
+
+HubSpot, Layers — both solved this. Happy to connect when the timing is right.
+
+My number is [phone]. Good luck with [specific thing you know about their roadmap]."`,
+    }
+  }
+},
+
+enterprise: {
+  name:'Enterprise Tech', eb:'VP Engineering / CTO',
+  proof:'AT&T / LevelBlue (enterprise migration) + Fidelity (99.99% uptime)',secondary:'HubSpot (headcount efficiency)',
+  incumbent:'Confluence / SharePoint',
+  ci:'Most large engineering orgs are running documentation infrastructure built for a wiki era — Confluence, SharePoint, homegrown systems maintained manually for years. That infrastructure now has a new cost that wasn\'t visible three years ago: it\'s not AI-readable. Your AI strategy is only as good as the knowledge base underneath it. Stale, unstructured docs are an AI strategy liability.',
+  touches: {
+    1: {
+      subj:`The AI strategy liability in [Company]'s documentation infrastructure`,
+      body:`[Name],
+
+Most large engineering orgs are operating with documentation infrastructure that was built for a different era — Confluence wikis, SharePoint repositories, homegrown systems that engineering teams maintain manually.
+
+That infrastructure has a new cost that wasn't visible three years ago: it's not AI-readable. As [Company] builds AI agents, internal copilots, or developer-facing AI products, those systems are being trained on or querying documentation that is unstructured, stale, and not architected for machine consumption. Your AI strategy is only as good as the knowledge base underneath it.
+
+[PERSONALIZATION — pick one:]
+→ [Company] has [announced / is building] [AI initiative / internal copilot] — the infrastructure question that usually surfaces at that stage is whether the documentation layer can actually support it.
+→ [Company]'s engineering org is at a scale where documentation maintenance is a meaningful, measurable tax — engineers closing the gap between what shipped and what's documented instead of building.
+→ Your team appears to be running on [Confluence / SharePoint] at [Company]'s scale — documentation infrastructure designed for a wiki era, not an AI era.
+
+AT&T replaced a legacy documentation system at enterprise scale in a regulated environment. Fidelity has been running on Mintlify at 99.99% uptime since launch — zero engineering maintenance overhead.
+
+The migration is simpler than most engineering leaders expect — Laravel migrated fully in 3 days.
+
+Worth a conversation about what [Company]'s documentation infrastructure is actually costing?
+
+Tony Evans | Mintlify`,
+      hook:'Enterprise buyers respond to strategic risk arguments, not operational efficiency arguments. Lead with the AI strategy liability — not the docs quality problem.',
+    },
+    2: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Quick cold call.
+
+We work with large enterprise engineering orgs and the conversation we keep having is about a cost that's gotten a lot more visible in the last 18 months — documentation infrastructure that wasn't built for the AI era.
+
+Most large orgs are running on Confluence, SharePoint, or a homegrown system maintained manually. That's always been an engineering tax. But now it's also an AI strategy liability — if you're building AI agents or internal copilots, the knowledge base those systems query is unstructured, stale, and not machine-readable. Your AI strategy is only as good as the documentation infrastructure underneath it.
+
+AT&T replaced their legacy documentation system at enterprise scale in a regulated environment. Fidelity has been running at 99.99% uptime since launch, zero engineering maintenance overhead.
+
+At [Company] — when your AI initiatives need to surface institutional knowledge, where are they actually pulling from? And is the quality of that source something that's been examined?"`,
+    },
+    3: { body:`Blank LinkedIn connection — no message.` },
+    4: {
+      body:`[Name] — glad we're connected.
+
+Thought this was relevant given [Company]'s scale: AT&T replaced a legacy enterprise documentation system — in a regulated environment — without disruption. Fidelity has been running at 99.99% uptime since switching, zero engineering maintenance overhead.
+
+The migration concern is usually the first objection at enterprise scale. The answer: Laravel migrated in 3 days. AT&T did a full enterprise migration without engineering disruption.
+
+[Link to case study or Mintlify security overview]`,
+      note:'Enterprise buyers need the security and migration risk objection neutralized early. Fidelity + AT&T handle both. Lead with them.'
+    },
+    5: {
+      subj:`Re: The AI strategy liability in [Company]'s documentation infrastructure`,
+      body:`[Name],
+
+One more angle on this worth considering.
+
+At [Company]'s engineering scale, documentation maintenance is a measurable cost — it just usually hasn't been measured.
+
+Rough math: if [estimated headcount] engineers are allocating even 5% of their time to documentation maintenance and catch-up, that's [X engineers × Y hrs/week × $Z/hr] in annual engineering capacity. At enterprise scale, that number is usually surprising when someone actually calculates it.
+
+[SPECIFIC OBSERVATION:]
+→ [Company]'s [Confluence / SharePoint] footprint at your scale is a significant maintenance overhead — the engineering time to keep it current, the staleness that accumulates despite that effort.
+→ [Company] has announced [AI initiative] — which creates a direct dependency on the quality and structure of your existing documentation. Unstructured, stale docs are a bottleneck for that initiative whether or not it's been recognized yet.
+
+HubSpot cut engineering resources dedicated to documentation by 50% by fixing the infrastructure.
+
+Worth calculating the number for [Company]?
+
+Tony`,
+    },
+    6: {
+      script:`"Hey [Name] — Tony Evans from Mintlify again.
+
+One question: has anyone at [Company] actually calculated what documentation maintenance costs in engineering time per week? Not asking for the number — just asking if the calculation has been done.
+
+Most engineering orgs at your scale haven't done it. And the number, when they do, usually changes the priority conversation.
+
+[PAUSE.]"`,
+    },
+    7: {
+      script:`[VOICEMAIL — 20 seconds]
+
+"Hey [Name] — Tony Evans from Mintlify. Following up on the documentation infrastructure question — specifically the AI strategy dependency piece. AT&T and Fidelity both solved this at enterprise scale. I think there's a relevant conversation here for [Company]. My number is [phone]. Happy to take 20 minutes when the timing works."`,
+    },
+    8: {
+      script:`30-second LinkedIn voice note:
+
+"Hey [Name] — Tony Evans from Mintlify. [Their name], the documentation infrastructure question at [Company]'s scale is worth examining for one specific reason — it's not just an engineering tax anymore, it's an AI strategy dependency. The knowledge base your AI initiatives query determines what they can actually do. AT&T and Fidelity solved this. I think there's a conversation worth having at [Company]. Can we take 20 minutes? Just reply here."`,
+    },
+    9: {
+      subj:`[Company]'s documentation maintenance cost — have you measured it?`,
+      body:`[Name],
+
+Different angle this time — the engineering cost question.
+
+At [Company]'s scale, a 5% allocation of engineering time to documentation maintenance and catch-up is a significant number. Most engineering orgs haven't calculated it because it's distributed across teams and shows up as overhead rather than a line item.
+
+[SPECIFIC OBSERVATION:]
+→ [Company] has [estimated engineering headcount]. If 10–15% of engineers regularly touch documentation — which is typical at your scale on [Confluence / SharePoint] — and they're spending 2–3 hours per week on documentation maintenance, the annual cost is approximately [$X at your rate].
+→ That number doesn't include the staleness cost — the documentation that should be updated but isn't, creating drag on engineering output and AI initiative quality.
+
+Fidelity did this calculation. The number justified the switch to Mintlify — and they've been running at 99.99% uptime since launch.
+
+Is this a calculation worth running for [Company]?
+
+Tony Evans | Mintlify`,
+      hook:'NEW THREAD. Lead with the financial math — enterprise EBs respond to ROI arguments in dollar terms. Customize the headcount math based on what you know about their engineering org size.',
+    },
+    10: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Sent you a note this morning about the documentation maintenance cost at [Company]'s scale.
+
+One question: when was the last time someone calculated what your documentation infrastructure costs in engineering time — not just the tooling cost, but the actual human time to keep it current?
+
+[PAUSE.]"
+
+IF NEVER: "That's the typical answer. The number is usually larger than expected, and at [Company]'s scale it's significant. Can I take 15 minutes to walk through how we'd calculate it?"`,
+    },
+    11: {
+      body:`[Name] — one angle I haven't raised yet.
+
+The migration concern is usually the first thing that comes up at [Company]'s scale. The answer: Laravel migrated fully in 3 days. AT&T replaced a legacy enterprise system in a regulated environment without disruption.
+
+If migration risk has been the reason for not examining this — it's worth knowing the actual timeline before deciding.
+
+Worth a brief conversation?`,
+    },
+    12: {
+      subj:`Re: [Company]'s documentation maintenance cost — have you measured it?`,
+      body:`[Name],
+
+Last note on this thread.
+
+Simple question: is the documentation infrastructure question — either as an engineering cost issue or an AI strategy dependency — on anyone's radar at [Company] for this quarter?
+
+Yes or no helps me understand whether this is worth following up on later or moving on entirely.
+
+Tony`,
+    },
+    13: {
+      script:`"Hey [Name] — Tony Evans from Mintlify. Reached out several times over the past two weeks about [Company]'s documentation infrastructure.
+
+Straight question: is this genuinely not a priority, or is it a timing issue?
+
+[PAUSE — and wait. Do not fill the silence.]"`,
+    },
+    14: {
+      script:`[FINAL CALL — voicemail if no answer, 20 seconds]
+
+"Hey [Name] — Tony Evans from Mintlify. Last call from me on this.
+
+Reached out about [Company]'s documentation infrastructure and the AI strategy dependency piece. AT&T, Fidelity — both solved this at enterprise scale. Happy to connect when the timing is right.
+
+My number is [phone]. Good luck with [specific initiative]."`,
+      note:'After this call: Notion → Nurture. Set a 90-day revisit for enterprise accounts — long cycles, and what\'s not a priority this quarter may be an active RFP next quarter.'
+    }
+  }
+}
+};
+
+// ── RENDER ENGINE ────────────────────────────────────────────────────────
+let curVert = 'fintech';
+let curTouch = 1;
+
+function setVert(v, btn) {
+  document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  curVert = v; curTouch = 1;
+  renderAll();
+}
+
+function setTouch(n) {
+  curTouch = n;
+  renderTouch();
+  document.querySelectorAll('.touch-btn').forEach(b=>b.classList.toggle('on', +b.dataset.n===n));
+}
+
+function renderAll() {
+  renderTimeline();
+  renderTouch();
+}
+
+function renderTimeline() {
+  const nav = document.getElementById('touch-nav');
+  const chanIcon = {email:'📧', call:'📞', li:'💼'};
+  const dayLabel = {1:'Day 1',3:'Day 3',4:'Day 4',5:'Day 5',8:'Day 8',9:'Day 9',11:'Day 11'};
+  const shortLabel = {
+    email:{1:'New thread',5:'Reply T1',9:'New thread',12:'Reply T2'},
+    call:{2:'Call #1',6:'Call #2',7:'Call #3 / VM',10:'Call #4',13:'Call #5',14:'Call #6 / Close'},
+    li:{3:'Blank req',4:'Resource DM',8:'Voice note',11:'DM #2'}
+  };
+  nav.innerHTML = STRUCTURE.map(t=>`
+    <div class="touch-btn ${t.n===curTouch?'on':''}" data-n="${t.n}" onclick="setTouch(${t.n})">
+      <span class="tb-day">${t.day===1&&t.n===1?'Day 1':t.day===1&&t.n===2?'':t.day===1&&t.n===3?'':dayLabel[t.day]||''}</span>
+      <span class="tb-icon">${t.ch==='li'&&t.n===8?'🎤':chanIcon[t.ch]}</span>
+      <span class="tb-label" style="font-size:9px;color:var(--text3)">${shortLabel[t.ch]?.[t.n]||t.ch}</span>
+    </div>`).join('');
+
+  // Re-attach click handlers
+  document.querySelectorAll('.touch-btn').forEach(b=>{
+    const n = +b.dataset.n;
+    b.onclick = ()=>setTouch(n);
+  });
+}
+
+function renderTouch() {
+  const vd = VERTS[curVert];
+  const t = STRUCTURE.find(s=>s.n===curTouch);
+  if (!t||!vd) return;
+  const tc = vd.touches[curTouch] || {};
+  const chanClass = {email:'ch-email', call:'ch-call', li:'ch-li'}[t.ch];
+  const chanLabel = t.ch==='li'&&t.n===8 ? '🎤 LinkedIn Voice Note'
+    : t.ch==='email' ? '📧 Email'
+    : t.ch==='call'  ? '📞 Cold Call'
+    : '💼 LinkedIn';
+
+  let bodyHtml = '';
+
+  if (t.ch==='email' && (tc.body || tc.subj)) {
+    bodyHtml = `
+      <div class="msg-card">
+        <div class="msg-top">
+          <div class="msg-channel"><span class="ch-badge ${chanClass}">${chanLabel}</span>${t.thread?`<span style="font-size:11px;color:var(--text3);margin-left:8px">${t.thread}</span>`:''}</div>
+          <button class="copy-btn" onclick="cp(this)">Copy</button>
+        </div>
+        ${tc.subj?`<div class="msg-meta">Subject: <span class="meta-val">${tc.subj}</span></div>`:''}
+        <div class="msg-body">${tc.body||''}</div>
+        ${tc.hook?`<div class="hook-box">🎯 ${tc.hook}</div>`:''}
+        ${tc.note?`<div class="note-box">${tc.note}</div>`:''}
+      </div>`;
+  } else if (t.ch==='call') {
+    bodyHtml = `
+      <div class="msg-card">
+        <div class="msg-top">
+          <div class="msg-channel"><span class="ch-badge ${chanClass}">${chanLabel}</span><span style="font-size:11px;color:var(--text3);margin-left:8px">${t.thread||''}</span></div>
+          <button class="copy-btn" onclick="cp(this)">Copy</button>
+        </div>
+        <div class="msg-body">${tc.script||tc.body||'Script not available for this touch.'}</div>
+        ${tc.branches?`<div class="note-box"><strong style="color:var(--text1)">Response branches:</strong><br>${tc.branches}</div>`:''}
+        ${tc.note?`<div class="hook-box">${tc.note}</div>`:''}
+      </div>`;
+  } else if (t.ch==='li') {
+    bodyHtml = `
+      <div class="msg-card">
+        <div class="msg-top">
+          <div class="msg-channel"><span class="ch-badge ${chanClass}">${chanLabel}</span><span style="font-size:11px;color:var(--text3);margin-left:8px">${t.thread||''}</span></div>
+          <button class="copy-btn" onclick="cp(this)">Copy</button>
+        </div>
+        <div class="msg-body">${tc.body||tc.script||'Content not available.'}</div>
+        ${tc.note?`<div class="note-box">${tc.note}</div>`:''}
+      </div>`;
+  }
+
+  const prevN = curTouch > 1 ? curTouch-1 : null;
+  const nextN = curTouch < 14 ? curTouch+1 : null;
+
+  document.getElementById('touch-output').innerHTML = `
+    <div class="touch-hdr">
+      <div class="th-left">
+        <div class="th-step">${t.step}</div>
+        <div class="th-day">Day ${t.day} — ${chanLabel}</div>
+        <div class="th-purpose">${t.purpose}</div>
+        <div class="th-note">${t.subpurpose}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Vertical</div>
+        <div style="font-size:13px;font-weight:600;color:var(--mint)">${vd.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Proof point</div>
+        <div style="font-size:12px;color:var(--text2)">${vd.proof}</div>
+      </div>
+    </div>
+    ${bodyHtml}
+    <div class="nav-row">
+      ${prevN ? `<button class="nav-btn nb-prev" onclick="setTouch(${prevN})">← Step ${prevN}</button>` : '<div></div>'}
+      ${nextN ? `<button class="nav-btn nb-next" onclick="setTouch(${nextN})">Step ${nextN} →</button>`
+              : '<div class="nav-btn nb-done">✓ Sequence complete</div>'}
+    </div>`;
+}
+
+function cp(btn) {
+  const block = btn.closest('.msg-card');
+  const body = block.querySelector('.msg-body');
+  const subEl = block.querySelector('.meta-val');
+  let txt = '';
+  if (subEl) txt = 'Subject: ' + subEl.textContent + '\n\n';
+  txt += body ? body.innerText : '';
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy', 2000);
+  });
+}
+
+// Build overview timeline dots
+const dayGroups = {};
+STRUCTURE.forEach(t=>{
+  if(!dayGroups[t.day]) dayGroups[t.day]=[];
+  dayGroups[t.day].push(t);
+});
+const tl = document.getElementById('timeline-dots');
+tl.innerHTML = Object.entries(dayGroups).map(([day,touches],i)=>`
+  ${i>0?'<div class="ov-sep"></div>':''}
+  <div class="ov-day">
+    <div class="ov-day-label">Day ${day}</div>
+    <div class="ov-dots">
+      ${touches.map(t=>`<div class="ov-dot ${t.ch==='email'?'d-email':t.ch==='call'?'d-call':'d-li'}">${t.ch==='li'&&t.n===8?'🎤':t.ch==='email'?'📧':t.ch==='call'?'📞':'💼'}</div>`).join('')}
+    </div>
+  </div>`).join('');
+
+renderAll();
+
+function initOutbound() {
+  // Build overview timeline dots
+  const dayGroups = {};
+  STRUCTURE.forEach(t=>{
+    if(!dayGroups[t.day]) dayGroups[t.day]=[];
+    dayGroups[t.day].push(t);
+  });
+  const tl = document.getElementById('timeline-dots');
+  if(tl) tl.innerHTML = Object.entries(dayGroups).map(([day,touches],i)=>`
+    ${i>0?'<div class="ov-sep"></div>':''}
+    <div class="ov-day">
+      <div class="ov-day-label">Day ${day}</div>
+      <div class="ov-dots">
+        ${touches.map(t=>`<div class="ov-dot ${t.ch==='email'?'d-email':t.ch==='call'?'d-call':'d-li'}">${t.ch==='li'&&t.n===8?'🎤':t.ch==='email'?'📧':t.ch==='call'?'📞':'💼'}</div>`).join('')}
+      </div>
+    </div>`).join('');
+  renderAll();
+}
+
+// Init inbound on load
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('panel-inbound').style.display='block';
+  document.getElementById('panel-outbound').style.display='none';
+});
+</script>
+</body>
+</html>

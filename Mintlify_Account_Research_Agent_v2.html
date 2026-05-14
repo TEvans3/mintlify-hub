@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Account Research Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1628;--navy-mid:#111f38;--navy-light:#1a2f4e;--navy-card:#0e1a2e;
+  --mint:#00c47a;--mint-pale:rgba(0,196,122,.1);--mint-pale2:rgba(0,196,122,.05);
+  --gold:#f0a500;--gold-pale:rgba(240,165,0,.1);
+  --red:#ef4444;--red-pale:rgba(239,68,68,.1);
+  --blue:#60a5fa;--blue-pale:rgba(96,165,250,.1);
+  --amber:#fbbf24;--amber-pale:rgba(251,191,36,.1);
+  --purple:#a78bfa;--purple-pale:rgba(167,139,250,.1);
+  --text1:#f0f4ff;--text2:#8b9fc0;--text3:#4a6080;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text1);min-height:100vh;line-height:1.6}
+.app{max-width:900px;margin:0 auto;padding:32px 24px}
+
+.hd{margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bdot{width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.btxt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.title em{color:var(--mint);font-style:normal}
+.sub{font-size:13px;color:var(--text2);max-width:560px;line-height:1.65;margin-bottom:12px}
+.caveat{font-size:11px;color:var(--text3);background:var(--navy-mid);border:1px solid var(--border);border-radius:8px;padding:8px 14px;line-height:1.6;display:inline-block}
+
+.input-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px}
+.fl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:7px;display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+input,select,textarea{
+  width:100%;padding:9px 13px;
+  background:var(--navy-light);border:1px solid var(--border);border-radius:8px;
+  color:var(--text1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border .15s
+}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+input:focus,select:focus,textarea:focus{border-color:var(--mint)}
+select option{background:#1a2f4e}
+textarea{resize:vertical;min-height:62px}
+
+.run-btn{
+  width:100%;padding:13px;background:var(--mint);border:none;border-radius:10px;
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px
+}
+.run-btn:hover:not(:disabled){background:#00a865;transform:translateY(-1px)}
+.run-btn:disabled{background:var(--navy-light);color:var(--text3);cursor:not-allowed;transform:none}
+
+.status{background:var(--navy-mid);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:14px}
+.status.show{display:flex}
+.spin{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--mint);border-radius:50%;animation:sp .8s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.err{background:var(--red-pale);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 18px;color:var(--red);font-size:13px;line-height:1.65;display:none;white-space:pre-wrap}
+.err.show{display:block}
+
+.out{display:none}.out.show{display:block}
+
+.brief-hdr{background:linear-gradient(135deg,var(--navy-mid) 0%,var(--navy-light) 100%);border:1px solid var(--border2);border-radius:16px;padding:22px;margin-bottom:14px}
+.co-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px}
+.co-meta{font-size:12px;color:var(--text2);margin-bottom:14px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid;letter-spacing:.04em}
+
+.score-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.si{background:var(--navy-mid);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.sv{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:var(--mint)}
+.sl{font-size:9px;color:var(--text3);margin-top:2px;line-height:1.35}
+.si.tot{background:var(--mint-pale);border-color:rgba(0,196,122,.25)}
+.si.tot .sv{font-size:22px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.sc{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.sh{padding:11px 16px;background:var(--navy-mid);display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--border)}
+.si-icon{font-size:13px}
+.st{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2)}
+.sb{padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.75}
+.sb strong{color:var(--text1)}
+.sb p{margin-bottom:6px}.sb p:last-child{margin-bottom:0}
+.hl{color:var(--mint);font-weight:600}
+.wn{color:var(--amber)}
+.dng{color:var(--red)}
+
+.trg{padding:9px 0;border-bottom:1px solid var(--border)}
+.trg:last-child{border-bottom:none}
+.trg-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.urg-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.hook{color:var(--mint);font-style:italic;font-size:12px;margin-top:5px}
+
+.act-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.ab{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.ab-p{background:var(--mint);color:var(--navy);border:none;font-weight:700}
+.ab-p:hover{background:#00a865}
+.ab-s{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.ab-s:hover{border-color:var(--border2);color:var(--text1)}
+
+@media(max-width:580px){
+  .row2,.row3,.g2,.score-row{grid-template-columns:1fr}
+  .app{padding:20px 16px}
+  .title{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hd">
+    <div class="brand"><div class="bdot"></div><span class="btxt">Mintlify · Account Research Agent</span></div>
+    <h1 class="title">Account <em>Research</em> Brief</h1>
+    <p class="sub">Drop in a company name. Claude researches the account against the Mintlify ICP, surfaces triggers, and outputs a pre-call brief ready to paste into your Pre-Call Plan or Notion.</p>
+    <div class="caveat">ℹ️ Uses Claude's training knowledge — excellent for established companies. For news from the last 60 days, supplement manually with a LinkedIn + Crunchbase check.</div>
+  </div>
+
+  <div class="input-card">
+    <div class="row2">
+      <div><label class="fl">Company Name *</label><input type="text" id="co" placeholder="e.g. Plaid, Brex, Perplexity AI, Vercel" /></div>
+      <div><label class="fl">Vertical (optional — Claude will detect)</label>
+        <select id="vert">
+          <option value="">Auto-detect</option>
+          <option>FinTech</option><option>AI / ML</option>
+          <option>Developer Tools</option><option>SaaS / PLG</option>
+          <option>Enterprise Tech</option>
+        </select>
+      </div>
+    </div>
+    <div class="row3">
+      <div><label class="fl">Known EB / Contact</label><input type="text" id="eb" placeholder="e.g. Jane Smith, VP Eng" /></div>
+      <div><label class="fl">Current Doc Tool (if known)</label>
+        <select id="dt">
+          <option value="">Unknown — research it</option>
+          <option>Confluence</option><option>Notion</option><option>GitBook</option>
+          <option>ReadMe</option><option>Homegrown / custom</option><option>SharePoint</option>
+        </select>
+      </div>
+      <div><label class="fl">Inbound or Outbound</label>
+        <select id="ib">
+          <option value="">Unknown</option>
+          <option>Inbound — trial / demo request</option>
+          <option>Outbound — cold</option>
+          <option>Warm — referral / intro</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label class="fl">Specific research focus (optional)</label>
+      <textarea id="focus" placeholder="e.g. They just hired a new VP Eng — what's their background? / What does their public developer portal look like? / They announced an AI product — what is it?"></textarea>
+    </div>
+    <button class="run-btn" id="runBtn" onclick="run()">
+      <span id="bico">🔍</span><span id="btxt">Research this account</span>
+    </button>
+  </div>
+
+  <div class="status" id="status">
+    <div class="spin"></div>
+    <span style="font-size:13px;color:var(--text2)">Researching <strong id="step" style="color:var(--mint)">company overview</strong>…</span>
+  </div>
+
+  <div class="err" id="err"></div>
+  <div class="out" id="out"></div>
+</div>
+
+<script>
+const SYS = `You are an enterprise sales research assistant for Tony Evans, an Account Executive at Mintlify.
+
+MINTLIFY CONTEXT:
+- Product: Developer documentation infrastructure. Docs-as-code, AI-native, GitHub/GitLab sync, LLMs.txt standard (co-developed with Anthropic), MCP-accessible.
+- ICP: Companies 2,000+ employees (exceptions for AI/ML and Dev Tools at 500+), developer-facing products or large engineering orgs.
+- Commercial insight: Documentation is not a content problem — it's a workflow infrastructure problem. Staleness is structural because docs workflow isn't integrated with engineering workflow.
+- Economic Buyer: VP Engineering or CTO.
+- Champion: Head of DevRel, Developer Experience, or Documentation.
+- Proof points: Coinbase (20min→60sec doc updates), HubSpot (50% reduction in eng resources on docs), Anthropic (1.5M devs/month, zero eng lift, co-developed LLMs.txt), Fidelity (99.99% uptime in regulated enterprise), AT&T/LevelBlue (legacy enterprise replacement), Layers (40-60 hrs/month saved), Zapier (3x faster updates), Laravel (full migration in 3 days).
+
+ICP SCORING — calculate these exact scores:
+Company Fit (0-20): AI/ML or FinTech with developer-facing API=20, Developer Tools/Infrastructure=17, SaaS/PLG with 500+ eng org=15, Enterprise Tech with AI mandate=14, General SaaS some dev components=10, Poor fit=5
+Doc Pain Signals (0-20): Confluence/SharePoint/Homegrown + external dev docs + visibly stale=20, same without staleness evidence=17, same tool unknown staleness=14, Notion/GitBook + external dev docs=12, ReadMe incumbent=10, tool unknown=5
+Trigger/Why Now (0-25): New VP Eng or CTO hired in last 90 days=25, AI initiative/agent/copilot announced=25, Active API launch or Series B+ funding=20, Hiring for docs/DevRel/DevEx roles=18, Docs visibly stale vs release cadence=15, Named account no specific trigger=8, No trigger comfortable status quo=3
+AI Strategy Risk (0-20): Building AI agents or copilots that query docs=20, Board-level AI mandate=18, AI/ML company or public AI roadmap=16, PLG/SaaS with AI features in development=12, AI-aware no doc dependency=7, No signal=3
+Access & Deal Dynamics (0-15): Inbound interest + champion with EB access=15, Inbound + contact identified unconfirmed=12, Warm intro + contact identified=9, Cold outbound contact identified=5, Cold outbound no contact=2
+
+Tier: 80-100=Tier 1, 60-79=Tier 2, 40-59=Tier 3, <40=Deprioritize
+
+RESPOND WITH VALID JSON ONLY. No markdown, no explanation, no text outside the JSON object. Start your response with { and end with }.
+
+JSON SCHEMA:
+{
+  "company": string,
+  "website": string or null,
+  "hq": string,
+  "employees": string,
+  "vertical": "FinTech"|"AI / ML"|"Developer Tools"|"SaaS / PLG"|"Enterprise Tech"|"Other",
+  "product_summary": string (2-3 sentences, what they do, who pays, how they make money),
+  "developer_facing": boolean,
+  "api_product": boolean,
+  "eng_leader": string or null (name and title of VP Eng or CTO if known),
+  "champion_candidate": string or null (Head of DevRel/DevEx/Docs if exists),
+  "est_engineers": string,
+  "current_tool": string (best guess at their doc platform or "Unknown"),
+  "tool_confidence": "High"|"Medium"|"Low",
+  "has_dev_portal": boolean,
+  "dev_portal_url": string or null,
+  "staleness_evidence": string or null (specific evidence docs lag releases),
+  "ai_initiative": boolean,
+  "ai_description": string or null,
+  "ai_docs_risk": "High"|"Medium"|"Low",
+  "triggers": [
+    {
+      "type": string,
+      "description": string,
+      "urgency": "High"|"Medium"|"Low",
+      "outreach_hook": string (one sentence to use in cold email referencing this trigger)
+    }
+  ],
+  "scores": {
+    "company_fit": integer,
+    "doc_pain": integer,
+    "trigger_why_now": integer,
+    "ai_strategy_risk": integer,
+    "access_deal_dynamics": integer,
+    "total": integer,
+    "tier": string
+  },
+  "proof_point": "Coinbase"|"HubSpot"|"Anthropic"|"Fidelity"|"AT&T"|"Layers"|"Zapier"|"Laravel",
+  "proof_rationale": string,
+  "incumbent": "Confluence"|"Notion"|"GitBook"|"ReadMe"|"Homegrown"|"SharePoint"|"Unknown",
+  "ci_angle": string (the specific commercial insight reframe most likely to land with VP Eng at this company — 2 sentences max),
+  "why_now": string (the single most compelling reason this is a this-quarter problem),
+  "hooks": [string, string, string] (3 specific personalization hooks for cold outreach — reference real things about this company),
+  "questions": [string, string, string] (3 discovery questions most relevant for this specific account),
+  "red_flags": [string] (concerns about deal complexity, long cycles, competitive risk — be honest),
+  "confidence": "High"|"Medium"|"Low",
+  "confidence_note": string (brief note on data quality or significant gaps)
+}`;
+
+const STEPS = ['company overview & product','engineering org & leadership','documentation infrastructure','AI strategy & initiatives','ICP scoring','synthesizing brief'];
+let stepTimer;
+
+async function run() {
+  const co = document.getElementById('co').value.trim();
+  if (!co) { alert('Please enter a company name.'); return; }
+
+  const vert = document.getElementById('vert').value;
+  const eb   = document.getElementById('eb').value.trim();
+  const dt   = document.getElementById('dt').value;
+  const ib   = document.getElementById('ib').value;
+  const foc  = document.getElementById('focus').value.trim();
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  document.getElementById('bico').textContent = '⏳';
+  document.getElementById('btxt').textContent = 'Researching…';
+  document.getElementById('status').classList.add('show');
+  document.getElementById('out').classList.remove('show');
+  document.getElementById('err').classList.remove('show');
+  document.getElementById('err').textContent = '';
+
+  let si = 0;
+  stepTimer = setInterval(() => {
+    si = (si+1) % STEPS.length;
+    document.getElementById('step').textContent = STEPS[si];
+  }, 2200);
+
+  const prompt = `Research ${co} for Mintlify enterprise outreach and return a JSON brief.
+
+Company: ${co}
+${vert  ? 'Vertical hint: '+vert : ''}
+${eb    ? 'Known contact: '+eb : ''}
+${dt    ? 'Known doc tool: '+dt : ''}
+${ib    ? 'Inbound signal: '+ib : ''}
+${foc   ? 'Specific focus: '+foc : ''}
+
+Use everything you know about this company — their product, engineering org, documentation, funding history, AI initiatives, tech stack, leadership team. Be specific with real names and real details where you know them. If you don't know something, be honest rather than guessing. Calculate ICP scores carefully using the rubric.
+
+Remember: respond with ONLY valid JSON. Start with { immediately.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3000,
+        system: SYS,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(stepTimer);
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(`API returned ${res.status}: ${errBody?.error?.message || res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    // Extract all text from content blocks
+    const raw = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    if (!raw.trim()) {
+      throw new Error('Empty response from API. Stop reason: ' + (data.stop_reason || 'unknown'));
+    }
+
+    // Try to parse JSON — multiple strategies
+    let parsed = null;
+    const strategies = [
+      () => JSON.parse(raw.trim()),
+      () => { const m = raw.match(/\{[\s\S]*\}/); if(m) return JSON.parse(m[0]); throw new Error('no match'); },
+      () => { const m = raw.match(/```(?:json)?\s*([\s\S]*?)```/); if(m) return JSON.parse(m[1].trim()); throw new Error('no match'); },
+    ];
+
+    for (const fn of strategies) {
+      try { parsed = fn(); break; } catch {}
+    }
+
+    if (!parsed) {
+      // Show raw output so user can still read it
+      document.getElementById('err').textContent =
+        '⚠ JSON parsing failed — showing raw research output below. Copy what you need.\n\n' + raw;
+      document.getElementById('err').classList.add('show');
+    } else {
+      render(parsed);
+    }
+
+  } catch (e) {
+    clearInterval(stepTimer);
+    document.getElementById('err').textContent =
+      '⚠ Error: ' + e.message +
+      '\n\nIf you see a 401 or auth error: the API key is not configured for this environment. ' +
+      'Open this HTML file directly in Chrome (not through claude.ai) and it should work — or copy the research prompt below and run it directly in a Claude conversation.\n\n' +
+      '─── MANUAL RESEARCH PROMPT ───\n' +
+      'Paste this into Claude chat:\n\n' +
+      `Research ${document.getElementById('co').value} for Mintlify enterprise sales. Tell me: their product (who pays, how they make money), estimated engineering headcount and who the VP Eng/CTO is, whether they have a public developer portal and what doc platform it's built on, any recent triggers (new leadership, funding, AI initiatives, docs hiring), their AI strategy, ICP score for Mintlify (rate 0-100), best proof point to use, top 3 personalization hooks for cold outreach, and top 3 discovery questions.`;
+  } finally {
+    clearInterval(stepTimer);
+    document.getElementById('status').classList.remove('show');
+    btn.disabled = false;
+    document.getElementById('bico').textContent = '🔍';
+    document.getElementById('btxt').textContent = 'Research this account';
+  }
+}
+
+function pct(color) {
+  const m = {High:'rgba(239,68,68,.2)',Medium:'rgba(251,191,36,.2)',Low:'rgba(0,196,122,.2)'};
+  return m[color] || m.Low;
+}
+function ptxt(color) {
+  const m = {High:'var(--red)',Medium:'var(--amber)',Low:'var(--mint)'};
+  return m[color] || m.Low;
+}
+const proofColor = {Coinbase:'#fbbf24',HubSpot:'#f97316',Anthropic:'#a78bfa',Fidelity:'#60a5fa','AT&T':'#34d399',Layers:'#22d3ee',Zapier:'#f87171',Laravel:'#818cf8'};
+const tierColor = {'Tier 1':'var(--mint)','Tier 2':'var(--amber)','Tier 3':'var(--text2)',Deprioritize:'var(--red)'};
+
+function render(d) {
+  const sc = d.scores || {};
+  const tier = sc.tier || 'Unknown';
+  const tc = tierColor[tier] || 'var(--text2)';
+  const trigs = d.triggers || [];
+  const hooks = d.hooks || [];
+  const qs = d.questions || [];
+  const rf = d.red_flags || [];
+
+  document.getElementById('out').innerHTML = `
+    <div class="brief-hdr">
+      <div class="co-name">${d.company||'Unknown'}</div>
+      <div class="co-meta">${[d.hq, d.employees ? d.employees+' employees' : null].filter(Boolean).join(' · ')}</div>
+      <div class="badges">
+        <span class="badge" style="color:${tc};background:rgba(0,0,0,.3);border-color:${tc}50">${tier}</span>
+        ${d.vertical?`<span class="badge" style="background:var(--blue-pale);color:var(--blue);border-color:rgba(96,165,250,.2)">${d.vertical}</span>`:''}
+        ${d.current_tool&&d.current_tool!=='Unknown'?`<span class="badge" style="background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,.2)">On ${d.current_tool}</span>`:''}
+        ${trigs.length?`<span class="badge" style="background:var(--amber-pale);color:var(--amber);border-color:rgba(251,191,36,.2)">⚡ ${trigs.length} trigger${trigs.length>1?'s':''}</span>`:''}
+        ${d.confidence?`<span class="badge" style="background:var(--navy-light);color:var(--text3);border-color:var(--border)">Research: ${d.confidence}</span>`:''}
+      </div>
+    </div>
+
+    <div class="score-row">
+      <div class="si"><div class="sv">${sc.company_fit??'—'}</div><div class="sl">Company Fit /20</div></div>
+      <div class="si"><div class="sv">${sc.doc_pain??'—'}</div><div class="sl">Doc Pain /20</div></div>
+      <div class="si"><div class="sv" style="color:var(--amber)">${sc.trigger_why_now??'—'}</div><div class="sl">Trigger / Why Now /25</div></div>
+      <div class="si"><div class="sv" style="color:var(--purple)">${sc.ai_strategy_risk??'—'}</div><div class="sl">AI Risk /20</div></div>
+      <div class="si tot"><div class="sv">${sc.total??'—'}</div><div class="sl">Total /100</div></div>
+    </div>
+
+    <div class="g2">
+      <div class="sc">
+        <div class="sh"><span class="si-icon">🏢</span><span class="st">Company</span></div>
+        <div class="sb">
+          <p>${d.product_summary||'No summary available'}</p>
+          ${d.developer_facing?'<p class="hl" style="margin-top:8px">✓ Developer-facing product</p>':''}
+          ${d.api_product?'<p class="hl">✓ API product</p>':''}
+          ${d.website?`<p style="margin-top:6px"><a href="${d.website}" target="_blank" style="color:var(--blue);font-size:12px">${d.website}</a></p>`:''}
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sh"><span class="si-icon">👤</span><span class="st">Engineering Org</span></div>
+        <div class="sb">
+          ${d.est_engineers?`<p><strong>Est. engineers:</strong> ${d.est_engineers}</p>`:''}
+          ${d.eng_leader?`<p><strong>EB candidate:</strong> <span class="hl">${d.eng_leader}</span></p>`:'<p class="wn">EB: Unknown — research before outreach</p>'}
+          ${d.champion_candidate?`<p><strong>Champion candidate:</strong> ${d.champion_candidate}</p>`:'<p style="color:var(--text3)">Champion: Not identified</p>'}
+        </div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="sc">
+        <div class="sh"><span class="si-icon">📄</span><span class="st">Documentation Infrastructure</span></div>
+        <div class="sb">
+          <p><strong>Current tool:</strong> <span class="${d.current_tool==='Unknown'?'':'dng'}">${d.current_tool||'Unknown'}</span> <span style="color:var(--text3);font-size:11px">(${d.tool_confidence||'?'} confidence)</span></p>
+          ${d.has_dev_portal?`<p class="hl">✓ Public dev portal exists${d.dev_portal_url?' — <a href="'+d.dev_portal_url+'" target="_blank" style="color:var(--blue)">'+d.dev_portal_url+'</a>':''}</p>`:'<p class="wn">⚠ No public dev portal confirmed</p>'}
+          ${d.staleness_evidence?`<p class="dng" style="margin-top:6px">🔴 ${d.staleness_evidence}</p>`:''}
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sh"><span class="si-icon">🤖</span><span class="st">AI Strategy</span></div>
+        <div class="sb">
+          ${d.ai_initiative?'<p class="hl">✓ Active AI initiative</p>':'<p style="color:var(--text3)">No confirmed AI initiative</p>'}
+          ${d.ai_description?`<p>${d.ai_description}</p>`:''}
+          ${d.ai_docs_risk?`<p style="margin-top:6px"><strong>Docs dependency risk:</strong> <span class="${d.ai_docs_risk==='High'?'dng':d.ai_docs_risk==='Medium'?'wn':'hl'}">${d.ai_docs_risk}</span></p>`:''}
+        </div>
+      </div>
+    </div>
+
+    ${trigs.length?`
+    <div class="sc">
+      <div class="sh"><span class="si-icon">⚡</span><span class="st">Triggers & Why Now (${trigs.length})</span></div>
+      <div class="sb">
+        ${trigs.map(t=>`
+          <div class="trg">
+            <div class="trg-top">
+              <span class="urg-pill" style="background:${pct(t.urgency)};color:${ptxt(t.urgency)}">${t.urgency||'Med'}</span>
+              <strong>${t.type||''}</strong>
+            </div>
+            <p>${t.description||''}</p>
+            ${t.outreach_hook?`<div class="hook">"${t.outreach_hook}"</div>`:''}
+          </div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <div class="sc">
+      <div class="sh"><span class="si-icon">💡</span><span class="st">Commercial Insight Angle</span></div>
+      <div class="sb">
+        <p style="color:var(--text1);font-size:14px;line-height:1.75">${d.ci_angle||'Not available'}</p>
+        ${d.why_now?`<div style="margin-top:12px;padding:10px 14px;background:var(--amber-pale);border:1px solid rgba(251,191,36,.18);border-radius:8px"><strong style="color:var(--amber)">Why now: </strong><span>${d.why_now}</span></div>`:''}
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="sc">
+        <div class="sh"><span class="si-icon">🎯</span><span class="st">Personalization Hooks</span></div>
+        <div class="sb">
+          ${hooks.map((h,i)=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--mint);font-weight:700;margin-right:8px">${i+1}</span>${h}</div>`).join('')}
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sh"><span class="si-icon">❓</span><span class="st">Top Discovery Questions</span></div>
+        <div class="sb">
+          ${qs.map((q,i)=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--mint);font-weight:700;margin-right:8px">${i+1}</span>${q}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="sc">
+        <div class="sh"><span class="si-icon">🏆</span><span class="st">Best Proof Point</span></div>
+        <div class="sb">
+          <p style="font-size:16px;font-weight:700;color:${proofColor[d.proof_point]||'var(--mint)'}">${d.proof_point||'—'}</p>
+          <p style="margin-top:6px">${d.proof_rationale||''}</p>
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sh"><span class="si-icon">⚔️</span><span class="st">Competitive Context</span></div>
+        <div class="sb">
+          <p><strong>Likely incumbent:</strong> <span class="dng">${d.incumbent||'Unknown'}</span></p>
+          ${rf.length?'<p style="margin-top:8px;font-weight:600;color:var(--amber)">Red flags:</p>'+rf.map(f=>`<p class="wn">⚠ ${f}</p>`).join(''):''}
+        </div>
+      </div>
+    </div>
+
+    ${d.confidence_note?`<div style="padding:9px 14px;background:var(--navy-mid);border-radius:8px;font-size:12px;color:var(--text3);font-style:italic">📝 ${d.confidence_note}</div>`:''}
+
+    <div class="act-row">
+      <button class="ab ab-p" onclick="copyBrief()">📋 Copy full brief</button>
+      <button class="ab ab-s" onclick="document.getElementById('co').value='';document.getElementById('out').classList.remove('show');window.scrollTo(0,0)">Research another</button>
+    </div>`;
+
+  document.getElementById('out').classList.add('show');
+  document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+  window._bd = d;
+}
+
+function copyBrief() {
+  const d = window._bd; if(!d) return;
+  const sc = d.scores||{};
+  const txt = `MINTLIFY ACCOUNT RESEARCH BRIEF — ${d.company}
+Generated: ${new Date().toLocaleDateString()}
+${'─'.repeat(50)}
+
+ICP SCORE: ${sc.total||'—'}/100 → ${sc.tier||'—'}
+  Company Fit: ${sc.company_fit||'—'}/20
+  Doc Pain Signals: ${sc.doc_pain||'—'}/20
+  Trigger / Why Now: ${sc.trigger_why_now||'—'}/25
+  AI Strategy Risk: ${sc.ai_strategy_risk||'—'}/20
+  Access & Deal Dynamics: ${sc.access_deal_dynamics||'—'}/15
+
+ACCOUNT OVERVIEW
+${d.hq||''} · ${d.employees||''} employees · ${d.vertical||''}
+${d.product_summary||''}
+Developer-facing: ${d.developer_facing?'Yes':'No'} | API product: ${d.api_product?'Yes':'No'}
+
+ENGINEERING ORG
+EB candidate: ${d.eng_leader||'Unknown — research before outreach'}
+Champion candidate: ${d.champion_candidate||'Not identified'}
+Est. engineers: ${d.est_engineers||'Unknown'}
+
+DOCUMENTATION INFRASTRUCTURE
+Current tool: ${d.current_tool||'Unknown'} (${d.tool_confidence||'?'} confidence)
+Public dev portal: ${d.has_dev_portal?'Yes — '+(d.dev_portal_url||'URL unknown'):'No'}
+Staleness evidence: ${d.staleness_evidence||'None found'}
+
+AI STRATEGY
+Active initiative: ${d.ai_initiative?'Yes':'No'}
+${d.ai_description||''}
+Docs dependency risk: ${d.ai_docs_risk||'Unknown'}
+
+TRIGGERS & WHY NOW
+${(d.triggers||[]).map(t=>`[${t.urgency}] ${t.type}: ${t.description}\nOutreach hook: "${t.outreach_hook||''}"`).join('\n\n')||'No triggers identified'}
+
+COMMERCIAL INSIGHT ANGLE
+${d.ci_angle||'Not available'}
+
+WHY NOW
+${d.why_now||'Not identified'}
+
+PERSONALIZATION HOOKS
+${(d.hooks||[]).map((h,i)=>`${i+1}. ${h}`).join('\n')}
+
+TOP DISCOVERY QUESTIONS
+${(d.questions||[]).map((q,i)=>`${i+1}. ${q}`).join('\n')}
+
+BEST PROOF POINT: ${d.proof_point||'Unknown'}
+${d.proof_rationale||''}
+
+COMPETITIVE CONTEXT
+Likely incumbent: ${d.incumbent||'Unknown'}
+
+RED FLAGS
+${(d.red_flags||[]).map(f=>'⚠ '+f).join('\n')||'None identified'}
+
+Research confidence: ${d.confidence||'Unknown'}
+${d.confidence_note||''}`;
+
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b = document.querySelector('.act-row .ab-p');
+    b.textContent='✓ Copied';
+    setTimeout(()=>b.textContent='📋 Copy full brief',2200);
+  });
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.id==='co') run();
+});
+</script>
+</body>
+</html>

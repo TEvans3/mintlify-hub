@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Champion Test Script — Mintlify</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1a2332; line-height: 1.6; padding: 24px; min-height: 100vh; }
+  .header { margin-bottom: 28px; }
+  .header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #1D9E75; margin-bottom: 6px; }
+  .header-title { font-size: 26px; font-weight: 600; color: #0f1f3d; margin-bottom: 4px; }
+  .header-sub { font-size: 13px; color: #64748b; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; font-size: 13px; font-weight: 500; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #fff; color: #64748b; transition: all 0.15s; }
+  .tab:hover { background: #f1f5f9; color: #1a2332; }
+  .tab.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 12px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+  .divider { height: 1px; background: #f1f5f9; margin: 18px 0; }
+  .alert { background: #f0fdf8; border: 1px solid #86efcd; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #065f46; margin-bottom: 18px; line-height: 1.65; }
+  .warn { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #78350f; margin-bottom: 18px; line-height: 1.65; }
+  .pill { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .pill-green { background: #dcfce7; color: #166534; }
+  .pill-amber { background: #fef3c7; color: #92400e; }
+  .pill-red { background: #fee2e2; color: #991b1b; }
+  .pill-blue { background: #dbeafe; color: #1e40af; }
+  .pill-gray { background: #f1f5f9; color: #475569; }
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .vs-card { border-radius: 12px; padding: 16px 18px; border: 1px solid; }
+  .vs-mob { background: #f0fdf8; border-color: #86efcd; }
+  .vs-talk { background: #fef2f2; border-color: #fca5a5; }
+  .vs-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .vs-title-mob { color: #065f46; }
+  .vs-title-talk { color: #7f1d1d; }
+  .vs-item { font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.06); color: #334155; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+  .vs-item:last-child { border-bottom: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .dot-green { background: #1D9E75; }
+  .dot-red { background: #ef4444; }
+  .script-block { background: #f8fafc; border-left: 3px solid #1D9E75; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 12px; color: #334155; line-height: 1.75; margin: 12px 0; font-style: italic; }
+  .response-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .response-card { border-radius: 10px; padding: 12px 14px; border: 1px solid; }
+  .rc-yes { background: #f0fdf8; border-color: #86efcd; }
+  .rc-no { background: #fef2f2; border-color: #fca5a5; }
+  .rc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .rc-label-yes { color: #065f46; }
+  .rc-label-no { color: #7f1d1d; }
+  .rc-text { font-size: 12px; color: #334155; line-height: 1.6; }
+  .escalation-bar { display: flex; gap: 0; margin-bottom: 22px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+  .esc-step { flex: 1; padding: 12px 14px; text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border-right: 1px solid #e2e8f0; }
+  .esc-step:last-child { border-right: none; }
+  .esc-step.active { background: #1D9E75; color: #fff; }
+  .esc-step:not(.active) { background: #f8fafc; color: #94a3b8; }
+  .esc-step:not(.active):hover { background: #f1f5f9; color: #475569; }
+  .stakes-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; opacity: 0.8; }
+  .esc-content { display: none; }
+  .esc-content.active { display: block; }
+  .step-row { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .step-title { font-size: 13px; font-weight: 600; color: #0f1f3d; margin-bottom: 4px; }
+  .step-detail { font-size: 12px; color: #64748b; line-height: 1.65; }
+  .coaching-row { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .coaching-title { font-size: 13px; font-weight: 600; color: #0f1f3d; margin-bottom: 8px; }
+  .coaching-sub { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.65; }
+  .coaching-script { font-size: 12px; color: #334155; line-height: 1.75; font-style: italic; }
+  .ask-card { border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+  .ask-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; transition: background 0.1s; }
+  .ask-header:hover { background: #f8fafc; }
+  .ask-title { font-size: 13px; font-weight: 600; color: #0f1f3d; }
+  .ask-body { padding: 16px 18px; border-top: 1px solid #f1f5f9; background: #fff; }
+  .cadence-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .cadence-table th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; background: #f8fafc; }
+  .cadence-table td { padding: 10px 12px; border-top: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.55; }
+  .diag-q { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
+  .diag-q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #1D9E75; margin-bottom: 8px; }
+  .final-note { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #7f1d1d; margin-top: 14px; line-height: 1.65; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Mintlify Enterprise Sales</div>
+  <div class="header-title">Champion Test Script</div>
+  <div class="header-sub">Head of DevRel &amp; Developer Experience · Mobilizer vs Talker diagnostic</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('diagnostic')">Mobilizer vs Talker</div>
+  <div class="tab" onclick="show('tests')">The three test asks</div>
+  <div class="tab" onclick="show('coach')">Coach them to sell internally</div>
+  <div class="tab" onclick="show('gone')">When they go quiet</div>
+</div>
+
+<!-- TAB 1: DIAGNOSTIC -->
+<div id="diagnostic" class="panel active">
+  <div class="alert"><strong>The non-pushy reframe:</strong> You are not testing them. You are giving them an opportunity to demonstrate investment. Mobilizers take it. Talkers explain why they can't right now. The ask reveals the answer — you never have to directly say "are you serious about this?"</div>
+
+  <div class="section-label">The DevRel persona — what you're actually dealing with</div>
+  <div class="card" style="margin-bottom:18px">
+    <p style="font-size:13px;color:#334155;line-height:1.75;margin-bottom:10px">Head of DevRel and Developer Experience is your most common first contact at Mintlify — and your most dangerous comfort zone. They feel the documentation pain personally. They love the product immediately. They take every meeting enthusiastically. And they frequently have <strong>zero budget authority</strong> and limited internal political capital.</p>
+    <p style="font-size:13px;color:#334155;line-height:1.75">The DevRel champion is only valuable if they have a line to the VP of Engineering or CTO <strong>and</strong> are willing to use it on your behalf. Your entire champion strategy with this persona is about qualifying that line and activating it — not deepening the relationship with someone who can't move the deal.</p>
+  </div>
+
+  <div class="section-label">Mobilizer vs Talker — the DevRel edition</div>
+  <div class="vs-grid">
+    <div class="vs-card vs-mob">
+      <div class="vs-title vs-title-mob">🟢 Mobilizer signals</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Proactively names the VP Eng or CTO without you asking</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Asks questions about pricing and procurement process</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Follows through on small asks within 48 hours</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Connects you to another stakeholder unprompted</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Uses "we" when describing the problem — not "I"</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Asks what they need to bring to leadership to make the case</div>
+      <div class="vs-item"><span class="dot dot-green"></span>Volunteers internal context: budget cycles, org dynamics, competing priorities</div>
+    </div>
+    <div class="vs-card vs-talk">
+      <div class="vs-title vs-title-talk">🔴 Talker signals</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Takes every meeting but never advances the deal</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Describes the VP Eng as "hard to reach" or "really busy"</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Uses "I" when describing the problem — team pain stays abstract</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Has a reason why each ask doesn't quite work right now</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Enthusiastic on calls, unresponsive between them</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Has never mentioned budget, doesn't ask about it</div>
+      <div class="vs-item"><span class="dot dot-red"></span>Cannot tell you what the VP Eng cares about most right now</div>
+    </div>
+  </div>
+
+  <div class="warn"><strong>The most expensive mistake in this deal type:</strong> spending 6 weeks building a relationship with a Head of DevRel who loves Mintlify, cannot access the VP Eng budget, and will eventually say "I tried but it's not a priority right now." That is a Talker outcome. Identify it in week 2, not week 6.</div>
+
+  <div class="section-label">The one diagnostic question</div>
+  <div class="diag-q">
+    <div class="diag-q-label">Ask this in your second conversation — after rapport, before deep investment</div>
+    <div class="script-block">"I want to make sure I'm being useful to you here — not just taking your time. If this ended up being the right solution, what would it take for it to actually get done? Like, who else would need to be involved, and is that a conversation you'd be comfortable driving?"</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:10px;font-weight:600">What you're listening for:</div>
+    <div class="response-grid">
+      <div class="response-card rc-yes">
+        <div class="rc-label rc-label-yes">Mobilizer answer</div>
+        <div class="rc-text">Names a specific person. Describes how they'd approach the conversation. Asks what they'd need to make the case. Takes ownership of the internal motion.</div>
+      </div>
+      <div class="response-card rc-no">
+        <div class="rc-label rc-label-no">Talker answer</div>
+        <div class="rc-text">Vague about who decides. Says "we'd have to see" or "it depends on budget cycles." Describes the internal process as complicated without offering to navigate it.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: THREE TEST ASKS -->
+<div id="tests" class="panel">
+  <div class="alert"><strong>These are escalating asks</strong> — each costs the champion more than the last. Run them in order. If they pass Ask 1, move to Ask 2. If they fail any ask, you have a Talker. The ask is the test. Their response is the grade.</div>
+
+  <div class="escalation-bar">
+    <div class="esc-step active" onclick="showEsc(1,this)">
+      <div class="stakes-lbl">Ask 1</div>Low stakes
+    </div>
+    <div class="esc-step" onclick="showEsc(2,this)">
+      <div class="stakes-lbl">Ask 2</div>Medium stakes
+    </div>
+    <div class="esc-step" onclick="showEsc(3,this)">
+      <div class="stakes-lbl">Ask 3</div>High stakes
+    </div>
+  </div>
+
+  <div id="esc1" class="esc-content active">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:700;color:#0f1f3d">Ask 1 — The information ask</div>
+        <span class="pill pill-green">Week 1–2</span>
+      </div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65">Costs them nothing but time. A Mobilizer does it immediately. A Talker has reasons why it's complicated.</p>
+      <div class="script-block">"Before our next call, would it be helpful if I put together a one-pager on how Coinbase solved this exact problem — something you could share internally if the conversation came up? And could you tell me: who else at [company] would have a perspective on this? I want to make sure I'm not creating work for you by missing someone obvious."</div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin:14px 0 8px">What the ask actually tests:</div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:14px;line-height:1.65">Will they name other stakeholders? Can they describe who else would care? A Mobilizer knows their internal landscape and shares it freely. A Talker keeps the relationship bilateral — just you and them — because expanding it feels risky or they genuinely don't have the access.</p>
+      <div class="response-grid">
+        <div class="response-card rc-yes">
+          <div class="rc-label rc-label-yes">They pass — Mobilizer</div>
+          <div class="rc-text">Names the VP Eng or a specific team. Asks a clarifying question about what the one-pager should emphasize. Responds within 48 hours.</div>
+        </div>
+        <div class="response-card rc-no">
+          <div class="rc-label rc-label-no">They fail — Talker</div>
+          <div class="rc-text">Says "it's really just me on this right now." Takes a week to respond. Gives a name but adds "I'm not sure they'd be the right person to involve yet."</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:8px">If they fail Ask 1 — what to say:</div>
+      <div class="script-block">"Totally understand. Help me think through this though — if you were to bring this to your VP Eng, what would you want to have ready before that conversation? I want to make sure if the timing ever is right, you're set up to make the case easily."</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.65">This reframes Ask 1 failure as a timing issue rather than a dead end. It also reveals whether they have any intention of ever having the internal conversation — or whether they're managing you away from it.</p>
+    </div>
+  </div>
+
+  <div id="esc2" class="esc-content">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:700;color:#0f1f3d">Ask 2 — The internal action ask</div>
+        <span class="pill pill-amber">Week 2–3</span>
+      </div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65">Costs them some internal capital. They have to do something inside their org on your behalf. A Mobilizer sees this as natural. A Talker finds a reason it's not quite the right moment.</p>
+      <div class="script-block">"Based on everything we've talked about — would you be comfortable sharing that one-pager with your VP Eng this week? Not as a formal proposal, just a 'hey, I've been looking at this, thought you'd find it interesting.' I can make it easy for you — give you a one-sentence context to put on it."</div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin:14px 0 8px">Why this framing works without feeling pushy:</div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:14px;line-height:1.65">You're not asking them to pitch Mintlify. You're asking them to share something interesting with their boss — which is something they should be doing anyway as the person responsible for developer experience. The one-sentence framing offer reduces the effort to near-zero. A Mobilizer has no reason to say no. A Talker will find one.</p>
+      <div class="response-grid">
+        <div class="response-card rc-yes">
+          <div class="rc-label rc-label-yes">They pass — Mobilizer</div>
+          <div class="rc-text">Says yes. Follows up with what the VP's reaction was. Asks if there's more content they can share. Reports back within a week.</div>
+        </div>
+        <div class="response-card rc-no">
+          <div class="rc-label rc-label-no">They fail — Talker</div>
+          <div class="rc-text">"Let me wait until the timing is better." Agrees but never confirms they did it. You follow up and get a vague response about the VP being busy.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:8px">If they fail Ask 2 — the direct conversation:</div>
+      <div class="script-block">"I want to be straight with you — I'm trying to figure out the right way to be helpful here without wasting your time or mine. If sharing this isn't the right move right now, that's completely fine. But can you help me understand what would need to be true for this to actually move forward internally? Because I want to make sure I'm investing my time in the right way for both of us."</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.65">This is the non-pushy version of calling out the dynamic. You're not accusing them of being a Talker — you're giving them a chance to either step up or be honest that they can't move this forward. Both are useful information.</p>
+    </div>
+  </div>
+
+  <div id="esc3" class="esc-content">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:700;color:#0f1f3d">Ask 3 — The EB access ask</div>
+        <span class="pill pill-red">Week 3–4 · The definitive test</span>
+      </div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65">This costs them real internal capital. Only a true Mobilizer makes this happen. If they can't or won't after passing Asks 1 and 2, you have a ceiling on this deal.</p>
+      <div class="script-block">"At this point I think we both know this is the right solution for [company]. The thing I keep running into is that I need to have a 20-minute conversation with your VP Eng to understand how this fits into their engineering priorities — not to pitch them, but to make sure the business case I'm building actually maps to what they care about. Would you be comfortable making that introduction? Even a quick Slack message from you saying 'I've been exploring this, I think it's worth 20 minutes' is all it takes."</div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin:14px 0 8px">Why this is the real test:</div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:14px;line-height:1.65">Introducing a vendor to your VP Eng is a reputational act. The champion is putting their name on you. A Mobilizer does this when they believe in the outcome — because their credibility goes up if the solution delivers. A Talker won't risk it because they're not confident enough in the outcome, or they don't actually have the relationship with the EB that they've implied.</p>
+      <div class="response-grid">
+        <div class="response-card rc-yes">
+          <div class="rc-label rc-label-yes">They pass — confirmed Mobilizer</div>
+          <div class="rc-text">Makes the introduction. May prep you in advance on what the VP cares about. Asks to be included in the meeting. Follows up afterward to debrief.</div>
+        </div>
+        <div class="response-card rc-no">
+          <div class="rc-label rc-label-no">They fail — confirmed Talker</div>
+          <div class="rc-text">"Let me see if I can find the right moment." Suggests you reach out to the VP directly (abdicating). Goes quiet for a week. Returns with "my VP said to go through procurement."</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:10px">If they fail Ask 3 — your three options:</div>
+      <div class="step-row"><div class="step-num" style="background:#1e40af;color:#fff">A</div><div><div class="step-title">Go around them — carefully</div><div class="step-detail">Reach the VP Eng directly via LinkedIn with a commercial insight cold outreach. Do not mention your champion contact. Frame it as fresh outreach to a new contact.</div></div></div>
+      <div class="step-row"><div class="step-num" style="background:#1e40af;color:#fff">B</div><div><div class="step-title">Find a second thread inside the account</div><div class="step-detail">Identify a Senior Engineer, Technical Writer, or Engineering Manager with a different path to the VP Eng. Multi-thread before declaring the deal dead.</div></div></div>
+      <div class="step-row"><div class="step-num" style="background:#64748b;color:#fff">C</div><div><div class="step-title">Reclassify and deprioritize</div><div class="step-detail">Move to Nurture in Notion. Set a 60-day revisit. Stop spending active selling time on an account with a Talker and no EB access path.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: COACH THEM -->
+<div id="coach" class="panel">
+  <div class="alert"><strong>Once you've confirmed a Mobilizer, your job shifts.</strong> You're not selling to them anymore — you're selling through them. Give them the ammunition to make the case internally. A champion who doesn't know how to position Mintlify to their VP Eng will lose the internal sale even if they want to win it.</div>
+
+  <div class="section-label">The four things a DevRel champion needs to sell internally</div>
+
+  <div class="coaching-row">
+    <div class="coaching-title">1 — The business case in the VP Eng's language</div>
+    <div class="coaching-sub">DevRel champions describe Mintlify in DevRel language — better developer experience, cleaner docs, faster updates. Their VP Eng hears "nice to have." You need to help them reframe it in engineering throughput language before they walk into that conversation.</div>
+    <div class="script-block">"When you talk to your VP Eng, lead with the engineering tax angle rather than the docs quality angle. The question that lands best at that level is: how much engineering time is your team spending closing the gap between what's shipped and what's documented? Coinbase had 20 minutes per update across a high-velocity team. That's the number that gets a VP's attention — not 'our docs will look better.'"</div>
+  </div>
+
+  <div class="coaching-row">
+    <div class="coaching-title">2 — The answer to "why not just hire a technical writer?"</div>
+    <div class="coaching-sub">The most common internal objection a DevRel champion will face. Arm them with the response before they walk into the conversation, not after they've already lost it.</div>
+    <div class="script-block">"If your VP pushes back with 'why don't we just hire someone for this' — the answer is: hiring solves the content problem but not the workflow problem. A new hire still can't update docs automatically when code changes. The staleness is structural, not a headcount gap. HubSpot had the same instinct and ended up cutting engineering resources on docs by 50% by fixing the infrastructure instead. That's the reframe."</div>
+  </div>
+
+  <div class="coaching-row">
+    <div class="coaching-title">3 — The answer to "what does this cost and who's paying for it?"</div>
+    <div class="coaching-sub">Champions get ambushed by the budget question and go silent because they don't know how to handle it. Give them a frame before they need it.</div>
+    <div class="script-block">"On budget — if this comes up before we've scoped it together, the framing I'd suggest is: this sits in the engineering infrastructure budget, not the DevRel discretionary budget. It's documentation infrastructure, not a tools subscription. The ROI conversation is about engineering hours recaptured, not feature comparison. That framing tends to land better at the VP level."</div>
+  </div>
+
+  <div class="coaching-row">
+    <div class="coaching-title">4 — The answer to "why now — we have other priorities"</div>
+    <div class="coaching-sub">Urgency is the hardest thing for a champion to manufacture internally. Connect the decision to something the VP Eng already cares about — don't make them invent the urgency themselves.</div>
+    <div class="script-block">"The 'why now' that lands best is connecting it to whatever your VP Eng is already focused on. If there's an AI initiative: 'our current documentation infrastructure isn't machine-readable, which creates a dependency risk for the AI roadmap.' If there's a headcount freeze: 'we're being asked to do more with less; this recaptures engineering time we're currently spending on manual documentation maintenance.' Find the thing they're already worried about and show how this solves it."</div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Champion check-in cadence</div>
+  <div class="card">
+    <table class="cadence-table">
+      <tr><th>When</th><th>Goal</th><th>Format</th></tr>
+      <tr><td style="color:#64748b;white-space:nowrap">Every 5 days</td><td>Progress pulse — did they take the last action, what's the internal temperature</td><td style="color:#64748b;white-space:nowrap">Slack / email</td></tr>
+      <tr><td style="color:#64748b;white-space:nowrap">Before every EB meeting</td><td>Pre-brief — what does the VP care about right now, what objections to expect, how to frame the ask</td><td style="color:#64748b;white-space:nowrap">15-min call</td></tr>
+      <tr><td style="color:#64748b;white-space:nowrap">After every internal convo</td><td>Debrief — what was the reaction, what questions came up, what changed internally</td><td style="color:#64748b;white-space:nowrap">Call or async</td></tr>
+      <tr><td style="color:#64748b;white-space:nowrap">7 days of silence</td><td>Re-engagement — send something of value, re-establish the next concrete action with a due date</td><td style="color:#64748b;white-space:nowrap">Email</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: WHEN THEY GO QUIET -->
+<div id="gone" class="panel">
+  <div class="warn"><strong>A champion going quiet is not a rejection — it's information.</strong> The question is whether they went quiet because they're busy, because they hit an internal wall, or because they were a Talker all along. Your response depends entirely on which one it is.</div>
+
+  <div class="section-label">Three reasons champions go quiet — diagnose before you respond</div>
+
+  <div class="ask-card">
+    <div class="ask-header" onclick="toggle(this)">
+      <div class="ask-title">Reason 1 — They're genuinely busy (most common)</div>
+      <span class="pill pill-green">Recoverable</span>
+    </div>
+    <div class="ask-body">
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65"><strong>Signal:</strong> they were responsive before, the silence is recent, and there's an identifiable external reason — quarter end, a product launch, a reorg. This is a timing problem, not a champion problem.</p>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:8px">Re-engagement:</div>
+      <div class="script-block">"Hey [Name] — not trying to crowd your inbox during what I'm sure is a busy [Q-end / launch / whatever]. Saw [specific thing about their company] and wanted to share something that's directly relevant. [One-sentence insight or proof point]. No action needed — just thought it might be useful context for when you surface for air. Happy to pick back up when timing works."</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.65;margin-top:10px">The personalization signal and low-pressure close tells them this isn't a follow-up for the sake of following up. That's what gets a reply from a busy Mobilizer.</p>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-header" onclick="toggle(this)">
+      <div class="ask-title">Reason 2 — They hit an internal wall</div>
+      <span class="pill pill-amber">Recoverable with the right move</span>
+    </div>
+    <div class="ask-body" style="display:none">
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65"><strong>Signal:</strong> they were advancing the deal, had an internal conversation, and then went quiet. The conversation didn't go well and they don't know what to do next. They're avoiding you because they feel like they failed.</p>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:8px">Give them a way back in:</div>
+      <div class="script-block">"Hey [Name] — wanted to check in, not to push, just because I've been in situations where someone ran into friction internally and didn't know how to navigate it — and it's usually easier if we figure it out together rather than me waiting on the sidelines. Did the conversation with your VP not go the way you expected? If so, that's completely fine — I'd rather know so I can help you think about the next move."</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.65;margin-top:10px">Most champions who hit a wall go quiet because they're embarrassed — not because the deal is dead. Opening the door directly almost always gets a response.</p>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-header" onclick="toggle(this)">
+      <div class="ask-title">Reason 3 — They were a Talker all along</div>
+      <span class="pill pill-red">Requires a different strategy</span>
+    </div>
+    <div class="ask-body" style="display:none">
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.65"><strong>Signal:</strong> they were never consistently responsive, they never completed any of the test asks, and the silence isn't tied to a specific internal event — they just gradually disengaged. The deal was probably never real.</p>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:8px">The honest close — one final email:</div>
+      <div class="script-block">"Hey [Name] — I'll keep this short. I've been genuinely trying to figure out whether there's a path to making this work at [company], but I'm having trouble reading the signals. If the timing isn't right or the internal appetite isn't there, I'd honestly rather know — it saves us both time and I can revisit when things change. If there is still interest, the one thing that would move this forward is [specific ask — usually the EB intro]. Let me know either way and I'll take my cue from you."</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.65;margin-top:10px">This email converts at 40–50% even on cold leads. It works because it's honest, has a clear ask, and gives them an easy out. If they respond with the action — Mobilizer. If they respond with more vague enthusiasm — Talker confirmed.</p>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:700;color:#0f1f3d;margin-bottom:10px">After you send it — what to do in Notion:</div>
+      <div class="step-row"><div class="step-num" style="background:#1e40af;color:#fff;font-size:11px">A</div><div><div class="step-title" style="font-size:12px">Update Champion Strength → Talker. Stage → Nurture. Set 60-day revisit in Actions.</div></div></div>
+      <div class="step-row"><div class="step-num" style="background:#1e40af;color:#fff;font-size:11px">B</div><div><div class="step-title" style="font-size:12px">Start outbound directly to the VP Eng via LinkedIn. Do not let a Talker block you from the real champion inside the account.</div></div></div>
+      <div class="final-note"><strong>The time management rule:</strong> Once a champion is confirmed Talker, you get one re-engagement attempt. If that doesn't move, reclassify and redirect your time. You have 16 deals to close this year. A comfortable Talker relationship is not pipeline.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function showEsc(n,el){
+  document.querySelectorAll('.esc-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.esc-step').forEach(e=>e.classList.remove('active'));
+  document.getElementById('esc'+n).classList.add('active');
+  el.classList.add('active');
+}
+function toggle(hdr){
+  const body=hdr.nextElementSibling;
+  body.style.display=body.style.display==='none'?'block':'none';
+}
+document.querySelectorAll('.ask-body').forEach((b,i)=>{if(i>0)b.style.display='none';});
+</script>
+</body>
+</html>

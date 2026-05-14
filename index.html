@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify Sales Hub — Tony Evans</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1628;--navy-mid:#111f38;--navy-light:#1a2f4e;--navy-card:#0d1825;
+  --mint:#00c47a;--mint-pale:rgba(0,196,122,.1);--mint-pale2:rgba(0,196,122,.05);
+  --gold:#f0a500;--gold-pale:rgba(240,165,0,.1);
+  --blue:#60a5fa;--blue-pale:rgba(96,165,250,.1);
+  --purple:#a78bfa;--purple-pale:rgba(167,139,250,.1);
+  --amber:#fbbf24;--amber-pale:rgba(251,191,36,.1);
+  --red:#ef4444;--red-pale:rgba(239,68,68,.1);
+  --text1:#f0f4ff;--text2:#8b9fc0;--text3:#4a6080;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text1);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+.hd{padding:40px 48px 32px;background:linear-gradient(180deg,rgba(0,196,122,.05) 0%,transparent 100%);border-bottom:1px solid var(--border);margin-bottom:40px}
+.hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.bdot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 14px var(--mint)}
+.bname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.ae-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+h1{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:10px}
+h1 em{color:var(--mint);font-style:normal}
+.sub{font-size:14px;color:var(--text2);max-width:520px;line-height:1.65}
+
+/* STAT BAR */
+.statbar{display:flex;gap:6px;margin-top:24px;flex-wrap:wrap}
+.st{padding:8px 18px;background:var(--navy-mid);border:1px solid var(--border);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.st strong{color:var(--mint);font-size:15px}
+
+/* SECTIONS */
+.sections{padding:0 48px 60px;max-width:1200px;margin:0 auto}
+.sec{margin-bottom:44px}
+.sec-hdr{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.sec-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text1);text-transform:uppercase;letter-spacing:.06em}
+.sec-count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+.sec-note{font-size:12px;color:var(--text3);margin-left:auto}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.grid-2{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+
+/* ARTIFACT CARD */
+.card{background:var(--navy-card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:0;transition:border-color .15s,transform .1s;text-decoration:none;color:inherit;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(0,196,122,.3);transform:translateY(-2px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:transparent;transition:background .15s}
+.card:hover::before{background:var(--mint)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-icon{font-size:22px;line-height:1;flex-shrink:0}
+.card-badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid;text-transform:uppercase;letter-spacing:.05em}
+.b-html{background:var(--mint-pale);color:var(--mint);border-color:rgba(0,196,122,.2)}
+.b-xlsx{background:var(--blue-pale);color:var(--blue);border-color:rgba(96,165,250,.2)}
+.b-dl{background:var(--amber-pale);color:var(--amber);border-color:rgba(251,191,36,.2)}
+.b-interactive{background:var(--purple-pale);color:var(--purple);border-color:rgba(167,139,250,.2)}
+.card-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text1);margin-bottom:6px;line-height:1.3}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.65;flex:1}
+.card-footer{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-when{font-size:10px;color:var(--text3);font-style:italic}
+.card-arrow{font-size:12px;color:var(--mint);font-weight:700;opacity:0;transition:opacity .15s}
+.card:hover .card-arrow{opacity:1}
+
+/* DOWNLOAD CARD VARIANT */
+.card.dl{border-style:dashed}
+.card.dl:hover{border-style:solid}
+
+/* PHASE LABEL */
+.phase{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.phase::after{content:'';flex:1;height:1px;background:var(--border)}
+
+@media(max-width:768px){
+  .hd,.sections{padding-left:20px;padding-right:20px}
+  h1{font-size:30px}
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-top">
+    <div class="brand"><div class="bdot"></div><span class="bname">Mintlify Enterprise AE · Sales Hub</span></div>
+    <span class="ae-tag">Tony Evans · Starting June 2025</span>
+  </div>
+  <h1>Your <em>Sales Toolkit</em></h1>
+  <p class="sub">Every artifact, tool, and reference built for your Mintlify territory. Click any card to open it. Excel files download directly.</p>
+  <div class="statbar">
+    <div class="st"><strong>6</strong> interactive tools</div>
+    <div class="st"><strong>4</strong> Excel workbooks</div>
+    <div class="st"><strong>$2.5M</strong> quota</div>
+    <div class="st"><strong>50–100</strong> named accounts</div>
+  </div>
+</header>
+
+<div class="sections">
+
+  <!-- PRE-CALL & RESEARCH -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">🔍 Research & Pre-Call Prep</span>
+      <span class="sec-count">3 tools</span>
+      <span class="sec-note">Use before every call</span>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="Mintlify_Account_Research_Agent_v2.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">🤖</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span><span class="badge b-interactive">AI-powered</span></div>
+        </div>
+        <div class="card-name">Account Research Agent v2</div>
+        <div class="card-desc">Drop in a company name. Claude researches the account, scores it against the Mintlify ICP, surfaces triggers and outreach hooks, and outputs a pre-call brief. Copy to clipboard in one click.</div>
+        <div class="card-footer"><span class="card-when">Use before every new account</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="card" href="Mintlify_ICP_Scoring_Sheet_v2.xlsx" download>
+        <div class="card-top">
+          <span class="card-icon">📊</span>
+          <div class="card-badges"><span class="badge b-xlsx">Excel</span><span class="badge b-dl">Download</span></div>
+        </div>
+        <div class="card-name">ICP Scoring Sheet v2</div>
+        <div class="card-desc">Score and tier your territory accounts across 5 dimensions — Company Fit, Doc Pain, Trigger/Why Now, AI Strategy Risk, and Access. Dropdown-based, auto tier assignment. LinkedIn Sales Nav filters tab included.</div>
+        <div class="card-footer"><span class="card-when">Territory prioritization</span><span class="card-arrow">↓</span></div>
+      </a>
+
+      <a class="card" href="Mintlify_PreCall_Plan.xlsx" download>
+        <div class="card-top">
+          <span class="card-icon">📋</span>
+          <div class="card-badges"><span class="badge b-xlsx">Excel</span><span class="badge b-dl">Download</span></div>
+        </div>
+        <div class="card-name">Pre-Call Plan</div>
+        <div class="card-desc">Two tabs. Tab 1: working pre-call doc with CI openers, discovery questions, trap-setting questions, objection responses, MEDDPICC snapshot, and post-call notes. Tab 2: 20-minute pre-research checklist.</div>
+        <div class="card-footer"><span class="card-when">Fill in 20 min before every call</span><span class="card-arrow">↓</span></div>
+      </a>
+
+      <a class="card" href="Mintlify_Discovery_Question_Bank.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">❓</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span><span class="badge b-interactive">Interactive</span></div>
+        </div>
+        <div class="card-name">Discovery Question Bank</div>
+        <div class="card-desc">52 Challenger-framed questions across 8 categories. Filter by persona (VP Eng, Head of DevRel, Staff Eng, Tech Writer) and stage (First Meeting, Discovery, Champion Building). Click any card for the probe and coaching note.</div>
+        <div class="card-footer"><span class="card-when">Pull from when building pre-call plan</span><span class="card-arrow">→</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- MESSAGING -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">✉️ Messaging & Outreach</span>
+      <span class="sec-count">2 tools</span>
+      <span class="sec-note">Inbound + outbound, every channel</span>
+    </div>
+    <div class="grid grid-2">
+
+      <a class="card" href="Mintlify_Messaging_Playbook_Combined.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">📨</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span><span class="badge b-interactive">Interactive</span></div>
+        </div>
+        <div class="card-name">Messaging Playbook — Combined</div>
+        <div class="card-desc">Two tabs in one file. Inbound: response templates for 5 signal types (trial sign-up, demo request, pricing page visit, referral, re-engage). Outbound: full 14-step, 11-day cadence across 5 verticals — every email, call script, and LinkedIn message written out. Copy buttons on every message.</div>
+        <div class="card-footer"><span class="card-when">Primary outreach reference</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="card" href="Mintlify_SDR_Partnership_Guide.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">🤝</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span></div>
+        </div>
+        <div class="card-name">SDR Partnership Guide</div>
+        <div class="card-desc">5-tab onboarding resource for your SDR. Covers the partnership model and operating modes, how to use the territory sheet, who to target and ICP research checklist, handoff protocol with brief template, and what good looks like with activity benchmarks and ramp timeline.</div>
+        <div class="card-footer"><span class="card-when">Share with SDR on day 1</span><span class="card-arrow">→</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- DEAL MANAGEMENT -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">🎯 Deal Management</span>
+      <span class="sec-count">3 tools</span>
+      <span class="sec-note">From discovery to close</span>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="Mintlify_MAP_v2.xlsx" download>
+        <div class="card-top">
+          <span class="card-icon">🗺️</span>
+          <div class="card-badges"><span class="badge b-xlsx">Excel</span><span class="badge b-dl">Download</span></div>
+        </div>
+        <div class="card-name">Mutual Action Plan v2</div>
+        <div class="card-desc">7-tab workbook. External (share with customer): Milestone Plan, Q&A & Open Items, Shared Resources, Success Criteria. Internal (AE only): MEDDPICC Snapshot, Deal Health & Risk, AE Playbook. Cover tab explains what to share vs. keep internal.</div>
+        <div class="card-footer"><span class="card-when">Introduce after first discovery call</span><span class="card-arrow">↓</span></div>
+      </a>
+
+      <a class="card" href="Champion_Test_Script.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">🔬</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span><span class="badge b-interactive">Interactive</span></div>
+        </div>
+        <div class="card-name">Champion Test Script</div>
+        <div class="card-desc">Mobilizer vs. Talker diagnostic for Head of DevRel persona. 7 signals for each type, 3 escalating test asks with exact scripts, internal selling coaching guide with 4 scripts, and a when-they-go-quiet playbook for 3 scenarios.</div>
+        <div class="card-footer"><span class="card-when">Champion building stage</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="card" href="Mintlify_Business_Case_Framework.html" target="_blank">
+        <div class="card-top">
+          <span class="card-icon">💰</span>
+          <div class="card-badges"><span class="badge b-html">HTML</span><span class="badge b-interactive">Interactive</span></div>
+        </div>
+        <div class="card-name">Business Case Framework</div>
+        <div class="card-desc">Interactive ROI calculator. Enter account inputs — engineering headcount, update frequency, hourly rate, ACV. Auto-generates: annual savings, payback period, multi-year chart, proof point matched to vertical, full business case narrative, and a champion one-pager email.</div>
+        <div class="card-footer"><span class="card-when">Business Case / ROI stage</span><span class="card-arrow">→</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- TERRITORY COORDINATION -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">📁 Territory & SDR Coordination</span>
+      <span class="sec-count">1 tool</span>
+      <span class="sec-note">Shared with your SDR</span>
+    </div>
+    <div class="grid grid-2">
+
+      <a class="card" href="Mintlify_AE_SDR_v2.xlsx" download>
+        <div class="card-top">
+          <span class="card-icon">📍</span>
+          <div class="card-badges"><span class="badge b-xlsx">Excel</span><span class="badge b-dl">Download</span></div>
+        </div>
+        <div class="card-name">AE + SDR Territory Sheet v2</div>
+        <div class="card-desc">3-tab coordination layer. Territory Command: one row per account, outreach ownership, stage, meeting status, multi-thread flag — your shared source of truth. Meeting Handoffs: SDR fills left side on booking, AE fills right side post-call. Weekly Sync: structured 30-minute template both sides fill in before Thursday call.</div>
+        <div class="card-footer"><span class="card-when">Ongoing — update when things change</span><span class="card-arrow">↓</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- QUICK REFERENCE -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">⚡ Quick Reference</span>
+      <span class="sec-count">Mintlify proof points & commercial insight</span>
+    </div>
+    <div class="grid">
+
+      <div class="card" style="cursor:default">
+        <div class="card-top"><span class="card-icon">🏆</span></div>
+        <div class="card-name">Proof Point Library</div>
+        <div class="card-desc" style="font-size:11px">
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--mint)">Coinbase</strong> — 20 min → 60 sec doc updates. High-velocity FinTech API eng.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--blue)">HubSpot</strong> — 50% reduction in eng resources on docs. EB headcount efficiency.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--purple)">Anthropic</strong> — 1.5M+ devs/month, zero eng lift. LLMs.txt standard. AI-native narrative.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--blue)">Fidelity</strong> — 99.99% uptime since launch. Regulated enterprise / security conversations.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--amber)">AT&T / LevelBlue</strong> — Legacy enterprise migration. Large regulated accounts.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--mint)">Layers</strong> — 40–60 hrs/month saved. Mid-market dev tools concrete time metric.</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--gold)">Zapier</strong> — 3x faster documentation updates. Docs-as-code workflow pain.</div>
+          <div style="padding:5px 0"><strong style="color:var(--red)">Laravel</strong> — Full migration in 3 days. Migration risk objection neutralizer.</div>
+        </div>
+      </div>
+
+      <div class="card" style="cursor:default">
+        <div class="card-top"><span class="card-icon">💡</span></div>
+        <div class="card-name">The Commercial Insight</div>
+        <div class="card-desc">
+          <div style="font-size:13px;color:var(--text1);line-height:1.8;margin-bottom:14px;padding:12px 14px;background:var(--mint-pale);border-radius:8px;border-left:2px solid var(--mint)">"Most engineering leaders think their documentation problem is a content problem. It's not — it's a workflow infrastructure problem. Staleness is structural because documentation workflow isn't integrated with engineering workflow."</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.65"><strong style="color:var(--text2)">The three why questions:</strong> Why do anything? (quantified pain) · Why Mintlify? (docs-as-code, AI-native, GitHub sync, LLMs.txt) · Why now? (named compelling event)</div>
+        </div>
+      </div>
+
+      <div class="card" style="cursor:default">
+        <div class="card-top"><span class="card-icon">📐</span></div>
+        <div class="card-name">Territory Math</div>
+        <div class="card-desc" style="font-size:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <div style="background:var(--navy-mid);border-radius:8px;padding:10px;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--mint)">$2.5M</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Annual quota</div></div>
+            <div style="background:var(--navy-mid);border-radius:8px;padding:10px;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--blue)">~16</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Deals to close</div></div>
+            <div style="background:var(--navy-mid);border-radius:8px;padding:10px;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--amber)">$150k</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Target ASP</div></div>
+            <div style="background:var(--navy-mid);border-radius:8px;padding:10px;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--purple)">$7.5M+</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Pipeline needed</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3)">4 deals/quarter at $150k ASP. 3–4× pipeline coverage = $7.5M–$10M active at all times. 50–100 named enterprise accounts (2,000+ employees).</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer style="padding:24px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">Mintlify Sales Hub · Tony Evans · Built May 2025</span>
+  <span style="font-size:11px;color:var(--text3)">HTML tools open in new tab · Excel files download directly</span>
+</footer>
+
+</body>
+</html>

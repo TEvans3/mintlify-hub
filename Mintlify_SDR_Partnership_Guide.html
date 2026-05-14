@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintlify SDR Partnership Guide</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a2332;line-height:1.6;min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:28px 24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:#1D9E75}
+.brand-name{font-size:15px;font-weight:700;color:#0f1f3d}
+.brand-sub{font-size:13px;color:#64748b;margin-left:4px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:24px}
+.tab{padding:8px 15px;font-size:12px;font-weight:500;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fff;color:#64748b;transition:all .15s;white-space:nowrap}
+.tab:hover{background:#f8fafc;color:#1a2332}
+.tab.active{background:#0f1f3d;color:#fff;border-color:#0f1f3d}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px 22px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:700;color:#0f1f3d;margin-bottom:6px}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:10px}
+.divider{height:1px;background:#f1f5f9;margin:18px 0}
+.alert{background:#f0fdf8;border:1px solid #86efcd;border-radius:10px;padding:12px 16px;font-size:13px;color:#065f46;margin-bottom:16px;line-height:1.65}
+.warn{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;font-size:13px;color:#78350f;margin-bottom:16px;line-height:1.65}
+.pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.pill-green{background:#dcfce7;color:#166534}
+.pill-blue{background:#dbeafe;color:#1e40af}
+.pill-amber{background:#fef3c7;color:#92400e}
+.pill-red{background:#fee2e2;color:#991b1b}
+.pill-purple{background:#f3e8ff;color:#6b21a8}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.role-card{border-radius:12px;padding:16px 18px;border:1px solid}
+.role-ae{background:#eff6ff;border-color:#93c5fd}
+.role-sdr{background:#f0fdf8;border-color:#86efcd}
+.role-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.role-title-ae{color:#1e3a5f}.role-title-sdr{color:#065f46}
+.role-item{font-size:12px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,0.06);color:#334155;line-height:1.55;display:flex;align-items:flex-start;gap:8px}
+.role-item:last-child{border-bottom:none}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dot-blue{background:#3b82f6}.dot-green{background:#1D9E75}.dot-amber{background:#f59e0b}
+.script-block{background:#f8fafc;border-left:3px solid #1D9E75;border-radius:0 8px 8px 0;padding:12px 16px;font-size:12px;color:#334155;line-height:1.8;margin:10px 0;font-style:italic}
+.step-row{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-title{font-size:13px;font-weight:700;color:#0f1f3d;margin-bottom:3px}
+.step-detail{font-size:12px;color:#64748b;line-height:1.65}
+.seq-card{border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.seq-hdr{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff}
+.seq-hdr:hover{background:#f8fafc}
+.seq-title{font-size:13px;font-weight:700;color:#0f1f3d}
+.seq-body{padding:14px 18px;border-top:1px solid #f1f5f9;display:none}
+.touch-row{display:grid;grid-template-columns:52px 90px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #f8fafc;font-size:12px;align-items:start}
+.touch-row:last-child{border-bottom:none}
+.touch-day{font-weight:700;color:#1D9E75;text-align:center;padding-top:2px}
+.touch-chan{color:#475569;font-weight:600;padding-top:2px}
+.touch-msg{color:#334155;line-height:1.65}
+.icp-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.icp-title{font-size:13px;font-weight:700;color:#0f1f3d;margin-bottom:6px}
+.icp-detail{font-size:12px;color:#64748b;line-height:1.65}
+.obj-row{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.obj-hdr{padding:12px 16px;display:flex;justify-content:space-between;cursor:pointer}
+.obj-hdr:hover{background:#f8fafc}
+.obj-title-txt{font-size:12px;font-weight:700;color:#7f1d1d}
+.obj-body{padding:14px 18px;border-top:1px solid #f1f5f9;font-size:12px;color:#334155;line-height:1.7;display:none}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.metric{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center}
+.metric-val{font-size:20px;font-weight:700;color:#0f1f3d}
+.metric-lbl{font-size:10px;color:#94a3b8;margin-top:3px;line-height:1.4}
+.check-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f8fafc;font-size:12px}
+.check-row:last-child{border-bottom:none}
+.chk{width:18px;height:18px;border:1.5px solid #d1d5db;border-radius:4px;flex-shrink:0;margin-top:1px;background:#f0fdf8;display:flex;align-items:center;justify-content:center;font-size:11px;color:#1D9E75;font-weight:700}
+.timeline{position:relative;padding-left:24px;margin-top:12px}
+.timeline::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:#e2e8f0;border-radius:2px}
+.tl-item{position:relative;margin-bottom:16px}
+.tl-dot{position:absolute;left:-20px;top:5px;width:12px;height:12px;border-radius:50%;background:#1D9E75;border:2px solid #fff;box-shadow:0 0 0 2px #1D9E75}
+.tl-week{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#1D9E75;margin-bottom:3px}
+.tl-body{font-size:12px;color:#334155;line-height:1.65}
+@media(max-width:640px){.two-col,.three-col,.metric-grid{grid-template-columns:1fr}.touch-row{grid-template-columns:40px 80px 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <div class="brand"><div class="brand-dot"></div><span class="brand-name">Mintlify</span><span class="brand-sub">| SDR Partnership Guide</span></div>
+  <div style="font-size:12px;color:#94a3b8">AE: Tony Evans · Updated June 2025</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('model')">Our model</div>
+  <div class="tab" onclick="show('sheet')">How to use the sheet</div>
+  <div class="tab" onclick="show('icp')">Who we target</div>
+  <div class="tab" onclick="show('handoff')">Handoff protocol</div>
+  <div class="tab" onclick="show('success')">What good looks like</div>
+</div>
+
+<!-- MODEL -->
+<div id="model" class="panel active">
+  <div class="alert"><strong>How we work:</strong> You book the meetings. I run the deals. But we are not siloed — the best pipeline we'll create comes from coordinated outreach into the same account from different angles at the same time. This guide tells you exactly how we do that.</div>
+  <div class="section-label">The partnership model</div>
+  <div class="two-col">
+    <div class="role-card role-ae">
+      <div class="role-title role-title-ae">🔵 Tony (AE) owns</div>
+      <div class="role-item"><span class="dot dot-blue"></span>Accounts with existing inbound connections or senior relationships</div>
+      <div class="role-item"><span class="dot dot-blue"></span>Enterprise accounts where first touch needs to be senior (Bloomberg, Broadridge)</div>
+      <div class="role-item"><span class="dot dot-blue"></span>All meetings from first call forward — discovery, champion building, EB meetings</div>
+      <div class="role-item"><span class="dot dot-blue"></span>Multi-thread coordination — I tell you who to reach and when</div>
+      <div class="role-item"><span class="dot dot-blue"></span>Account strategy — angle, proof point, Why Now</div>
+      <div class="role-item"><span class="dot dot-blue"></span>Pre-call plan for every meeting you book</div>
+    </div>
+    <div class="role-card role-sdr">
+      <div class="role-title role-title-sdr">🟢 You (SDR) own</div>
+      <div class="role-item"><span class="dot dot-green"></span>Cold outreach on all SDR-led accounts — email, call, LinkedIn</div>
+      <div class="role-item"><span class="dot dot-green"></span>Sequence execution — hitting every touch on cadence</div>
+      <div class="role-item"><span class="dot dot-green"></span>First reply handling — respond, qualify, book the meeting</div>
+      <div class="role-item"><span class="dot dot-green"></span>Multi-thread contacts — when I activate you, you own that thread</div>
+      <div class="role-item"><span class="dot dot-green"></span>Research — confirm trigger, find right contact, verify doc tool before outreach</div>
+      <div class="role-item"><span class="dot dot-green"></span>Cadence log — every touch logged in the sheet the day it happens</div>
+    </div>
+  </div>
+  <div class="section-label">The three operating modes</div>
+  <div class="three-col">
+    <div class="card"><div style="font-size:22px;margin-bottom:6px">🟢</div><div class="card-title">SDR-Led</div><div style="font-size:12px;color:#64748b;line-height:1.65">You own primary outreach. Cold account, no existing relationship. You run the full sequence until you book or exhaust the cadence. I review your messaging before you send and brief you on the account angle.</div></div>
+    <div class="card"><div style="font-size:22px;margin-bottom:6px">🔵</div><div class="card-title">AE-Led</div><div style="font-size:12px;color:#64748b;line-height:1.65">I own primary outreach — inbound signal, existing relationship, or senior enterprise account. You support by researching additional contacts and standing by to multi-thread if I ask.</div></div>
+    <div class="card"><div style="font-size:22px;margin-bottom:6px">🟡</div><div class="card-title">Joint / Multi-thread</div><div style="font-size:12px;color:#64748b;line-height:1.65">We're both active in the account — different contacts, coordinated angles. I handle Champion/EB track. You handle a second contact independently. We do NOT cross-reference each other until I say so.</div></div>
+  </div>
+  <div class="section-label">The non-negotiable rules</div>
+  <div class="card">
+    <div class="check-row"><div class="chk">✓</div><div><strong>Never reach out to an account without checking with me first.</strong> Surprise outreach to an account I'm already working creates chaos. Check the Territory Command sheet before starting any sequence.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Log every touch the day it happens.</strong> If it's not in the SDR Cadence Log, it doesn't exist. I use that log to brief myself before every call you generate.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>When someone replies — loop me in within the hour.</strong> Don't let a warm reply sit. Text me, Slack me, forward it. I'll tell you how to respond or take it from there.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>In joint-mode accounts — do NOT mention each other.</strong> We look like independent signals. The moment you say "my AE is also talking to someone there," the coordinated strategy is compromised.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Brief me before you hand off a meeting.</strong> Send me the account, contact, what was said in the sequence, and the trigger. I need 10 minutes of context before I open my mouth on that call.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Weekly sync is mandatory — 30 minutes, same time every week.</strong> Everything non-urgent waits for the sync. Don't Slack me 12 questions across the week when 11 can be answered in 30 minutes on Thursday.</div></div>
+  </div>
+</div>
+
+<!-- SHEET -->
+<div id="sheet" class="panel">
+  <div class="alert"><strong>The sheet is our shared source of truth.</strong> If you don't know what to do with an account — check the sheet. If I don't know what you've been doing in an account — I check the sheet. Keep it current and it makes both our jobs easier.</div>
+  <div class="section-label">The 3 tabs — what each one is for</div>
+  <div class="step-row"><div class="step-num" style="background:#1D9E75;color:#fff">1</div><div><div class="step-title">Territory Command (green tab)</div><div class="step-detail">Your main view. One row per account. Shows who owns outreach (AE-Led / SDR-Led / Joint / Unworked), current stage, meeting status, multi-thread flag, compelling event, and notes. Review together in weekly sync. <strong>Update the Stage and Outreach Owner columns every time something changes — that's all this tab needs from you.</strong> Your Outreach tool handles activity logging.</div></div></div>
+  <div class="step-row"><div class="step-num" style="background:#6B21A8;color:#fff">2</div><div><div class="step-title">Meeting Handoffs (purple tab)</div><div class="step-detail">Every meeting you book gets a row here. You fill in the left side (account, contact, trigger, their verbatim reply) when you book. Tony fills in the right side (call outcome, multi-thread instruction, your next action) within 24 hours of the call. Check it — don't wait to be told.</div></div></div>
+  <div class="step-row"><div class="step-num" style="background:#C2410C;color:#fff">3</div><div><div class="step-title">Weekly Sync (orange tab)</div><div class="step-detail">Fill in your sections before our Thursday call — what's working in outreach, what isn't, accounts you want Tony's direction on. Tony fills in his sections — priorities for the week, multi-thread activations, accounts to deprioritize. We go through it together. 30-minute hard stop.</div></div></div>
+  <div class="divider"></div>
+  <div class="section-label">Your daily workflow with the sheet</div>
+  <div class="card">
+    <div class="step-row"><div class="step-num" style="background:#0f1f3d;color:#fff;font-size:10px">AM</div><div><div class="step-title">Check Territory Command</div><div class="step-detail">Which accounts are priorities today? Check the Outreach Owner and Stage columns. Check Tony's Notes field for any specific angle or instruction he's left you before you start sequencing.</div></div></div>
+    <div class="step-row"><div class="step-num" style="background:#0f1f3d;color:#fff;font-size:10px">MID</div><div><div class="step-title">Activity lives in your Outreach tool — not the sheet</div><div class="step-detail">Your Outreach tool logs every touch automatically and syncs to Salesforce. You don't need to log activity in the sheet. The only thing to update here is Stage (when something changes) and Meeting Booked (when you book).</div></div></div>
+    <div class="step-row"><div class="step-num" style="background:#0f1f3d;color:#fff;font-size:10px">PM</div><div><div class="step-title">Book a meeting → fill in Meeting Handoffs immediately</div><div class="step-detail">Don't wait until the day before the call. Fill in the handoff row the same day you book. Send Tony the brief via Slack using the template in the Handoff Protocol tab.</div></div></div>
+  </div>
+</div>
+
+<!-- ICP -->
+<div id="icp" class="panel">
+  <div class="alert"><strong>Our buyer is an engineering leader, not a business buyer.</strong> You are reaching engineers who are already dealing with the problem you're going to describe. Lead with insight, not a pitch.</div>
+  <div class="section-label">Primary target personas</div>
+  <div class="icp-card"><div class="icp-title">🎯 Tier 1 SDR target — Head of DevRel / Developer Experience</div><div class="icp-detail">Highest-conversion cold contact at Mintlify accounts. They own the documentation pain personally and feel it every day. They respond to the commercial insight because it articulates something they've been living with. <strong>Caution:</strong> they often don't have budget authority. Your job is to book the meeting — my job is to qualify whether they're a Mobilizer or Talker.</div></div>
+  <div class="icp-card"><div class="icp-title">🎯 Tier 1 SDR target — VP of Engineering / CTO</div><div class="icp-detail">The Economic Buyer. Higher bar for cold outreach but highest payoff. Lead with the engineering tax framing — they care about engineering throughput, not documentation aesthetics. The Coinbase proof point (20 min → 60 sec) is your opener. Keep cold outreach short and specific to their company.</div></div>
+  <div class="icp-card"><div class="icp-title">🟡 Multi-thread target — Staff / Senior Engineer or Engineering Manager</div><div class="icp-detail">Not your primary cold target but excellent for multi-threading inside an active account. They live with documentation pain daily and can become internal mobilizers. Use when I have the DevRel/VP track and need a second thread from a different angle.</div></div>
+  <div class="divider"></div>
+  <div class="section-label">Top verticals — in priority order</div>
+  <div class="two-col">
+    <div class="card"><div class="card-title">1. FinTech <span class="pill pill-green">Highest urgency</span></div><div style="font-size:12px;color:#64748b;line-height:1.65;margin-bottom:8px">Their product is the API. Documentation staleness directly impacts developer adoption. Proof point: Coinbase. NYC accounts: Brex, Plaid, Nuvei, Broadridge.</div><div style="font-size:12px;font-weight:600;color:#0f1f3d">"When a developer hits a stale doc mid-integration, they don't file a ticket — they evaluate your competitor's API."</div></div>
+    <div class="card"><div class="card-title">2. AI / ML <span class="pill pill-blue">Fastest close</span></div><div style="font-size:12px;color:#64748b;line-height:1.65;margin-bottom:8px">Their AI strategy depends on AI-readable documentation. Proof point: Anthropic (co-developed LLMs.txt standard).</div><div style="font-size:12px;font-weight:600;color:#0f1f3d">"If your docs aren't AI-native, they're invisible to the channel developers increasingly use to find answers."</div></div>
+    <div class="card"><div class="card-title">3. Developer Tools</div><div style="font-size:12px;color:#64748b;line-height:1.65;margin-bottom:8px">Their docs are their product. Documentation friction is adoption friction is revenue friction. Proof point: Coinbase + Layers (40–60 hrs/month saved).</div><div style="font-size:12px;font-weight:600;color:#0f1f3d">"A developer hitting a dead end in your docs evaluates whether your tool is worth integrating."</div></div>
+    <div class="card"><div class="card-title">4. SaaS / PLG</div><div style="font-size:12px;color:#64748b;line-height:1.65;margin-bottom:8px">Self-serve motion depends on documentation quality. Every dead end is a support ticket or churned trial. Proof point: HubSpot (50% reduction in eng resources).</div><div style="font-size:12px;font-weight:600;color:#0f1f3d">"Every docs dead-end in your self-serve flow is a support ticket or a churned trial you paid to acquire."</div></div>
+  </div>
+  <div class="section-label">Pre-outreach research checklist — 10 min per account</div>
+  <div class="card">
+    <div class="check-row"><div class="chk">✓</div><div><strong>Visit their developer docs</strong> — scroll to the footer to identify the current platform. Note whether a public developer portal exists at all.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Check for visible staleness</strong> — compare doc timestamps to their GitHub release history. A 30+ day gap is a personalization hook.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>LinkedIn: new VP Eng / CTO hires</strong> — filter "changed jobs in past 90 days." New engineering leadership is your best outreach window.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>LinkedIn Jobs: documentation / DevRel hiring</strong> — search for Technical Writer, DevRel, Developer Experience posted in last 60 days. That's the commercial insight in real time.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Crunchbase / press</strong> — recent funding, product launch, or AI announcement. One specific event turns generic email into relevant email.</div></div>
+    <div class="check-row"><div class="chk">✓</div><div><strong>Check with Tony first</strong> — before starting any sequence, confirm I haven't already reached this account or contact. Takes 30 seconds. Saves massive awkwardness.</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="alert" style="background:#eff6ff;border-color:#93c5fd;color:#1e3a5f"><strong>📋 Sequences and objection handling →</strong> The full 14-step outreach cadence (email + call + LinkedIn across all 5 verticals) and the objection response scripts live in the <strong>Messaging Playbook</strong> — a separate file Tony will share with you. That's your day-to-day outreach reference. This guide covers partnership operating model, territory sheet, handoffs, and what good looks like.</div>
+</div>
+
+
+
+
+
+<!-- HANDOFF -->
+<div id="handoff" class="panel">
+  <div class="alert"><strong>A great meeting booking is wasted if the handoff is sloppy.</strong> I need 10 minutes of context before every call you generate. The handoff brief is your responsibility — not my job to track down.</div>
+  <div class="section-label">The standard handoff protocol</div>
+  <div class="step-row"><div class="step-num" style="background:#1D9E75;color:#fff">1</div><div><div class="step-title">Book the meeting — immediately fill in the Meeting Handoffs tab</div><div class="step-detail">Don't wait until the day before. Fill it in when you book: account, contact, title, what was said, what triggered the reply, and the meeting date. Add Tony as a calendar co-host.</div></div></div>
+  <div class="step-row"><div class="step-num" style="background:#1D9E75;color:#fff">2</div><div><div class="step-title">Send Tony a Slack/text brief — same day as booking</div><div class="step-detail">Use the template below. Copy their exact reply verbatim — don't paraphrase. Their specific words are the qualification data.</div></div></div>
+  <div class="step-row"><div class="step-num" style="background:#1D9E75;color:#fff">3</div><div><div class="step-title">Confirm Tony has seen it 48 hours before the call</div><div class="step-detail">If you haven't seen "AE Briefed = Yes" in the handoff tab 48 hours before — follow up. Don't let a cold-booked meeting happen without Tony being prepared. A bad first call reflects on both of us.</div></div></div>
+  <div class="step-row"><div class="step-num" style="background:#1D9E75;color:#fff">4</div><div><div class="step-title">Post-call: check the handoff tab for your next action</div><div class="step-detail">Within 24 hours of the call, Tony updates the outcome and whether multi-threading is needed. Check the tab — don't wait to be told what to do next.</div></div></div>
+  <div class="divider"></div>
+  <div class="section-label">Handoff brief template — copy this format every time</div>
+  <div class="card">
+    <div class="script-block" style="font-style:normal;line-height:2">
+      📅 <strong>Meeting booked:</strong> [Contact name, title] at [Company] — [Date + time]<br>
+      📧 <strong>Replied to:</strong> [Email step X / LinkedIn DM / Call on Day X]<br>
+      💬 <strong>Their exact words:</strong> "[paste their reply verbatim]"<br>
+      🔧 <strong>Current doc tool:</strong> [Confluence / GitBook / ReadMe / etc.]<br>
+      ⚡ <strong>Trigger / Why Now:</strong> [New VP Eng hire / job posting / product launch / etc.]<br>
+      🎯 <strong>ICP tier:</strong> T1 / T2<br>
+      ❓ <strong>Anything I'm not sure about:</strong> [Qualification gaps Tony should probe in the call]
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="success" class="panel">
+  <div class="alert"><strong>Success isn't just meeting volume.</strong> A meeting booked at the wrong account with the wrong contact that converts at 0% is not success — it's noise. Quality and quantity both matter.</div>
+  <div class="section-label">Activity benchmarks</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-val">15–20</div><div class="metric-lbl">Personalized touches / day</div></div>
+    <div class="metric"><div class="metric-val">8–10</div><div class="metric-lbl">New accounts in sequence / week</div></div>
+    <div class="metric"><div class="metric-val">8–10</div><div class="metric-lbl">Qualified meetings / month</div></div>
+    <div class="metric"><div class="metric-val">&gt;40%</div><div class="metric-lbl">Meeting → discovery conversion</div></div>
+  </div>
+  <div class="section-label">Quality benchmarks</div>
+  <div class="two-col">
+    <div class="card" style="background:#f0fdf8;border-color:#86efcd">
+      <div class="card-title" style="color:#065f46">A great meeting looks like this</div>
+      <div class="role-item"><span class="dot dot-green"></span>Contact is VP Eng, CTO, Head of DevRel, or equivalent</div>
+      <div class="role-item"><span class="dot dot-green"></span>They replied to a specific, personalized message</div>
+      <div class="role-item"><span class="dot dot-green"></span>A confirmed trigger or Why Now exists for this account</div>
+      <div class="role-item"><span class="dot dot-green"></span>Tony has been briefed 48+ hours before the call</div>
+      <div class="role-item"><span class="dot dot-green"></span>Company matches Tier 1 or Tier 2 ICP criteria</div>
+      <div class="role-item"><span class="dot dot-green"></span>Their reply indicated genuine interest</div>
+    </div>
+    <div class="card" style="background:#fef2f2;border-color:#fca5a5">
+      <div class="card-title" style="color:#7f1d1d">A bad meeting looks like this</div>
+      <div class="role-item"><span class="dot dot-amber"></span>Contact is a junior engineer or non-decision-maker</div>
+      <div class="role-item"><span class="dot dot-amber"></span>They agreed to a call to get you off the phone</div>
+      <div class="role-item"><span class="dot dot-amber"></span>No research done — no trigger identified</div>
+      <div class="role-item"><span class="dot dot-amber"></span>Company is Tier 3 or has no compelling event</div>
+      <div class="role-item"><span class="dot dot-amber"></span>Tony wasn't briefed — the call was a surprise</div>
+      <div class="role-item"><span class="dot dot-amber"></span>Generic sequence was sent — no personalization</div>
+    </div>
+  </div>
+  <div class="section-label">The ramp timeline</div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-week">Week 1–2</div><div class="tl-body">Learn the territory. Score accounts. Understand the ICP. Don't send anything without Tony reviewing it first. First outreach goes out end of week 2 after Tony has approved your first sequence draft.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-week">Week 3–4</div><div class="tl-body">First sequences running on Tier 1 accounts. Weekly syncs calibrating messaging. Route every positive reply to Tony immediately. Target: 2–3 meetings booked by end of month 1.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-week">Month 2</div><div class="tl-body">Full sequence cadence running. Multi-thread activations on accounts where Tony has meetings progressing. Messaging tightened based on what's getting replies. Target: 6–8 qualified meetings booked.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-week">Month 3+</div><div class="tl-body">Full partnership at capacity. Tier 1 fully penetrated, Tier 2 sequences running, multi-thread active on 3–5 deals. Target: 8–10 qualified meetings per month consistently contributing to Tony's pipeline.</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="card"><p style="font-size:13px;color:#334155;line-height:1.75;margin-bottom:8px"><strong>The one thing that separates good SDRs from great ones:</strong> great SDRs make the AE's first call easier. The brief you send before a meeting, the research you do before touching an account, the log you keep so I can see exactly what was said — that's part of your job as much as the dialing.</p><p style="font-size:12px;color:#64748b;line-height:1.65">The reps who get promoted fastest are the ones who make their AE look good. When I walk into a call and nail it because you gave me perfect context — that reflects on you. Own that part of the job.</p></div>
+</div>
+
+</div>
+<script>
+function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active')}
+function toggleS(h){const b=h.nextElementSibling;b.style.display=b.style.display==='block'?'none':'block'}
+function toggleO(h){const b=h.nextElementSibling;b.style.display=b.style.display==='block'?'none':'block'}
+</script>
+</body>
+</html>
